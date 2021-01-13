@@ -18,6 +18,8 @@
 		8A85EE0D25ADC8450084AD44 /* GameListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A85EE0C25ADC8450084AD44 /* GameListCell.swift */; };
 		8A85EE1625ADCB390084AD44 /* TwithAuthServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A85EE1525ADCB390084AD44 /* TwithAuthServices.swift */; };
 		8A85EE2025ADCD260084AD44 /* TwithAccessTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A85EE1F25ADCD260084AD44 /* TwithAccessTokens.swift */; };
+		8A85EE2325ADCF410084AD44 /* AccessResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A85EE2225ADCF410084AD44 /* AccessResponse.swift */; };
+		8A85EE7E25ADED440084AD44 /* GameListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A85EE7D25ADED440084AD44 /* GameListModel.swift */; };
 		9F80A05783F9E11ED9A96199 /* Pods_WhenGameRelease.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91260C1926A6E7BDD28DB5E9 /* Pods_WhenGameRelease.framework */; };
 /* End PBXBuildFile section */
 
@@ -35,6 +37,8 @@
 		8A85EE0C25ADC8450084AD44 /* GameListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameListCell.swift; sourceTree = "<group>"; };
 		8A85EE1525ADCB390084AD44 /* TwithAuthServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwithAuthServices.swift; sourceTree = "<group>"; };
 		8A85EE1F25ADCD260084AD44 /* TwithAccessTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwithAccessTokens.swift; sourceTree = "<group>"; };
+		8A85EE2225ADCF410084AD44 /* AccessResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessResponse.swift; sourceTree = "<group>"; };
+		8A85EE7D25ADED440084AD44 /* GameListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameListModel.swift; sourceTree = "<group>"; };
 		91260C1926A6E7BDD28DB5E9 /* Pods_WhenGameRelease.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WhenGameRelease.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4E3BFE11E6EA9DA522DBD64 /* Pods-WhenGameRelease.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WhenGameRelease.debug.xcconfig"; path = "Target Support Files/Pods-WhenGameRelease/Pods-WhenGameRelease.debug.xcconfig"; sourceTree = "<group>"; };
 		C65B7B5144070A56213A5DFB /* Pods-WhenGameRelease.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WhenGameRelease.release.xcconfig"; path = "Target Support Files/Pods-WhenGameRelease/Pods-WhenGameRelease.release.xcconfig"; sourceTree = "<group>"; };
@@ -132,6 +136,8 @@
 			isa = PBXGroup;
 			children = (
 				8A85EE1F25ADCD260084AD44 /* TwithAccessTokens.swift */,
+				8A85EE2225ADCF410084AD44 /* AccessResponse.swift */,
+				8A85EE7D25ADED440084AD44 /* GameListModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -268,6 +274,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A85EE2325ADCF410084AD44 /* AccessResponse.swift in Sources */,
+				8A85EE7E25ADED440084AD44 /* GameListModel.swift in Sources */,
 				8A85EE2025ADCD260084AD44 /* TwithAccessTokens.swift in Sources */,
 				8A104626257A2B83004B9B6D /* AppDelegate.swift in Sources */,
 				8A85EE0D25ADC8450084AD44 /* GameListCell.swift in Sources */,
@@ -319,7 +327,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -344,7 +352,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -380,7 +388,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -399,7 +407,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;

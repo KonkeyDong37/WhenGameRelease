@@ -12,7 +12,11 @@ struct GameListView: View {
     @ObservedObject var gameList: GameList = GameList()
     
     var body: some View {
-        Text("App is loading")
+        List {
+            ForEach(gameList.games) { game in
+                Text(game.name)
+            }
+        }
             .onAppear {
                 self.gameList.getGameList()
             }

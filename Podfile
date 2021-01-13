@@ -7,7 +7,7 @@ target 'WhenGameRelease' do
 
   # Pods for WhenGameRelease
   pod 'IGDB-SWIFT-API', git: "https://github.com/husnjak/IGDB-API-SWIFT.git"
-  pod 'SDWebImage', '~> 5.0'
   pod 'Alamofire', '~> 5.2'
+  pod 'URLImage'
 
 end
