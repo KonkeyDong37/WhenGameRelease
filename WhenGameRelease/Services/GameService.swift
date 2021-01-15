@@ -17,13 +17,38 @@ class GameService {
     
     private init() {}
     
-    func fetchGames(completion: @escaping (Result<[GameModel], Error>) -> Void) {
-        let query = "fields id,name,category,cover,first_release_date; sort first_release_date desc;"
+    func fetchGame(withId id: Int, completion: @escaping (Result<GameDetailModel, Error>) -> Void) {
+        let query = "ields *; where id = \(id);"
         
         if accessToken.isEmpty {
             twithServices.fetchAuth { (response) in
                 self.accessToken = response?.accessToken ?? ""
-                self.fetchGames(query: query, completion: completion)
+                self.fetchGame(query: query, completion: completion)
+            }
+        } else {
+            self.fetchGame(query: query, completion: completion)
+        }
+    }
+    
+    private func fetchGame(query: String, completion: @escaping (Result<GameDetailModel, Error>) -> Void) {
+        fetchFromWrapper(endpoint: .GAMES, query: query) { (response) in
+            switch response {
+            case .success(let data):
+                guard let game = self.decodeJSON(type: GameDetailModel.self, from: data) else { return }
+                completion(.success(game))
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func fetchGames(completion: @escaping (Result<[GameModel], Error>) -> Void) {
+        let query = "fields id,name,category,cover,first_release_date; sort first_release_date desc;"
+        
+        if accessToken.isEmpty {
+            twithServices.fetchAuth { [weak self] (response) in
+                self?.accessToken = response?.accessToken ?? ""
+                self?.fetchGames(query: query, completion: completion)
             }
         } else {
             self.fetchGames(query: query, completion: completion)
@@ -45,51 +70,31 @@ class GameService {
     func fetchRecentlyGames(completion: @escaping (Result<[GameModel], Error>) -> Void) {
         
         let timestamp: Int = Int(NSDate().timeIntervalSince1970)
-        let query = "fields *; where date < \(timestamp); sort date desc;"
+        let query = "fields *; where first_release_date < \(timestamp); sort first_release_date desc;"
+        
         
         if accessToken.isEmpty {
             twithServices.fetchAuth { (response) in
                 self.accessToken = response?.accessToken ?? ""
-                self.fetchReleaseDates(with: query, completion: completion)
+                self.fetchGames(query: query, completion: completion)
             }
         } else {
-            self.fetchReleaseDates(with: query, completion: completion)
+            self.fetchGames(query: query, completion: completion)
         }
     }
     
-    private func fetchReleaseDates(with query: String, completion: @escaping (Result<[GameModel], Error>) -> Void) {
-        self.fetchFromWrapper(endpoint: .RELEASE_DATES, query: query, completion: { (response) in
+    func getCoverUrl(with id: Int, completion: @escaping (Result<[GameCoverUrlModel], Error>) -> Void) {
+        let query = "fields image_id; where id = \(id);"
+        
+        fetchFromWrapper(endpoint: .COVERS, query: query) { (response) in
             switch response {
             case .success(let response):
-                let responseData = self.decodeJSON(type: [GameReleaseDateModel].self, from: response)
-                var games: [GameModel] = []
-                var counter = 0
-                
-                for game in responseData! {
-                    counter = counter + 1
-                    let query = "fields id,name,category,cover,first_release_date; where id = \(game.game);"
-                    self.fetchFromWrapper(endpoint: .GAMES, query: query) { (response) in
-                        switch response {
-                        case .success(let game):
-                            guard let convertData = self.decodeJSON(type: [GameModel].self, from: game) else { return }
-                            if convertData.count > 0 {
-                                games.append(convertData[0])
-                            }
-                            if counter == responseData?.count {
-                                let sortedGames = games.sorted(by: { $0.firstReleaseDate > $1.firstReleaseDate })
-                                completion(.success(sortedGames))
-                            }
-                        case .failure(let error):
-                            print("Request .GAMES did faild with error: \(error)")
-                        }
-                    }
-                }
-                
+                guard let convertData = self.decodeJSON(type: [GameCoverUrlModel].self, from: response) else { return }
+                completion(.success(convertData))
             case .failure(let error):
-                print("Request .RELEASE_DATES did faild with error: \(error)")
+                print(error)
             }
-        })
-        
+        }
     }
     
     private func fetchFromWrapper(endpoint: Endpoint, query: String, completion: @escaping (Result<Data, Error>) -> Void) {
