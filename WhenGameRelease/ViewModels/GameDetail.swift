@@ -10,7 +10,7 @@ import Foundation
 class GameDetail: ObservableObject {
     
     var gameService = GameService.shared
-    @Published var game: GameDetailModel? = nil
+    @Published var game: GameModel? = nil
     
     func getGame(withId id: Int) {
         gameService.fetchGame(withId: id) { (response) in

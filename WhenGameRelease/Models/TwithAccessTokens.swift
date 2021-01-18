@@ -7,9 +7,9 @@
 
 import Foundation
 
-class TwithAccessTokens {
+struct TwithAccessTokens {
     
-    public let clientId: String = "oq8zs1xa0p9mgnymf5youbovtx36io"
-    public let clientSecret: String = "s0zn9rcgnttqae7cf3dw74esf05hj1"
+    static let clientId: String = "oq8zs1xa0p9mgnymf5youbovtx36io"
+    static let clientSecret: String = "s0zn9rcgnttqae7cf3dw74esf05hj1"
     
 }

@@ -22,7 +22,7 @@ struct GameListCell: View {
                 if (coverUrl == nil) {
                     Image(systemName: "photo.on.rectangle.angled")
                         .font(.system(size: 100, weight: .regular))
-                        .colorInvert()
+                        .foregroundColor(.white)
                         .frame(width: geometry.size.width, height: geometry.size.height)
                 } else {
                     URLImage(url: coverUrl!) { image in
@@ -37,19 +37,19 @@ struct GameListCell: View {
             VStack(alignment: .leading) {
                 Text(game.name)
                     .font(Font.largeTitle.weight(.bold))
-                    .colorInvert()
+                    .foregroundColor(.white)
                 Text("\(game.releaseDateString)")
                     .font(.headline)
-                    .colorInvert()
+                    .foregroundColor(.white)
             }
             .padding()
         }
-        .frame(height: 500, alignment: .top)
+        .frame(height: 550, alignment: .top)
         .background(Color.init(#colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)))
         .cornerRadius(20)
         .padding()
         .onAppear() {
-            imageLoader.getCoverUrl(with: game.cover) { (response) in
+            imageLoader.getCoverUrl(with: game.cover ?? nil) { (response) in
                 switch response {
                 case .success(let url):
                     self.coverUrl = url

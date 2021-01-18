@@ -13,8 +13,8 @@ class TwithAuthServices {
     func fetchAuth(completion: @escaping (AccessResponseModel?) -> Void) {
         let url = "https://id.twitch.tv/oauth2/token"
         let params: [String : String] = [
-            "client_id" : TwithAccessTokens().clientId,
-            "client_secret" : TwithAccessTokens().clientSecret,
+            "client_id" : TwithAccessTokens.clientId,
+            "client_secret" : TwithAccessTokens.clientSecret,
             "grant_type" : "client_credentials"
         ]
         

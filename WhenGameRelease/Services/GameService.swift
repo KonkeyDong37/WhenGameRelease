@@ -17,7 +17,7 @@ class GameService {
     
     private init() {}
     
-    func fetchGame(withId id: Int, completion: @escaping (Result<GameDetailModel, Error>) -> Void) {
+    func fetchGame(withId id: Int, completion: @escaping (Result<GameModel, Error>) -> Void) {
         let query = "ields *; where id = \(id);"
         
         if accessToken.isEmpty {
@@ -30,11 +30,11 @@ class GameService {
         }
     }
     
-    private func fetchGame(query: String, completion: @escaping (Result<GameDetailModel, Error>) -> Void) {
+    private func fetchGame(query: String, completion: @escaping (Result<GameModel, Error>) -> Void) {
         fetchFromWrapper(endpoint: .GAMES, query: query) { (response) in
             switch response {
             case .success(let data):
-                guard let game = self.decodeJSON(type: GameDetailModel.self, from: data) else { return }
+                guard let game = self.decodeJSON(type: GameModel.self, from: data) else { return }
                 completion(.success(game))
             case .failure(let error):
                 print(error.localizedDescription)
@@ -43,7 +43,7 @@ class GameService {
     }
     
     func fetchGames(completion: @escaping (Result<[GameModel], Error>) -> Void) {
-        let query = "fields id,name,category,cover,first_release_date; sort first_release_date desc;"
+        let query = "fields *; sort first_release_date desc;"
         
         if accessToken.isEmpty {
             twithServices.fetchAuth { [weak self] (response) in
@@ -98,7 +98,7 @@ class GameService {
     }
     
     private func fetchFromWrapper(endpoint: Endpoint, query: String, completion: @escaping (Result<Data, Error>) -> Void) {
-        let wrapper: IGDBWrapper = IGDBWrapper(clientID: TwithAccessTokens().clientId, accessToken: accessToken)
+        let wrapper: IGDBWrapper = IGDBWrapper(clientID: TwithAccessTokens.clientId, accessToken: accessToken)
         
         wrapper.apiJsonRequest(endpoint: endpoint, apicalypseQuery: query, dataResponse: { data in
             

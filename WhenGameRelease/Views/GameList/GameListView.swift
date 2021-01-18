@@ -15,7 +15,10 @@ struct GameListView: View {
         NavigationView {
             NoSepratorList {
                 ForEach(gameList.games) { game in
-                    GameListCell(game: game)
+                    NavigationLink(
+                        destination: GameDetailView(id: game.id, game: game)) {
+                        GameListCell(game: game)
+                    }
                 }
             }
                 .onAppear {
