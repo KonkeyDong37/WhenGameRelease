@@ -17,94 +17,95 @@ class GameService {
     
     private init() {}
     
+    // MARK: Fetch single game with id
     func fetchGame(withId id: Int, completion: @escaping (Result<GameModel, Error>) -> Void) {
-        let query = "ields *; where id = \(id);"
+        let query = "fields *; where id = \(id);"
         
-        if accessToken.isEmpty {
-            twithServices.fetchAuth { (response) in
-                self.accessToken = response?.accessToken ?? ""
-                self.fetchGame(query: query, completion: completion)
-            }
-        } else {
-            self.fetchGame(query: query, completion: completion)
-        }
+        fetchData(query: query, endpoint: .GAMES, completion: completion)
     }
     
-    private func fetchGame(query: String, completion: @escaping (Result<GameModel, Error>) -> Void) {
-        fetchFromWrapper(endpoint: .GAMES, query: query) { (response) in
-            switch response {
-            case .success(let data):
-                guard let game = self.decodeJSON(type: GameModel.self, from: data) else { return }
-                completion(.success(game))
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
-        }
-    }
-    
+    // MARK: Fetch last added games
     func fetchGames(completion: @escaping (Result<[GameModel], Error>) -> Void) {
         let query = "fields *; sort first_release_date desc;"
         
-        if accessToken.isEmpty {
-            twithServices.fetchAuth { [weak self] (response) in
-                self?.accessToken = response?.accessToken ?? ""
-                self?.fetchGames(query: query, completion: completion)
-            }
-        } else {
-            self.fetchGames(query: query, completion: completion)
-        }
+        fetchData(query: query, endpoint: .GAMES, completion: completion)
     }
     
-    private func fetchGames(query: String, completion: @escaping (Result<[GameModel], Error>) -> Void) {
-        fetchFromWrapper(endpoint: .GAMES, query: query) { (response) in
-            switch response {
-            case .success(let data):
-                guard let games = self.decodeJSON(type: [GameModel].self, from: data) else { return }
-                completion(.success(games))
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
-        }
-    }
-    
+    // MARK: Fetch recently relesed games
     func fetchRecentlyGames(completion: @escaping (Result<[GameModel], Error>) -> Void) {
         
         let timestamp: Int = Int(NSDate().timeIntervalSince1970)
-        let query = "fields *; where first_release_date < \(timestamp); sort first_release_date desc;"
+        let query = "fields *; where hypes > 0 & first_release_date < \(timestamp); limit 15; sort first_release_date desc;"
         
-        
-        if accessToken.isEmpty {
-            twithServices.fetchAuth { (response) in
-                self.accessToken = response?.accessToken ?? ""
-                self.fetchGames(query: query, completion: completion)
-            }
-        } else {
-            self.fetchGames(query: query, completion: completion)
-        }
+        fetchData(query: query, endpoint: .GAMES, completion: completion)
     }
     
+    // MARK: Fetch game cover url
     func getCoverUrl(with id: Int, completion: @escaping (Result<[GameCoverUrlModel], Error>) -> Void) {
         let query = "fields image_id; where id = \(id);"
         
-        fetchFromWrapper(endpoint: .COVERS, query: query) { (response) in
-            switch response {
-            case .success(let response):
-                guard let convertData = self.decodeJSON(type: [GameCoverUrlModel].self, from: response) else { return }
-                completion(.success(convertData))
-            case .failure(let error):
-                print(error)
+        fetchData(query: query, endpoint: .COVERS, completion: completion)
+    }
+    
+    // MARK: Fetch genres
+    func fetchGenres(genresIds: String, completion: @escaping (Result<[GameGenres], Error>) -> Void) {
+        
+        let query = "fields *; where id = (\(genresIds));"
+        
+        fetchData(query: query, endpoint: .GENRES, completion: completion)
+    }
+    
+    // MARK: Fetch involved companies with id's
+    func fetchInvolvedCompany(involvedCompanies: String, completion: @escaping (Result<[GameInvolvedCompany], Error>) -> Void) {
+        
+        let query = "fields *; where id = (\(involvedCompanies));"
+        
+        fetchData(query: query, endpoint: .INVOLVED_COMPANIES, completion: completion)
+    }
+    
+    // MARK: Fetch companies with id's
+    func fetchCompanies(companyIds: String, completion: @escaping (Result<[GameCompany], Error>) -> Void) {
+        
+        let query = "fields id,name,logo; where id = (\(companyIds));"
+        
+        fetchData(query: query, endpoint: .COMPANIES, completion: completion)
+    }
+    
+    // MARK: Fetch age rating with id's
+    func fetchAgeRating(ratingIds: String, completion: @escaping (Result<[GameAgeRating], Error>) -> Void) {
+        let query = "fields *; where id = (\(ratingIds));"
+        
+        fetchData(query: query, endpoint: .AGE_RATINGS, completion: completion)
+    }
+    
+    // MARK: Fetch art works
+    func fetchScreenshots(screenshotsIds: String, completion: @escaping (Result<[GameScreenshots], Error>) -> Void) {
+        let query = "fields *; where id = (\(screenshotsIds));"
+        
+        fetchData(query: query, endpoint: .SCREENSHOTS, completion: completion)
+    }
+    
+    // MARK: Data wrapper
+    private func fetchData<T: Decodable>(query: String, endpoint: Endpoint, completion: @escaping (Result<T, Error>) -> Void) {
+        if accessToken.isEmpty {
+            twithServices.fetchAuth { (response) in
+                self.accessToken = response?.accessToken ?? ""
+                self.fetchFromWrapper(endpoint: endpoint, query: query, completion: completion)
             }
+        } else {
+            fetchFromWrapper(endpoint: endpoint, query: query, completion: completion)
         }
     }
     
-    private func fetchFromWrapper(endpoint: Endpoint, query: String, completion: @escaping (Result<Data, Error>) -> Void) {
+    // MARK: Fetch wrapper
+    private func fetchFromWrapper<T: Decodable>(endpoint: Endpoint, query: String, completion: @escaping (Result<T, Error>) -> Void) {
         let wrapper: IGDBWrapper = IGDBWrapper(clientID: TwithAccessTokens.clientId, accessToken: accessToken)
         
         wrapper.apiJsonRequest(endpoint: endpoint, apicalypseQuery: query, dataResponse: { data in
-            
             DispatchQueue.main.async {
-                let jsonData = data.data(using: .utf8)!
-                completion(.success(jsonData))
+                guard let jsonData = data.data(using: .utf8) else { return }
+                guard let company = self.decodeJSON(type: T.self, from: jsonData) else { return }
+                completion(.success(company))
             }
             
         }, errorResponse: { error in
@@ -114,6 +115,7 @@ class GameService {
         })
     }
     
+    // MARK: JSON Decoder
     private func decodeJSON<T: Decodable>(type: T.Type, from: Data?) -> T? {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase

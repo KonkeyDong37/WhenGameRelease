@@ -10,22 +10,22 @@ import SwiftUI
 struct GameListView: View {
     
     @ObservedObject var gameList: GameList = GameList()
+    @State private var imageLoader: ImageLoader = ImageLoader()
     
     var body: some View {
-        NavigationView {
-            NoSepratorList {
-                ForEach(gameList.games) { game in
-                    NavigationLink(
-                        destination: GameDetailView(id: game.id, game: game)) {
+        GeometryReader { geometry in
+            NavigationView {
+                NoSepratorList {
+                    ForEach(gameList.games) { game in
                         GameListCell(game: game)
                     }
                 }
-            }
                 .onAppear {
-                UITableView.appearance().separatorColor = .clear
-                self.gameList.getGameList()
+                    UITableView.appearance().separatorColor = .clear
+                    self.gameList.getGameList()
+                }
+                .navigationBarTitle("Recently Released", displayMode: .large)
             }
-            .navigationBarTitle("Recently Released", displayMode: .large)
         }
     }
 }
