@@ -85,6 +85,13 @@ class GameService {
         fetchData(query: query, endpoint: .SCREENSHOTS, completion: completion)
     }
     
+    // MARK: Fetch video id
+    func fetchVideo(videoId: String, completion: @escaping (Result<GameTrailer, Error>) -> Void) {
+        let query = "fields *; where id = \(videoId);"
+        
+        fetchData(query: query, endpoint: .GAME_VIDEOS, completion: completion)
+    }
+    
     // MARK: Data wrapper
     private func fetchData<T: Decodable>(query: String, endpoint: Endpoint, completion: @escaping (Result<T, Error>) -> Void) {
         if accessToken.isEmpty {

@@ -151,3 +151,7 @@ struct GameScreenshots: Decodable, Identifiable {
     var id: Int?
     var imageId: String
 }
+
+struct GameTrailer: Decodable {
+    var videoId: String?
+}

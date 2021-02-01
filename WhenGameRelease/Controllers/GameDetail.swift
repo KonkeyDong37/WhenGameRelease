@@ -96,7 +96,7 @@ class GameDetail: ObservableObject {
         gameService.fetchScreenshots(screenshotsIds: screenshotsIdsString) { (response) in
             switch response {
             case .success(let response):
-                print(response)
+                print("")
             case .failure(let error):
                 print(error)
             }

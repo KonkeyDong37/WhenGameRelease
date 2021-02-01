@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8A015FDE25C7F5E300229EF2 /* PlayerUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A015FDD25C7F5E200229EF2 /* PlayerUIView.swift */; };
+		8A015FE525C80F7E00229EF2 /* VideoLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A015FE425C80F7E00229EF2 /* VideoLoader.swift */; };
+		8A015FEA25C8230F00229EF2 /* AVPlayerViewControllerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A015FE925C8230F00229EF2 /* AVPlayerViewControllerManager.swift */; };
+		8A01605F25C850BB00229EF2 /* UIViewController Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A01605E25C850BB00229EF2 /* UIViewController Extension.swift */; };
+		8A01606325C86FC800229EF2 /* ImageCarouselView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A01606225C86FC800229EF2 /* ImageCarouselView.swift */; };
 		8A104626257A2B83004B9B6D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A104625257A2B83004B9B6D /* AppDelegate.swift */; };
 		8A104628257A2B83004B9B6D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A104627257A2B83004B9B6D /* SceneDelegate.swift */; };
 		8A10462F257A2B85004B9B6D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8A10462E257A2B85004B9B6D /* Preview Assets.xcassets */; };
@@ -35,6 +40,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8A015FDD25C7F5E200229EF2 /* PlayerUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerUIView.swift; sourceTree = "<group>"; };
+		8A015FE425C80F7E00229EF2 /* VideoLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoLoader.swift; sourceTree = "<group>"; };
+		8A015FE925C8230F00229EF2 /* AVPlayerViewControllerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVPlayerViewControllerManager.swift; sourceTree = "<group>"; };
+		8A01605E25C850BB00229EF2 /* UIViewController Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController Extension.swift"; sourceTree = "<group>"; };
+		8A01606225C86FC800229EF2 /* ImageCarouselView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCarouselView.swift; sourceTree = "<group>"; };
 		8A104622257A2B83004B9B6D /* WhenGameRelease.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WhenGameRelease.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A104625257A2B83004B9B6D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8A104627257A2B83004B9B6D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -95,6 +105,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		8A015FE725C822DC00229EF2 /* YTVideoPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				8A015FDD25C7F5E200229EF2 /* PlayerUIView.swift */,
+				8A015FE925C8230F00229EF2 /* AVPlayerViewControllerManager.swift */,
+			);
+			path = YTVideoPlayer;
+			sourceTree = "<group>";
+		};
 		8A104619257A2B83004B9B6D = {
 			isa = PBXGroup;
 			children = (
@@ -143,11 +162,13 @@
 		8A85EDFA25ACDF940084AD44 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				8AB27AE425B5F68B00AEFEED /* RootView.swift */,
 				8A85EE0B25ADC7FC0084AD44 /* GameList */,
 				8A85EEAE25B58AA40084AD44 /* GameDetailView.swift */,
 				8A85EEAA25B58A240084AD44 /* BottomSheetView.swift */,
-				8AB27AE425B5F68B00AEFEED /* RootView.swift */,
 				8AB27AF325B9BEC900AEFEED /* PosterImageView.swift */,
+				8A01606225C86FC800229EF2 /* ImageCarouselView.swift */,
+				8A015FE725C822DC00229EF2 /* YTVideoPlayer */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -158,6 +179,7 @@
 				8A85EE0825ACE4CF0084AD44 /* GameList.swift */,
 				8A85EE9D25B252380084AD44 /* GameDetail.swift */,
 				8A85EE8C25B02E330084AD44 /* ImageLoader.swift */,
+				8A015FE425C80F7E00229EF2 /* VideoLoader.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -197,6 +219,7 @@
 				8AB27AD125B5C4DC00AEFEED /* Date Extension.swift */,
 				8AB27ADB25B5DC0900AEFEED /* Double Extension.swift */,
 				8AB27AE125B5EF2E00AEFEED /* Color Extension.swift */,
+				8A01605E25C850BB00229EF2 /* UIViewController Extension.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -323,14 +346,18 @@
 				8A85EEAF25B58AA40084AD44 /* GameDetailView.swift in Sources */,
 				8AB27ADF25B5ECD000AEFEED /* MainTabBarController.swift in Sources */,
 				8A85EE2025ADCD260084AD44 /* TwithAccessTokens.swift in Sources */,
+				8A015FEA25C8230F00229EF2 /* AVPlayerViewControllerManager.swift in Sources */,
 				8AB27AE525B5F68B00AEFEED /* RootView.swift in Sources */,
 				8A104626257A2B83004B9B6D /* AppDelegate.swift in Sources */,
 				8A85EE0D25ADC8450084AD44 /* GameListCell.swift in Sources */,
 				8AB27ACF25B5AF7000AEFEED /* Constants.swift in Sources */,
 				8A85EE9B25B24F190084AD44 /* GameModel.swift in Sources */,
+				8A015FDE25C7F5E300229EF2 /* PlayerUIView.swift in Sources */,
 				8A85EE8D25B02E330084AD44 /* ImageLoader.swift in Sources */,
 				8A104628257A2B83004B9B6D /* SceneDelegate.swift in Sources */,
 				8A85EE9E25B252380084AD44 /* GameDetail.swift in Sources */,
+				8A01605F25C850BB00229EF2 /* UIViewController Extension.swift in Sources */,
+				8A015FE525C80F7E00229EF2 /* VideoLoader.swift in Sources */,
 				8AB27ADC25B5DC0900AEFEED /* Double Extension.swift in Sources */,
 				8AB27AE225B5EF2E00AEFEED /* Color Extension.swift in Sources */,
 				8AB27AD225B5C4DC00AEFEED /* Date Extension.swift in Sources */,
@@ -339,6 +366,7 @@
 				8A85EEAB25B58A240084AD44 /* BottomSheetView.swift in Sources */,
 				8AB27AF425B9BEC900AEFEED /* PosterImageView.swift in Sources */,
 				8A85EE0225ACE11D0084AD44 /* GameService.swift in Sources */,
+				8A01606325C86FC800229EF2 /* ImageCarouselView.swift in Sources */,
 				8A85EE1625ADCB390084AD44 /* TwithAuthServices.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

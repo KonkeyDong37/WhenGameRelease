@@ -9,5 +9,6 @@ target 'WhenGameRelease' do
   pod 'IGDB-SWIFT-API', git: "https://github.com/husnjak/IGDB-API-SWIFT.git"
   pod 'Alamofire', '~> 5.2'
   pod 'URLImage'
+  pod 'XCDYouTubeKit'
 
 end

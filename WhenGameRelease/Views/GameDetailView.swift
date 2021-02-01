@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AVKit
 
 fileprivate enum Constants {
     static let bottomSheetHeight: CGFloat = 260
@@ -13,8 +14,16 @@ fileprivate enum Constants {
 
 struct GameDetailView: View {
     
+    @Environment(\.viewController) private var viewControllerHolder: UIViewController?
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var gameDetail: GameDetail
+    
+    @State private var startPlayVideo: Bool = false
+    @State private var index = 0
+    
+    private var viewController: UIViewController? {
+        self.viewControllerHolder
+    }
     
     var body: some View {
         GeometryReader { geometry in
@@ -34,11 +43,35 @@ struct GameDetailView: View {
                             .edgesIgnoringSafeArea(.all)
                         
                         ZStack(alignment: .top) {
+                            ImageCarouselView(index: $index.animation(), maxIndex: 1) {
+                                PosterImageView(image: $gameDetail.image)
+                                VideoPlayer(videoId: "coJtXGb0fAI", startPlayVideo: $startPlayVideo)
+                            }
+                            .cornerRadius(6)
+                            .frame(height: setImageHeight(frameHeight: geometry.size.height) * 0.8, alignment: .center)
+                            .padding(EdgeInsets(top: setImageHeight(frameHeight: geometry.size.height) * 0.15, leading: 0, bottom: 0, trailing: 0))
+                            //                            ImageCarouselView(numberOfImages: 2) {
+                            //                                PosterImageView(image: $gameDetail.image)
+                            //                                            VideoPlayer(videoId: "coJtXGb0fAI", startPlayVideo: $startPlayVideo)
+                            //                                        }
+                            //                                .cornerRadius(6)
+                            //                                .frame(height: setImageHeight(frameHeight: geometry.size.height) * 0.8, alignment: .center)
+                            //                                .padding(EdgeInsets(top: setImageHeight(frameHeight: geometry.size.height) * 0.15, leading: 0, bottom: 0, trailing: 0))
                             
-                            PosterImageView(image: $gameDetail.image)
-                                .cornerRadius(6)
-                                .frame(height: setImageHeight(frameHeight: geometry.size.height) * 0.8, alignment: .center)
-                                .padding(EdgeInsets(top: setImageHeight(frameHeight: geometry.size.height) * 0.15, leading: 0, bottom: 0, trailing: 0))
+                            
+                            //                            ZStack {
+                            //                                VStack {
+                            //                                    Button(action: {
+                            //    //                                    self.viewController?.present(style: .fullScreen, transitionStyle: .coverVertical) {
+                            //    //
+                            //    //                                    }
+                            //                                        startPlayVideo.toggle()
+                            //                                    }, label: {
+                            //                                        Text("Play")
+                            //                                    })
+                            //
+                            //                                }
+                            //                            }
                             
                             BottomContentView(colorScheme: colorScheme,
                                               geometry: geometry,
@@ -46,8 +79,6 @@ struct GameDetailView: View {
                                               genres: $gameDetail.genres,
                                               companies: $gameDetail.companies,
                                               ageRating: $gameDetail.ageRating)
-                            
-                            
                         }
                     }
                 }
@@ -250,7 +281,7 @@ private struct InvolvedCompany: View {
                             Button(action: {}, label: {
                                 ButtonText(text: company.name)
                             })
-
+                            
                         }
                     }
                 })
