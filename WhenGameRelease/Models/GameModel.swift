@@ -52,6 +52,28 @@ fileprivate enum AgeRating: Int, CustomStringConvertible, CaseIterable {
     }
 }
 
+fileprivate enum ReleaseStatus: Int, CustomStringConvertible, CaseIterable {
+    case released = 0
+    case alpha = 2
+    case beta = 3
+    case earlyAccess = 4
+    case offline = 5
+    case cancelled = 6
+    case rumored = 7
+    
+    var description: String {
+        switch self {
+        case .released: return "Released"
+        case .alpha: return "Alpha"
+        case .beta: return "Beta"
+        case .earlyAccess: return "Early Access"
+        case .offline: return "Offline"
+        case .cancelled: return "Cancelled"
+        case .rumored: return "Rumored"
+        }
+    }
+}
+
 protocol Game {
     var id: Int? { get }
     var name: String? { get }
@@ -80,7 +102,7 @@ struct GameModel: Game, Decodable, Identifiable {
     var ratingCount: Int?
     var follows: Int?
     var similarGames: [Int]?
-    var status: Int?
+    private var status: Int?
     var summary: String?
     var themes: [Int]?
     var versionTitle: String?
@@ -90,6 +112,9 @@ struct GameModel: Game, Decodable, Identifiable {
     }
     var releaseDateString: String {
         return convertDate()
+    }
+    var releasedStatus: String? {
+        return getGameStatus()
     }
     
     private func getCoverURL() -> URL? {
@@ -109,6 +134,11 @@ struct GameModel: Game, Decodable, Identifiable {
         let dateString = dateFormatter.string(from: date)
         
         return dateString
+    }
+    
+    private func getGameStatus() -> String? {
+        guard let status = status else { return nil }
+        return ReleaseStatus(rawValue: status)?.description ?? nil
     }
 }
 

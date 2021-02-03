@@ -174,14 +174,20 @@ struct GameTitle: View {
     
     var body: some View {
         VStack(alignment: .leading) {
+            
             Text(game.name ?? "")
                 .font(Font.title.weight(.bold))
-                .lineLimit(0)
-            Text(game.releaseDateString)
-                .font(Font.headline)
-                .foregroundColor(colorScheme == .dark ?
-                                    GlobalConstants.ColorDarkTheme.lightGray :
-                                    GlobalConstants.ColorLightTheme.grayDark)
+            HStack {
+                Text(game.releaseDateString)
+                    .font(Font.headline)
+                    .foregroundColor(colorScheme == .dark ?
+                                        GlobalConstants.ColorDarkTheme.lightGray :
+                                        GlobalConstants.ColorLightTheme.grayDark)
+                if let status = game.releasedStatus {
+                    BadgeText(text: status, textSize: 12, textColor: colorScheme == .dark ? .white : .black)
+                        .opacity(0.4)
+                }
+            }
         }
     }
 }
@@ -283,7 +289,7 @@ private struct Genres: View {
                     HStack(spacing: 5) {
                         ForEach(genres) { genre in
                             Button(action: {}, label: {
-                                ButtonText(text: genre.name)
+                                BadgeText(text: genre.name)
                             })
                         }
                     }
@@ -305,7 +311,7 @@ private struct InvolvedCompany: View {
                     HStack(spacing: 5) {
                         ForEach(companies) { company in
                             Button(action: {}, label: {
-                                ButtonText(text: company.name)
+                                BadgeText(text: company.name)
                             })
                             
                         }
@@ -326,7 +332,7 @@ private struct AreRating: View {
                 HStack(spacing: 5) {
                     ForEach(ageRating) { rating in
                         Button(action: {}, label: {
-                            ButtonText(text: "\(rating.categoryString): \(rating.ratingString)")
+                            BadgeText(text: "\(rating.categoryString): \(rating.ratingString)")
                         })
                     }
                 }
@@ -351,22 +357,6 @@ private struct InfoBox<Content: View>: View {
                 .font(.headline)
             self.content
         }
-    }
-}
-
-private struct ButtonText: View {
-    
-    @Environment(\.colorScheme) private var colorScheme
-    var text: String
-    
-    var body: some View {
-        Text(text)
-            .font(.system(size: 15))
-            .fontWeight(.bold)
-            .foregroundColor(.white)
-            .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
-            .background(colorScheme == .dark ? GlobalConstants.ColorDarkTheme.lightGray : GlobalConstants.ColorLightTheme.grayLight)
-            .cornerRadius(20)
     }
 }
 

@@ -10,6 +10,7 @@ import URLImage
 
 struct GameListCell: View {
     
+    @Environment(\.colorScheme) private var colorScheme
     @ObservedObject private var imageLoader: ImageLoader = ImageLoader()
     @EnvironmentObject var gameDetail: GameDetail
     
@@ -30,6 +31,14 @@ struct GameListCell: View {
                     .foregroundColor(.white)
             }
             .padding()
+            
+            if let status = game.releasedStatus {
+                Section {
+                    BadgeText(text: status)
+                }
+                .padding()
+                .frame(width: geometry.size.width, height: geometry.size.height, alignment: Alignment(horizontal: .trailing, vertical: .bottom))
+            }
         }
         .frame(height: 550, alignment: .top)
         .background(Color.init(#colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)))
