@@ -84,6 +84,7 @@ struct GameModel: Game, Decodable, Identifiable {
     var summary: String?
     var themes: [Int]?
     var versionTitle: String?
+    var videos: [Int]?
     var coverUrl: URL? {
         return getCoverURL()
     }
@@ -152,6 +153,7 @@ struct GameScreenshots: Decodable, Identifiable {
     var imageId: String
 }
 
-struct GameTrailer: Decodable {
+struct GameVideo: Decodable, Identifiable {
+    var id: Int?
     var videoId: String?
 }

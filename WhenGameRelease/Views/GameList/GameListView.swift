@@ -13,7 +13,6 @@ struct GameListView: View {
     @State private var imageLoader: ImageLoader = ImageLoader()
     
     var body: some View {
-        GeometryReader { geometry in
             NavigationView {
                 NoSepratorList {
                     ForEach(gameList.games) { game in
@@ -26,7 +25,7 @@ struct GameListView: View {
                 }
                 .navigationBarTitle("Recently Released", displayMode: .large)
             }
-        }
+        
     }
 }
 

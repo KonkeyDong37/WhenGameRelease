@@ -19,7 +19,7 @@ struct GameListCell: View {
         GeometryReader { geometry in
             
             PosterImageView(image: $imageLoader.image)
-                .scaledToFill()
+                .frame(width: geometry.size.width, height: geometry.size.height)
             
             VStack(alignment: .leading) {
                 Text(game.name ?? "")
@@ -31,7 +31,7 @@ struct GameListCell: View {
             }
             .padding()
         }
-        .frame(height: 572, alignment: .top)
+        .frame(height: 550, alignment: .top)
         .background(Color.init(#colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)))
         .cornerRadius(20)
         .padding()

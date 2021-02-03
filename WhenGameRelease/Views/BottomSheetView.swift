@@ -85,7 +85,7 @@ struct BottomSheetView<Content: View>: View {
                 }
                 if setGestureFromField {
                     Rectangle()
-                        .foregroundColor(Color(#colorLiteral(red: 0, green: 0, blue: 0, alpha: 0.001641987175)))
+                        .foregroundColor(Color(#colorLiteral(red: 0, green: 0, blue: 0, alpha: 0.006074412769)))
                         .frame(width: geometry.size.width,
                                height: self.isOpen ?
                                 self.interactiveFieldHeight : geometry.size.height)

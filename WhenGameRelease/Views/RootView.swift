@@ -10,7 +10,6 @@ import SwiftUI
 struct RootView: View {
     
     @Environment(\.colorScheme) var colorScheme
-    @State private var gameDetalViewShown = false
     
     var body: some View {
         

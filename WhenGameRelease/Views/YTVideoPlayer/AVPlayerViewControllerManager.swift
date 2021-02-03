@@ -177,14 +177,16 @@ extension UIView {
         
         var nowPlayingInfo = self.nowPlayingInfoCenter.nowPlayingInfo ?? [String: Any]()
         let title = video.title
-
         if let thumbnailURL = video.thumbnailURLs {
-            URLSession.shared.dataTask(with: thumbnailURL[0]) { data, _, error in
+            URLSession.shared.dataTask(with: thumbnailURL[thumbnailURL.count - 1]) { data, _, error in
                 guard error == nil else { return }
                 guard data != nil else { return }
                 guard let image = UIImage(data: data!) else { return }
 
-                let artwork = MPMediaItemArtwork(image: image)
+                let artwork = MPMediaItemArtwork(boundsSize: image.size, requestHandler: { (_ size : CGSize) -> UIImage in
+                    return image
+                })
+                
                 nowPlayingInfo[MPMediaItemPropertyArtwork] = artwork
                 self.nowPlayingInfoCenter.nowPlayingInfo = nowPlayingInfo
             }.resume()

@@ -86,8 +86,8 @@ class GameService {
     }
     
     // MARK: Fetch video id
-    func fetchVideo(videoId: String, completion: @escaping (Result<GameTrailer, Error>) -> Void) {
-        let query = "fields *; where id = \(videoId);"
+    func fetchVideo(videoId: String, completion: @escaping (Result<[GameVideo], Error>) -> Void) {
+        let query = "fields *; where id = (\(videoId));"
         
         fetchData(query: query, endpoint: .GAME_VIDEOS, completion: completion)
     }

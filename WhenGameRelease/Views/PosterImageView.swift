@@ -13,19 +13,24 @@ struct PosterImageView: View {
     @Binding var image: UIImage?
     
     var body: some View {
-        ZStack {
-            Rectangle()
-                .foregroundColor(colorScheme == .dark ? GlobalConstants.ColorDarkTheme.lightGray : GlobalConstants.ColorLightTheme.grayDark)
-                .aspectRatio(500/750, contentMode: .fit)
-            Image(systemName: "photo.on.rectangle.angled")
-                .font(.system(size: 50))
-                .foregroundColor(Color(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)))
-            
-            Image(uiImage: (image ?? UIImage())!)
-                    .resizable()
-                    .aspectRatio(500/750, contentMode: .fit)
-            
-            
+        GeometryReader { geometry in
+            ZStack {
+                Rectangle()
+                    .foregroundColor(colorScheme == .dark ? GlobalConstants.ColorDarkTheme.lightGray : GlobalConstants.ColorLightTheme.grayDark)
+                    .aspectRatio(contentMode: .fill)
+                Image(systemName: "photo.on.rectangle.angled")
+                    .font(.system(size: 50))
+                    .foregroundColor(Color(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)))
+                
+                if let image = image {
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: geometry.size.width, height: geometry.size.height)
+                }
+                
+            }
+            .frame(width: geometry.size.width, height: geometry.size.height)
         }
     }
 }

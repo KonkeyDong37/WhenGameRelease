@@ -21,7 +21,7 @@ class ImageLoader: ObservableObject {
                 switch response {
                 case .success(let response):
                     let imageStringId = response[0].imageId
-                    let imageUrlString = imageBuilder(imageID: imageStringId, size: .COVER_BIG, imageType: .JPEG)
+                    let imageUrlString = imageBuilder(imageID: imageStringId, size: .FHD, imageType: .JPEG)
                     guard let imageURL = URL(string: imageUrlString) else { return }
 
                     if let imageFromCache = self?.imageCache.object(forKey: imageUrlString as AnyObject) as? UIImage {

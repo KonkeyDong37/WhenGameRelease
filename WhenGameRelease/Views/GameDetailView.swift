@@ -17,80 +17,106 @@ struct GameDetailView: View {
     @Environment(\.viewController) private var viewControllerHolder: UIViewController?
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var gameDetail: GameDetail
+    @State private var imageShowIndex = 0
     
-    @State private var startPlayVideo: Bool = false
-    @State private var index = 0
+    @GestureState private var translation: CGFloat = 0
+    
+    private func offset(maxHeight: CGFloat) -> CGFloat {
+        return gameDetail.showGameDetail ? 0 : maxHeight
+    }
     
     private var viewController: UIViewController? {
         self.viewControllerHolder
     }
     
-    var body: some View {
-        GeometryReader { geometry in
-            BottomSheetView(isOpen: $gameDetail.showGameDetail,
-                            maxHeight: geometry.size.height,
-                            minHeight: 0,
-                            showTopIndicator: false,
-                            setGestureFromField: false) {
-                if let game = gameDetail.game {
-                    ZStack {
-                        
-                        PosterImageView(image: $gameDetail.image)
-                            .scaledToFill()
-                            .frame(height: geometry.size.height, alignment: .top)
-                        
-                        VisualEffectView(effect: UIBlurEffect(style: colorScheme == .dark ? .dark : .light))
-                            .edgesIgnoringSafeArea(.all)
-                        
-                        ZStack(alignment: .top) {
-                            ImageCarouselView(index: $index.animation(), maxIndex: 1) {
-                                PosterImageView(image: $gameDetail.image)
-                                VideoPlayer(videoId: "coJtXGb0fAI", startPlayVideo: $startPlayVideo)
-                            }
-                            .cornerRadius(6)
-                            .frame(height: setImageHeight(frameHeight: geometry.size.height) * 0.8, alignment: .center)
-                            .padding(EdgeInsets(top: setImageHeight(frameHeight: geometry.size.height) * 0.15, leading: 0, bottom: 0, trailing: 0))
-                            //                            ImageCarouselView(numberOfImages: 2) {
-                            //                                PosterImageView(image: $gameDetail.image)
-                            //                                            VideoPlayer(videoId: "coJtXGb0fAI", startPlayVideo: $startPlayVideo)
-                            //                                        }
-                            //                                .cornerRadius(6)
-                            //                                .frame(height: setImageHeight(frameHeight: geometry.size.height) * 0.8, alignment: .center)
-                            //                                .padding(EdgeInsets(top: setImageHeight(frameHeight: geometry.size.height) * 0.15, leading: 0, bottom: 0, trailing: 0))
-                            
-                            
-                            //                            ZStack {
-                            //                                VStack {
-                            //                                    Button(action: {
-                            //    //                                    self.viewController?.present(style: .fullScreen, transitionStyle: .coverVertical) {
-                            //    //
-                            //    //                                    }
-                            //                                        startPlayVideo.toggle()
-                            //                                    }, label: {
-                            //                                        Text("Play")
-                            //                                    })
-                            //
-                            //                                }
-                            //                            }
-                            
-                            BottomContentView(colorScheme: colorScheme,
-                                              geometry: geometry,
-                                              game: game,
-                                              genres: $gameDetail.genres,
-                                              companies: $gameDetail.companies,
-                                              ageRating: $gameDetail.ageRating)
-                        }
-                    }
-                }
+    private func dusmaissGesture(height: CGFloat) -> some Gesture {
+        return DragGesture().updating(self.$translation) { value, state, _ in
+            state = value.translation.height
+        }.onEnded { value in
+            let snapDistance = height * 0.15
+            guard abs(value.translation.height) > snapDistance else {
+                return
+            }
+            gameDetail.showGameDetail = value.translation.height < 0
+            
+            if !gameDetail.showGameDetail {
+                self.imageShowIndex = 0
             }
         }
+    }
+    
+    var body: some View {
+        GeometryReader { geometry in
+            
+            ZStack(alignment: .top) {
+                if let game = gameDetail.game {
+                    
+                    PosterImageView(image: $gameDetail.image)
+                        .scaledToFill()
+                        .frame(width: geometry.size.width, height: geometry.size.height, alignment: .top)
+                    
+                    VisualEffectView(effect: UIBlurEffect(style: colorScheme == .dark ? .dark : .light))
+                        .edgesIgnoringSafeArea(.all)
+                    
+                    PosterImageCarousel(index: $imageShowIndex)
+                        .frame(width: geometry.size.width, height: geometry.size.height)
+                        .simultaneousGesture(dusmaissGesture(height: geometry.size.height))
+                    
+                    BottomContentView(colorScheme: colorScheme,
+                                      geometry: geometry,
+                                      game: game,
+                                      genres: $gameDetail.genres,
+                                      companies: $gameDetail.companies,
+                                      ageRating: $gameDetail.ageRating)
+                    
+                    
+                }
+            }
+            .frame(width: geometry.size.width, height: geometry.size.height, alignment: .top)
+            .cornerRadius(16)
+            .frame(height: geometry.size.height, alignment: .bottom)
+            .offset(y: max(self.offset(maxHeight: geometry.size.height) + self.translation, 0))
+            .animation(.spring(response: 0.4, dampingFraction: 0.8, blendDuration: 1))
+        }
         .edgesIgnoringSafeArea(.all)
+    }
+    
+}
+
+fileprivate struct PosterImageCarousel: View {
+    
+    @EnvironmentObject private var gameDetail: GameDetail
+    @Binding var index: Int
+    
+    var body: some View {
+        GeometryReader { geometry in
+            HStack(alignment: .center) {
+                ImageCarouselView(index: $index.animation(), maxIndex: gameDetail.screenshots.count) {
+                    PosterImageView(image: $gameDetail.image)
+                    ForEach(gameDetail.videos) { id in
+                        if let strinId = id.videoId {
+                            VideoPlayer(videoId: strinId)
+                        }
+                    }
+                    ForEach(gameDetail.screenshots, id: \.self) { screenShot in
+                        Image(uiImage: screenShot)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .rotationEffect(.degrees(90))
+                    }
+                }
+                .cornerRadius(6)
+                .aspectRatio(500/750, contentMode: .fit)
+                .padding(EdgeInsets(top: setImageHeight(frameHeight: geometry.size.height) * 0.15, leading: 0, bottom: 0, trailing: 0))
+                .frame(height: setImageHeight(frameHeight: geometry.size.height) * 0.95, alignment: .top)
+            }
+            .frame(width: geometry.size.width)
+        }
     }
     
     private func setImageHeight(frameHeight: CGFloat) -> CGFloat {
         return CGFloat((frameHeight - Constants.bottomSheetHeight))
     }
-    
 }
 
 fileprivate struct BottomContentView: View {

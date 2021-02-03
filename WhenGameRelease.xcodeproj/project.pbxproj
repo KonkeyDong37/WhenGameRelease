@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		8A015FDE25C7F5E300229EF2 /* PlayerUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A015FDD25C7F5E200229EF2 /* PlayerUIView.swift */; };
-		8A015FE525C80F7E00229EF2 /* VideoLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A015FE425C80F7E00229EF2 /* VideoLoader.swift */; };
 		8A015FEA25C8230F00229EF2 /* AVPlayerViewControllerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A015FE925C8230F00229EF2 /* AVPlayerViewControllerManager.swift */; };
 		8A01605F25C850BB00229EF2 /* UIViewController Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A01605E25C850BB00229EF2 /* UIViewController Extension.swift */; };
 		8A01606325C86FC800229EF2 /* ImageCarouselView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A01606225C86FC800229EF2 /* ImageCarouselView.swift */; };
@@ -41,7 +40,6 @@
 
 /* Begin PBXFileReference section */
 		8A015FDD25C7F5E200229EF2 /* PlayerUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerUIView.swift; sourceTree = "<group>"; };
-		8A015FE425C80F7E00229EF2 /* VideoLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoLoader.swift; sourceTree = "<group>"; };
 		8A015FE925C8230F00229EF2 /* AVPlayerViewControllerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVPlayerViewControllerManager.swift; sourceTree = "<group>"; };
 		8A01605E25C850BB00229EF2 /* UIViewController Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController Extension.swift"; sourceTree = "<group>"; };
 		8A01606225C86FC800229EF2 /* ImageCarouselView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCarouselView.swift; sourceTree = "<group>"; };
@@ -179,7 +177,6 @@
 				8A85EE0825ACE4CF0084AD44 /* GameList.swift */,
 				8A85EE9D25B252380084AD44 /* GameDetail.swift */,
 				8A85EE8C25B02E330084AD44 /* ImageLoader.swift */,
-				8A015FE425C80F7E00229EF2 /* VideoLoader.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -357,7 +354,6 @@
 				8A104628257A2B83004B9B6D /* SceneDelegate.swift in Sources */,
 				8A85EE9E25B252380084AD44 /* GameDetail.swift in Sources */,
 				8A01605F25C850BB00229EF2 /* UIViewController Extension.swift in Sources */,
-				8A015FE525C80F7E00229EF2 /* VideoLoader.swift in Sources */,
 				8AB27ADC25B5DC0900AEFEED /* Double Extension.swift in Sources */,
 				8AB27AE225B5EF2E00AEFEED /* Color Extension.swift in Sources */,
 				8AB27AD225B5C4DC00AEFEED /* Date Extension.swift in Sources */,
