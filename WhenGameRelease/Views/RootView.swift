@@ -29,11 +29,10 @@ struct RootView: View {
                 .accentColor(colorScheme == .dark ?
                                 GlobalConstants.ColorDarkTheme.white :
                                 GlobalConstants.ColorLightTheme.grayDark)
-                .edgesIgnoringSafeArea(.top)
                 
                 GameDetailView()
             }
-        }.edgesIgnoringSafeArea(.all)
+        }.edgesIgnoringSafeArea(.bottom)
     }
 }
 

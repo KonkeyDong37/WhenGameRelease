@@ -88,9 +88,24 @@ fileprivate struct PosterImageCarousel: View {
     @EnvironmentObject private var gameDetail: GameDetail
     @Binding var index: Int
     
+    private var heightRatio: CGFloat {
+        if index == 0 {
+            return 0.9
+        } else {
+            return 1
+        }
+    }
+    private var paddingRatio: CGFloat {
+        if index == 0 {
+            return 0.05
+        } else {
+            return 0
+        }
+    }
+    
     var body: some View {
         GeometryReader { geometry in
-            HStack(alignment: .center) {
+            HStack(alignment: .bottom) {
                 ImageCarouselView(index: $index.animation(), maxIndex: gameDetail.screenshots.count) {
                     PosterImageView(image: $gameDetail.image)
                     ForEach(gameDetail.videos) { id in
@@ -99,23 +114,34 @@ fileprivate struct PosterImageCarousel: View {
                         }
                     }
                     ForEach(gameDetail.screenshots, id: \.self) { screenShot in
-                        Image(uiImage: screenShot)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .rotationEffect(.degrees(90))
+                        GeometryReader { geometry in
+                            VStack(alignment: .center) {
+                                Image(uiImage: screenShot)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .rotationEffect(.degrees(90))
+                                    .frame(width: geometry.size.height)
+                            }
+                            .frame(width: geometry.size.width, height: geometry.size.height)
+                        }
+                        .background(Color(.black))
                     }
                 }
                 .cornerRadius(6)
-                .aspectRatio(500/750, contentMode: .fit)
-                .padding(EdgeInsets(top: setImageHeight(frameHeight: geometry.size.height) * 0.15, leading: 0, bottom: 0, trailing: 0))
-                .frame(height: setImageHeight(frameHeight: geometry.size.height) * 0.95, alignment: .top)
+                .aspectRatio(setAspectRatio(geometry: geometry), contentMode: .fit)
+                .padding(EdgeInsets(top: 0, leading: 0, bottom: Constants.bottomSheetHeight + geometry.size.height * paddingRatio, trailing: 0))
+                .frame(height: geometry.size.height * heightRatio)
             }
-            .frame(width: geometry.size.width)
+            .frame(width: geometry.size.width, height: geometry.size.height, alignment: .bottom)
         }
     }
     
-    private func setImageHeight(frameHeight: CGFloat) -> CGFloat {
-        return CGFloat((frameHeight - Constants.bottomSheetHeight))
+    private func setAspectRatio(geometry: GeometryProxy) -> CGFloat {
+        if index == 0 {
+            return 2/3
+        } else {
+            return CGFloat(geometry.size.width / (geometry.size.height - Constants.bottomSheetHeight))
+        }
     }
 }
 
