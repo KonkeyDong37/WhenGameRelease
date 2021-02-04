@@ -8,19 +8,22 @@
 import SwiftUI
 import URLImage
 
-struct GameListCell: View {
+struct GameListCell: View, Equatable {
     
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.game.id == rhs.game.id
+    }
+
     @Environment(\.colorScheme) private var colorScheme
-    @ObservedObject private var imageLoader: ImageLoader = ImageLoader()
+    @ObservedObject var imageLoader: ImageLoader = ImageLoader()
     @EnvironmentObject var gameDetail: GameDetail
     
     var game: GameModel
     
     var body: some View {
         GeometryReader { geometry in
-            
-            PosterImageView(image: $imageLoader.image)
-                .frame(width: geometry.size.width, height: geometry.size.height)
+        
+            PosterImageView(image: imageLoader.image)
             
             VStack(alignment: .leading) {
                 Text(game.name ?? "")
@@ -44,11 +47,11 @@ struct GameListCell: View {
         .background(Color.init(#colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)))
         .cornerRadius(20)
         .padding()
-        .onAppear() {
-            imageLoader.getCover(with: game.cover)
-        }
         .onTapGesture {
             gameDetail.showGameDetailView(showGameDetail: true, game: game, image: imageLoader.image)
+        }
+        .onAppear() {
+            imageLoader.getCover(with: game.cover)
         }
     }
 }

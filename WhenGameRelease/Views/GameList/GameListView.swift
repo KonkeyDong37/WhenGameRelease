@@ -10,13 +10,12 @@ import SwiftUI
 struct GameListView: View {
     
     @ObservedObject var gameList: GameList = GameList()
-    @State private var imageLoader: ImageLoader = ImageLoader()
     
     var body: some View {
             NavigationView {
                 NoSepratorList {
                     ForEach(gameList.games) { game in
-                        GameListCell(game: game)
+                        GameListCell(game: game).equatable() 
                     }
                 }
                 .onAppear {

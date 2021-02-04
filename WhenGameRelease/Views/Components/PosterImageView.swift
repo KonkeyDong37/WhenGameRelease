@@ -6,11 +6,15 @@
 //
 
 import SwiftUI
+import URLImage
 
 struct PosterImageView: View {
     
+    //    @ObservedObject private var imageLoader: ImageLoader = ImageLoader()
     @Environment(\.colorScheme) private var colorScheme
-    @Binding var image: UIImage?
+    
+    //    var coverId: Int?
+    var image: UIImage = UIImage()
     
     var body: some View {
         GeometryReader { geometry in
@@ -22,12 +26,10 @@ struct PosterImageView: View {
                     .font(.system(size: 50))
                     .foregroundColor(Color(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)))
                 
-                if let image = image {
-                    Image(uiImage: image)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: geometry.size.width, height: geometry.size.height)
-                }
+                Image(uiImage: image)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: geometry.size.width, height: geometry.size.height)
                 
             }
             .frame(width: geometry.size.width, height: geometry.size.height)

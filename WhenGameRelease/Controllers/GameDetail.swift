@@ -11,7 +11,6 @@ import IGDB_SWIFT_API
 class GameDetail: ObservableObject {
     
     private var gameService = GameService.shared
-//    private let imageCache = NSCache<AnyObject, AnyObject>()
     
     @Published var game: GameModel?
     @Published var showGameDetail = false

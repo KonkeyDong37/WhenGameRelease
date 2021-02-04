@@ -40,7 +40,9 @@ struct GameDetailView: View {
             gameDetail.showGameDetail = value.translation.height < 0
             
             if !gameDetail.showGameDetail {
-                self.imageShowIndex = 0
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    imageShowIndex = 0
+                }
             }
         }
     }
@@ -51,7 +53,7 @@ struct GameDetailView: View {
             ZStack(alignment: .top) {
                 if let game = gameDetail.game {
                     
-                    PosterImageView(image: $gameDetail.image)
+                    PosterImageView(image: gameDetail.image ?? UIImage())
                         .scaledToFill()
                         .frame(width: geometry.size.width, height: geometry.size.height, alignment: .top)
                     
@@ -107,7 +109,7 @@ fileprivate struct PosterImageCarousel: View {
         GeometryReader { geometry in
             HStack(alignment: .bottom) {
                 ImageCarouselView(index: $index.animation(), maxIndex: gameDetail.screenshots.count) {
-                    PosterImageView(image: $gameDetail.image)
+                    PosterImageView(image: gameDetail.image ?? UIImage())
                     ForEach(gameDetail.videos) { id in
                         if let strinId = id.videoId {
                             VideoPlayer(videoId: strinId)

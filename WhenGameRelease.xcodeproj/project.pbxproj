@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -36,6 +36,7 @@
 		8AB27AE525B5F68B00AEFEED /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB27AE425B5F68B00AEFEED /* RootView.swift */; };
 		8AB27AE925B6C3B900AEFEED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8AB27AE825B6C3B900AEFEED /* Assets.xcassets */; };
 		8AB27AF425B9BEC900AEFEED /* PosterImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB27AF325B9BEC900AEFEED /* PosterImageView.swift */; };
+		8AD14A7025CC2369001AB4D6 /* URLImage in Frameworks */ = {isa = PBXBuildFile; productRef = 8AD14A6F25CC2369001AB4D6 /* URLImage */; };
 		9F80A05783F9E11ED9A96199 /* Pods_WhenGameRelease.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91260C1926A6E7BDD28DB5E9 /* Pods_WhenGameRelease.framework */; };
 /* End PBXBuildFile section */
 
@@ -81,6 +82,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8AD14A7025CC2369001AB4D6 /* URLImage in Frameworks */,
 				9F80A05783F9E11ED9A96199 /* Pods_WhenGameRelease.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -251,6 +253,7 @@
 			);
 			name = WhenGameRelease;
 			packageProductDependencies = (
+				8AD14A6F25CC2369001AB4D6 /* URLImage */,
 			);
 			productName = WhenGameRelease;
 			productReference = 8A104622257A2B83004B9B6D /* WhenGameRelease.app */;
@@ -280,6 +283,7 @@
 			);
 			mainGroup = 8A104619257A2B83004B9B6D;
 			packageReferences = (
+				8AD14A6E25CC2369001AB4D6 /* XCRemoteSwiftPackageReference "url-image" */,
 			);
 			productRefGroup = 8A104623257A2B83004B9B6D /* Products */;
 			projectDirPath = "";
@@ -577,6 +581,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8AD14A6E25CC2369001AB4D6 /* XCRemoteSwiftPackageReference "url-image" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/dmytro-anokhin/url-image";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.2.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8AD14A6F25CC2369001AB4D6 /* URLImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8AD14A6E25CC2369001AB4D6 /* XCRemoteSwiftPackageReference "url-image" */;
+			productName = URLImage;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8A10461A257A2B83004B9B6D /* Project object */;
 }
