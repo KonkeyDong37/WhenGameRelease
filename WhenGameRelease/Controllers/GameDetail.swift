@@ -11,6 +11,7 @@ import IGDB_SWIFT_API
 class GameDetail: ObservableObject {
     
     private var gameService = GameService.shared
+//    private let imageCache = NSCache<AnyObject, AnyObject>()
     
     @Published var game: GameModel?
     @Published var showGameDetail = false
@@ -20,6 +21,9 @@ class GameDetail: ObservableObject {
     @Published var ageRating: [GameAgeRating]? = nil
     @Published var videos: [GameVideo] = []
     @Published var screenshots: [UIImage] = []
+    @Published var gameEngines: [GameEngine]? = nil
+    @Published var keywords: [GameKeyword]? = nil
+    @Published var websites: [GameWebsite]? = nil
     
     func showGameDetailView(showGameDetail: Bool, game: GameModel, image: UIImage?) {
         self.screenshots = []
@@ -43,9 +47,21 @@ class GameDetail: ObservableObject {
             getScreenshots(screenshotsIds: screenshots)
         }
         
+        if let gameEngines = game.gameEngines {
+            getGameEngine(gameEngineIds: gameEngines)
+        }
+        
 //        if let videos = game.videos {
 //            getVideos(videosIds: videos)
 //        }
+        
+        if let keywords = game.keywords {
+            getGameKeywords(keywordsIds: keywords)
+        }
+        
+        if let websites = game.websites {
+            getGameWebsites(websitesIds: websites)
+        }
     }
     
     func getGenres(genresIds: [Int]) {
@@ -137,6 +153,45 @@ class GameDetail: ObservableObject {
                         }
                     }.resume()
                 }
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    
+    func getGameEngine(gameEngineIds: [Int]) {
+        let stringIds = gameEngineIds.map { $0.description }.joined(separator: ",")
+        
+        gameService.fetchGameEngine(engineIds: stringIds) { (response) in
+            switch response {
+            case .success(let response):
+                self.gameEngines = response
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    
+    func getGameKeywords(keywordsIds: [Int]) {
+        let stringIds = keywordsIds.map { $0.description }.joined(separator: ",")
+        
+        gameService.fetchKeywords(keywordsIds: stringIds) { (response) in
+            switch response {
+            case .success(let response):
+                self.keywords = response
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    
+    func getGameWebsites(websitesIds: [Int]) {
+        let stringIds = websitesIds.map { $0.description }.joined(separator: ",")
+        
+        gameService.fetchGameWebsites(websitesIds: stringIds) { (response) in
+            switch response {
+            case .success(let response):
+                self.websites = response
             case .failure(let error):
                 print(error)
             }

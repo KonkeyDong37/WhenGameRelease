@@ -69,7 +69,10 @@ struct GameDetailView: View {
                                       game: game,
                                       genres: $gameDetail.genres,
                                       companies: $gameDetail.companies,
-                                      ageRating: $gameDetail.ageRating)
+                                      engines: $gameDetail.gameEngines,
+                                      ageRating: $gameDetail.ageRating,
+                                      keywords: $gameDetail.keywords,
+                                      websites: $gameDetail.websites)
                     
                     
                 }
@@ -84,6 +87,9 @@ struct GameDetailView: View {
     }
     
 }
+
+// MARK: - Top carousel with poster image and screenshots
+// TODO: Add game trailer
 
 fileprivate struct PosterImageCarousel: View {
     
@@ -147,6 +153,8 @@ fileprivate struct PosterImageCarousel: View {
     }
 }
 
+// MARK: - Bottom Sheet View container with all game information
+
 fileprivate struct BottomContentView: View {
     
     @State private var bottomSheetShown = false
@@ -157,7 +165,10 @@ fileprivate struct BottomContentView: View {
     
     @Binding var genres: [GameGenres]?
     @Binding var companies: [GameCompany]?
+    @Binding var engines: [GameEngine]?
     @Binding var ageRating: [GameAgeRating]?
+    @Binding var keywords: [GameKeyword]?
+    @Binding var websites: [GameWebsite]?
     
     var body: some View {
         BottomSheetView(isOpen: self.$bottomSheetShown,
@@ -172,21 +183,31 @@ fileprivate struct BottomContentView: View {
             ScrollView() {
                 VStack(alignment: .leading, spacing: 25.0) {
                     
-                    GameTitle(game: game, colorScheme: colorScheme)
-                    
-                    AddToFavoriteButton()
-                    
-                    InfoTop(game: game, colorScheme: colorScheme)
+                    Group {
+                        GameTitle(game: game, colorScheme: colorScheme)
+                        
+                        AddToFavoriteButton()
+                        
+                        InfoTop(game: game, colorScheme: colorScheme)
+                    }
                     
                     Divider()
                     
-                    Description(game: game, colorScheme: colorScheme)
-                    
-                    Genres(genres: $genres, colorScheme: colorScheme)
-                    
-                    InvolvedCompany(companies: $companies, colorScheme: colorScheme)
-                    
-                    AreRating(ageRating: $ageRating)
+                    Group {
+                        Description(game: game, colorScheme: colorScheme)
+                        
+                        Genres(genres: $genres, colorScheme: colorScheme)
+                        
+                        GameKeywords(keywords: $keywords)
+                        
+                        GameWebsites(websites: $websites)
+                        
+                        InvolvedCompany(companies: $companies, colorScheme: colorScheme)
+                        
+                        GameEngines(gameEngines: $engines)
+                        
+                        AgeRatings(ageRating: $ageRating)
+                    }
                 }
                 .padding(EdgeInsets(top: 0, leading: 16, bottom: 46, trailing: 16))
             }
@@ -350,24 +371,95 @@ private struct InvolvedCompany: View {
     }
 }
 
-private struct AreRating: View {
+private struct AgeRatings: View {
     
     @Binding var ageRating: [GameAgeRating]?
     
     var body: some View {
         if let ageRating = ageRating {
             InfoBox(name: "Age rating:") {
-                HStack(spacing: 5) {
-                    ForEach(ageRating) { rating in
-                        Button(action: {}, label: {
-                            BadgeText(text: "\(rating.categoryString): \(rating.ratingString)")
-                        })
+                ScrollView(.horizontal, showsIndicators: false, content: {
+                    HStack(spacing: 5) {
+                        ForEach(ageRating) { rating in
+                            Button(action: {}, label: {
+                                BadgeText(text: "\(rating.categoryString): \(rating.ratingString)")
+                            })
+                        }
                     }
-                }
+                })
             }
         }
     }
 }
+
+private struct GameEngines: View {
+    
+    @Binding var gameEngines: [GameEngine]?
+    
+    var body: some View {
+        if let gameEngines = gameEngines {
+            InfoBox(name: "Game engines:") {
+                ScrollView(.horizontal, showsIndicators: false, content: {
+                    HStack(spacing: 5) {
+                        ForEach(gameEngines) { engine in
+                            Button(action: {}, label: {
+                                BadgeText(text: engine.name)
+                            })
+                        }
+                    }
+                })
+            }
+        }
+    }
+}
+
+private struct GameKeywords: View {
+    
+    @Binding var keywords: [GameKeyword]?
+    
+    var body: some View {
+        if let keywords = keywords {
+            InfoBox(name: "Keywords") {
+                ScrollView(.horizontal, showsIndicators: false, content: {
+                    HStack(spacing: 5) {
+                        ForEach(keywords) { keyword in
+                            Button(action: {}, label: {
+                                BadgeText(text: keyword.name)
+                            })
+                        }
+                    }
+                })
+            }
+        }
+    }
+}
+
+private struct GameWebsites: View {
+    
+    @Binding var websites: [GameWebsite]?
+    
+    var body: some View {
+        if let websites = websites {
+            InfoBox(name: "Websites") {
+                ScrollView(.horizontal, showsIndicators: false, content: {
+                    HStack(spacing: 5) {
+                        ForEach(websites) { website in
+                            if let url = URL(string: website.url) {
+                                Button {
+                                    UIApplication.shared.open(url)
+                                } label: {
+                                    BadgeText(text: website.name, iconAfter: website.icon)
+                                }
+                            }
+                        }
+                    }
+                })
+            }
+        }
+    }
+}
+
+// MARK: - Reusable component with info section
 
 private struct InfoBox<Content: View>: View {
     

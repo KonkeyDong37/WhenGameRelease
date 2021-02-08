@@ -74,6 +74,48 @@ fileprivate enum ReleaseStatus: Int, CustomStringConvertible, CaseIterable {
     }
 }
 
+fileprivate enum Website: Int, CustomStringConvertible, CaseIterable {
+    case official = 1
+    case wikia = 2
+    case wikipedia = 3
+    case facebook = 4
+    case twitter = 5
+    case twitch = 6
+    case instagram = 8
+    case youtube = 9
+    case iphone = 10
+    case ipad = 11
+    case android = 12
+    case steam = 13
+    case reddit = 14
+    case itch = 15
+    case epicgames = 16
+    case gog = 17
+    case discord = 18
+    
+    var description: String {
+        switch self {
+        case .official: return "Official"
+        case .wikia: return "Wikia"
+        case .wikipedia: return "Wikipedia"
+        case .facebook: return "Facebook"
+        case .twitter: return "Twitter"
+        case .twitch: return "Twitch"
+        case .instagram: return "Instagram"
+        case .youtube: return "YouTube"
+        case .iphone: return "iPhone"
+        case .ipad: return "iPad"
+        case .android: return "Android"
+        case .steam: return "Steam"
+        case .reddit: return "Reddit"
+        case .itch: return "Itch.io"
+        case .epicgames: return "EpicGames"
+        case .gog: return "GOG"
+        case .discord: return "Discord"
+        }
+    }
+}
+
 protocol Game {
     var id: Int? { get }
     var name: String? { get }
@@ -102,11 +144,13 @@ struct GameModel: Game, Decodable, Identifiable {
     var ratingCount: Int?
     var follows: Int?
     var similarGames: [Int]?
-    private var status: Int?
+    var status: Int?
     var summary: String?
     var themes: [Int]?
     var versionTitle: String?
     var videos: [Int]?
+    var gameEngines: [Int]?
+    var websites: [Int]?
     var coverUrl: URL? {
         return getCoverURL()
     }
@@ -186,4 +230,58 @@ struct GameScreenshots: Decodable, Identifiable {
 struct GameVideo: Decodable, Identifiable {
     var id: Int?
     var videoId: String?
+}
+
+struct GameEngine: Decodable, Identifiable {
+    var id: Int?
+    var name: String
+    var logo: Int?
+}
+
+struct GameKeyword: Decodable, Identifiable {
+    var id: Int?
+    var name: String
+}
+
+struct GameWebsite: Decodable, Identifiable {
+    var id: Int?
+    var category: Int
+    var url: String
+    var trusted: Bool
+    
+    var name: String {
+        return Website(rawValue: category)?.description ?? ""
+    }
+    
+    var icon: UIImage? {
+        let currentCategory = Website(rawValue: category)
+        var iconName: String? = nil
+        
+        switch currentCategory {
+        case .official: iconName = nil
+        case .wikia: iconName = nil
+        case .wikipedia: iconName = "wikipedia"
+        case .facebook: iconName = "facebook"
+        case .twitter: iconName = "twitter"
+        case .twitch: iconName = "twitch"
+        case .instagram: iconName = "instagram"
+        case .youtube: iconName = "youtube"
+        case .iphone: iconName = "app-store"
+        case .ipad: iconName = "app-store"
+        case .android: iconName = "google-play"
+        case .steam: iconName = "steam"
+        case .reddit: iconName = "reddit"
+        case .itch: iconName = "itch-io"
+        case .epicgames: iconName = "epicgames"
+        case .gog: iconName = "gog"
+        case .discord: iconName = "discord"
+        case .none: iconName = nil
+        }
+        
+        if let url = iconName {
+            return UIImage(named: url)
+        } else {
+            return nil
+        }
+    }
 }

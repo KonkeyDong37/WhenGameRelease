@@ -92,6 +92,27 @@ class GameService {
         fetchData(query: query, endpoint: .GAME_VIDEOS, completion: completion)
     }
     
+    // MARK: Fetch game engine
+    func fetchGameEngine(engineIds: String, completion: @escaping (Result<[GameEngine], Error>) -> Void) {
+        let query = "fields *; where id = (\(engineIds));"
+        
+        fetchData(query: query, endpoint: .GAME_ENGINES, completion: completion)
+    }
+    
+    // MARK: Fetch game keywords
+    func fetchKeywords(keywordsIds: String, completion: @escaping (Result<[GameKeyword], Error>) -> Void) {
+        let query = "fields name; where id = (\(keywordsIds));"
+        
+        fetchData(query: query, endpoint: .KEYWORDS, completion: completion)
+    }
+    
+    // MARK: Fetch game websites
+    func fetchGameWebsites(websitesIds: String, completion: @escaping (Result<[GameWebsite], Error>) -> Void) {
+        let query = "fields url, trusted, category; where id = (\(websitesIds));"
+        
+        fetchData(query: query, endpoint: .WEBSITES, completion: completion)
+    }
+    
     // MARK: Data wrapper
     private func fetchData<T: Decodable>(query: String, endpoint: Endpoint, completion: @escaping (Result<T, Error>) -> Void) {
         if accessToken.isEmpty {
