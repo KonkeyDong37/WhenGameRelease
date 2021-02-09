@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AVKit
+import Introspect
 
 fileprivate enum Constants {
     static let bottomSheetHeight: CGFloat = 260
@@ -18,6 +19,7 @@ struct GameDetailView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var gameDetail: GameDetail
     @State private var imageShowIndex = 0
+    @State private var box = true
     
     @GestureState private var translation: CGFloat = 0
     
@@ -29,7 +31,7 @@ struct GameDetailView: View {
         self.viewControllerHolder
     }
     
-    private func dusmaissGesture(height: CGFloat) -> some Gesture {
+    private func dismissGesture(height: CGFloat) -> some Gesture {
         return DragGesture().updating(self.$translation) { value, state, _ in
             state = value.translation.height
         }.onEnded { value in
@@ -62,10 +64,9 @@ struct GameDetailView: View {
                     
                     PosterImageCarousel(index: $imageShowIndex)
                         .frame(width: geometry.size.width, height: geometry.size.height)
-                        .simultaneousGesture(dusmaissGesture(height: geometry.size.height))
+                        .simultaneousGesture(dismissGesture(height: geometry.size.height))
                     
-                    BottomContentView(colorScheme: colorScheme,
-                                      geometry: geometry,
+                    BottomContentView(geometry: geometry,
                                       game: game,
                                       genres: $gameDetail.genres,
                                       companies: $gameDetail.companies,
@@ -158,8 +159,9 @@ fileprivate struct PosterImageCarousel: View {
 fileprivate struct BottomContentView: View {
     
     @State private var bottomSheetShown = false
+    @Environment(\.colorScheme) private var colorScheme
+    @State private var box = true
     
-    var colorScheme: ColorScheme
     var geometry: GeometryProxy
     var game: GameModel
     
@@ -170,6 +172,8 @@ fileprivate struct BottomContentView: View {
     @Binding var keywords: [GameKeyword]?
     @Binding var websites: [GameWebsite]?
     
+    @GestureState private var translation: CGFloat = 0
+    
     var body: some View {
         BottomSheetView(isOpen: self.$bottomSheetShown,
                         maxHeight: geometry.size.height * 0.92,
@@ -179,38 +183,42 @@ fileprivate struct BottomContentView: View {
                             GlobalConstants.ColorLightTheme.white,
                         showTopIndicator: true) {
             
-            
-            ScrollView() {
-                VStack(alignment: .leading, spacing: 25.0) {
-                    
-                    Group {
-                        GameTitle(game: game, colorScheme: colorScheme)
+            ZStack {
+                UIScrollViewWrapper(scrollToTop: $bottomSheetShown) {
+                    VStack(alignment: .leading, spacing: 25.0) {
                         
-                        AddToFavoriteButton()
+                        Group {
+                            GameTitle(game: game, colorScheme: colorScheme)
+                            
+                            AddToFavoriteButton()
+                            
+                            InfoTop(game: game, colorScheme: colorScheme)
+                        }
                         
-                        InfoTop(game: game, colorScheme: colorScheme)
+                        Divider()
+                        
+                        Group {
+                            Description(game: game, colorScheme: colorScheme)
+                            
+                            Genres(genres: $genres, colorScheme: colorScheme)
+                            
+                            GameKeywords(keywords: $keywords)
+                            
+                            GameWebsites(websites: $websites)
+                            
+                            InvolvedCompany(companies: $companies, colorScheme: colorScheme)
+                            
+                            GameEngines(gameEngines: $engines)
+                            
+                            AgeRatings(ageRating: $ageRating)
+                        }
                     }
-                    
-                    Divider()
-                    
-                    Group {
-                        Description(game: game, colorScheme: colorScheme)
-                        
-                        Genres(genres: $genres, colorScheme: colorScheme)
-                        
-                        GameKeywords(keywords: $keywords)
-                        
-                        GameWebsites(websites: $websites)
-                        
-                        InvolvedCompany(companies: $companies, colorScheme: colorScheme)
-                        
-                        GameEngines(gameEngines: $engines)
-                        
-                        AgeRatings(ageRating: $ageRating)
-                    }
+                    .frame(width: geometry.size.width - 16 * 2)
+                    .padding(EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16))
                 }
-                .padding(EdgeInsets(top: 0, leading: 16, bottom: 46, trailing: 16))
             }
+            
+            
         }
         .frame(width: geometry.size.width)
     }
