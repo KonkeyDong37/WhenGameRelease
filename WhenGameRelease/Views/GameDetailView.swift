@@ -73,7 +73,8 @@ struct GameDetailView: View {
                                       engines: $gameDetail.gameEngines,
                                       ageRating: $gameDetail.ageRating,
                                       keywords: $gameDetail.keywords,
-                                      websites: $gameDetail.websites)
+                                      websites: $gameDetail.websites,
+                                      gameModes: $gameDetail.gameModes)
                     
                     
                 }
@@ -171,6 +172,7 @@ fileprivate struct BottomContentView: View {
     @Binding var ageRating: [GameAgeRating]?
     @Binding var keywords: [GameKeyword]?
     @Binding var websites: [GameWebsite]?
+    @Binding var gameModes: [GameModes]?
     
     @GestureState private var translation: CGFloat = 0
     
@@ -183,7 +185,7 @@ fileprivate struct BottomContentView: View {
                             GlobalConstants.ColorLightTheme.white,
                         showTopIndicator: true) {
             
-            ZStack {
+     
                 UIScrollViewWrapper(scrollToTop: $bottomSheetShown) {
                     VStack(alignment: .leading, spacing: 25.0) {
                         
@@ -193,31 +195,37 @@ fileprivate struct BottomContentView: View {
                             AddToFavoriteButton()
                             
                             InfoTop(game: game, colorScheme: colorScheme)
+                            
+                            Divider()
+                            
+                            Description(game: game, colorScheme: colorScheme)
                         }
-                        
-                        Divider()
+                        .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
                         
                         Group {
-                            Description(game: game, colorScheme: colorScheme)
                             
-                            Genres(genres: $genres, colorScheme: colorScheme)
+                            VStack(spacing: 10) {
+                                Genres(genres: $genres, colorScheme: colorScheme)
+                                
+                                GameWebsites(websites: $websites)
+                                
+                                GameKeywords(keywords: $keywords)
+                                
+                                GameModesBox(gameModes: $gameModes)
+                                
+                                InvolvedCompany(companies: $companies, colorScheme: colorScheme)
+                                
+                                GameEngines(gameEngines: $engines)
+                                
+                                AgeRatings(ageRating: $ageRating)
+                            }
                             
-                            GameKeywords(keywords: $keywords)
-                            
-                            GameWebsites(websites: $websites)
-                            
-                            InvolvedCompany(companies: $companies, colorScheme: colorScheme)
-                            
-                            GameEngines(gameEngines: $engines)
-                            
-                            AgeRatings(ageRating: $ageRating)
                         }
+                        
                     }
-                    .frame(width: geometry.size.width - 16 * 2)
-                    .padding(EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16))
+                    .frame(width: geometry.size.width)
+                    .padding(.bottom)
                 }
-            }
-            
             
         }
         .frame(width: geometry.size.width)
@@ -341,16 +349,12 @@ private struct Genres: View {
     
     var body: some View {
         if let genres = genres {
-            InfoBox(name: "Genres") {
-                ScrollView(.horizontal, showsIndicators: false, content: {
-                    HStack(spacing: 5) {
-                        ForEach(genres) { genre in
-                            Button(action: {}, label: {
-                                BadgeText(text: genre.name)
-                            })
-                        }
-                    }
-                })
+            BadgesBox(name: "Genres") {
+                ForEach(genres) { genre in
+                    Button(action: {}, label: {
+                        BadgeText(text: genre.name)
+                    })
+                }
             }
         }
     }
@@ -363,17 +367,12 @@ private struct InvolvedCompany: View {
     
     var body: some View {
         if let companies = companies {
-            InfoBox(name: "Involved Companies") {
-                ScrollView(.horizontal, showsIndicators: false, content: {
-                    HStack(spacing: 5) {
-                        ForEach(companies) { company in
-                            Button(action: {}, label: {
-                                BadgeText(text: company.name)
-                            })
-                            
-                        }
-                    }
-                })
+            BadgesBox(name: "Involved Companies") {
+                ForEach(companies) { company in
+                    Button(action: {}, label: {
+                        BadgeText(text: company.name)
+                    })
+                }
             }
         }
     }
@@ -385,16 +384,13 @@ private struct AgeRatings: View {
     
     var body: some View {
         if let ageRating = ageRating {
-            InfoBox(name: "Age rating:") {
-                ScrollView(.horizontal, showsIndicators: false, content: {
-                    HStack(spacing: 5) {
-                        ForEach(ageRating) { rating in
-                            Button(action: {}, label: {
-                                BadgeText(text: "\(rating.categoryString): \(rating.ratingString)")
-                            })
-                        }
-                    }
-                })
+            BadgesBox(name: "Age rating") {
+                ForEach(ageRating) { rating in
+                    Button(action: {}, label: {
+                        BadgeText(text: "\(rating.categoryString): \(rating.ratingString)")
+                    })
+                }
+
             }
         }
     }
@@ -406,16 +402,12 @@ private struct GameEngines: View {
     
     var body: some View {
         if let gameEngines = gameEngines {
-            InfoBox(name: "Game engines:") {
-                ScrollView(.horizontal, showsIndicators: false, content: {
-                    HStack(spacing: 5) {
-                        ForEach(gameEngines) { engine in
-                            Button(action: {}, label: {
-                                BadgeText(text: engine.name)
-                            })
-                        }
-                    }
-                })
+            BadgesBox(name: "Game engine") {
+                ForEach(gameEngines) { engine in
+                    Button(action: {}, label: {
+                        BadgeText(text: engine.name)
+                    })
+                }
             }
         }
     }
@@ -427,16 +419,12 @@ private struct GameKeywords: View {
     
     var body: some View {
         if let keywords = keywords {
-            InfoBox(name: "Keywords") {
-                ScrollView(.horizontal, showsIndicators: false, content: {
-                    HStack(spacing: 5) {
-                        ForEach(keywords) { keyword in
-                            Button(action: {}, label: {
-                                BadgeText(text: keyword.name)
-                            })
-                        }
-                    }
-                })
+            BadgesBox(name: "Keywords") {
+                ForEach(keywords) { keyword in
+                    Button(action: {}, label: {
+                        BadgeText(text: keyword.name)
+                    })
+                }
             }
         }
     }
@@ -448,21 +436,57 @@ private struct GameWebsites: View {
     
     var body: some View {
         if let websites = websites {
-            InfoBox(name: "Websites") {
-                ScrollView(.horizontal, showsIndicators: false, content: {
-                    HStack(spacing: 5) {
-                        ForEach(websites) { website in
-                            if let url = URL(string: website.url) {
-                                Button {
-                                    UIApplication.shared.open(url)
-                                } label: {
-                                    BadgeText(text: website.name, iconAfter: website.icon)
-                                }
-                            }
+            BadgesBox(name: "Websites") {
+                ForEach(websites) { website in
+                    if let url = URL(string: website.url) {
+                        Button {
+                            UIApplication.shared.open(url)
+                        } label: {
+                            BadgeText(text: website.name, iconAfter: website.icon)
                         }
                     }
-                })
+                }
             }
+        }
+    }
+}
+
+private struct GameModesBox: View {
+    
+    @Binding var gameModes: [GameModes]?
+    
+    var body: some View {
+        if let gameModes = gameModes {
+            BadgesBox(name: "Game modes") {
+                ForEach(gameModes) { mode in
+                    Button {} label: {
+                        BadgeText(text: mode.name)
+                    }
+                }
+            }
+        }
+    }
+}
+
+// MARK: Reusable component for badges scroll row
+private struct BadgesBox<Content: View>: View {
+    
+    var name: String
+    var content: Content
+    
+    init(name: String, @ViewBuilder content: () -> Content) {
+        self.name = name
+        self.content = content()
+    }
+    
+    var body: some View {
+        InfoBox(name: name) {
+            ScrollView(.horizontal, showsIndicators: false, content: {
+                HStack(spacing: 5) {
+                    self.content
+                }
+                .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
+            })
         }
     }
 }
@@ -483,6 +507,7 @@ private struct InfoBox<Content: View>: View {
         VStack(alignment: .leading, spacing: 5) {
             Text(name)
                 .font(.headline)
+                .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
             self.content
         }
     }

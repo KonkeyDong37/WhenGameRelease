@@ -151,6 +151,7 @@ struct GameModel: Game, Decodable, Identifiable {
     var videos: [Int]?
     var gameEngines: [Int]?
     var websites: [Int]?
+    var gameModes: [Int]?
     var coverUrl: URL? {
         return getCoverURL()
     }
@@ -284,4 +285,9 @@ struct GameWebsite: Decodable, Identifiable {
             return nil
         }
     }
+}
+
+struct GameModes: Decodable, Identifiable {
+    var id: Int?
+    var name: String
 }
