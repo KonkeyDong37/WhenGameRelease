@@ -25,6 +25,7 @@ class GameDetail: ObservableObject {
     @Published var keywords: [GameKeyword]? = nil
     @Published var websites: [GameWebsite]? = nil
     @Published var gameModes: [GameModes]? = nil
+    @Published var gamePlatforms: [GamePlatform]? = nil
     
     func showGameDetailView(showGameDetail: Bool, game: GameModel, image: UIImage?) {
         self.screenshots = []
@@ -66,6 +67,10 @@ class GameDetail: ObservableObject {
         
         if let gameModes = game.gameModes {
             getGameModes(gameModesIds: gameModes)
+        }
+        
+        if let platforms = game.platforms {
+            getGamePlatforms(gamePlatformIds: platforms)
         }
     }
     
@@ -210,6 +215,19 @@ class GameDetail: ObservableObject {
             switch response {
             case .success(let response):
                 self.gameModes = response
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    
+    func getGamePlatforms(gamePlatformIds: [Int]) {
+        let stringIds = gamePlatformIds.map { $0.description }.joined(separator: ",")
+        
+        gameService.fetchGamePlatforms(gamePlatformsIds: stringIds) { response in
+            switch response {
+            case .success(let response):
+                self.gamePlatforms = response
             case .failure(let error):
                 print(error)
             }

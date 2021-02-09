@@ -120,6 +120,13 @@ class GameService {
         fetchData(query: query, endpoint: .GAME_MODES, completion: completion)
     }
     
+    // MARK: Fetch game platforms
+    func fetchGamePlatforms(gamePlatformsIds: String, completion: @escaping (Result<[GamePlatform], Error>) -> Void) {
+        let query = "fields name; where id = (\(gamePlatformsIds));"
+        
+        fetchData(query: query, endpoint: .PLATFORMS, completion: completion)
+    }
+    
     // MARK: Data wrapper
     private func fetchData<T: Decodable>(query: String, endpoint: Endpoint, completion: @escaping (Result<T, Error>) -> Void) {
         if accessToken.isEmpty {

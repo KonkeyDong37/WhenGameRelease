@@ -11,6 +11,7 @@ import Introspect
 
 fileprivate enum Constants {
     static let bottomSheetHeight: CGFloat = 260
+    static let edgeInsets: CGFloat = 16
 }
 
 struct GameDetailView: View {
@@ -74,7 +75,8 @@ struct GameDetailView: View {
                                       ageRating: $gameDetail.ageRating,
                                       keywords: $gameDetail.keywords,
                                       websites: $gameDetail.websites,
-                                      gameModes: $gameDetail.gameModes)
+                                      gameModes: $gameDetail.gameModes,
+                                      platforms: $gameDetail.gamePlatforms)
                     
                     
                 }
@@ -173,6 +175,7 @@ fileprivate struct BottomContentView: View {
     @Binding var keywords: [GameKeyword]?
     @Binding var websites: [GameWebsite]?
     @Binding var gameModes: [GameModes]?
+    @Binding var platforms: [GamePlatform]?
     
     @GestureState private var translation: CGFloat = 0
     
@@ -200,7 +203,7 @@ fileprivate struct BottomContentView: View {
                             
                             Description(game: game, colorScheme: colorScheme)
                         }
-                        .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
+                        .padding(EdgeInsets(top: 0, leading: Constants.edgeInsets, bottom: 0, trailing: Constants.edgeInsets))
                         
                         Group {
                             
@@ -218,6 +221,8 @@ fileprivate struct BottomContentView: View {
                                 GameEngines(gameEngines: $engines)
                                 
                                 AgeRatings(ageRating: $ageRating)
+                                
+                                GamePlatformsBox(platforms: $platforms)
                             }
                             
                         }
@@ -468,6 +473,21 @@ private struct GameModesBox: View {
     }
 }
 
+private struct GamePlatformsBox: View {
+    
+    @Binding var platforms: [GamePlatform]?
+    
+    var body: some View {
+        if let platforms = platforms {
+            BadgesBox(name: "Platforms") {
+                ForEach(platforms) { platform in
+                    BadgeText(text: platform.name)
+                }
+            }
+        }
+    }
+}
+
 // MARK: Reusable component for badges scroll row
 private struct BadgesBox<Content: View>: View {
     
@@ -485,7 +505,7 @@ private struct BadgesBox<Content: View>: View {
                 HStack(spacing: 5) {
                     self.content
                 }
-                .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
+                .padding(EdgeInsets(top: 0, leading: Constants.edgeInsets, bottom: 0, trailing: Constants.edgeInsets))
             })
         }
     }
@@ -507,7 +527,7 @@ private struct InfoBox<Content: View>: View {
         VStack(alignment: .leading, spacing: 5) {
             Text(name)
                 .font(.headline)
-                .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
+                .padding(EdgeInsets(top: 0, leading: Constants.edgeInsets, bottom: 0, trailing: Constants.edgeInsets))
             self.content
         }
     }

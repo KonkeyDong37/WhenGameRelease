@@ -291,3 +291,8 @@ struct GameModes: Decodable, Identifiable {
     var id: Int?
     var name: String
 }
+
+struct GamePlatform: Decodable, Identifiable {
+    var id: Int?
+    var name: String
+}
