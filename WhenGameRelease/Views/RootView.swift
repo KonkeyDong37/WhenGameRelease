@@ -32,12 +32,14 @@ struct RootView: View {
                 
                 GameDetailView()
             }
-        }.edgesIgnoringSafeArea(.bottom)
+        }
+        .edgesIgnoringSafeArea(.bottom)
+        .environmentObject(GameDetail())
     }
 }
 
-//struct RootView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        RootView()
-//    }
-//}
+struct RootView_Previews: PreviewProvider {
+    static var previews: some View {
+        RootView()
+    }
+}

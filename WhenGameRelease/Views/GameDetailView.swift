@@ -7,7 +7,6 @@
 
 import SwiftUI
 import AVKit
-import Introspect
 
 fileprivate enum Constants {
     static let bottomSheetHeight: CGFloat = 260

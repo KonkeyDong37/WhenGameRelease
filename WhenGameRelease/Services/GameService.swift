@@ -127,6 +127,13 @@ class GameService {
         fetchData(query: query, endpoint: .PLATFORMS, completion: completion)
     }
     
+    // MARK: Fetch search
+    func fetchSerachFromQuery(query: String, completion: @escaping (Result<[GameModel], Error>) -> Void) {
+        let query = "fields *; search \"\(query)\"; limit 50;"
+        
+        fetchFromWrapper(endpoint: .SEARCH, query: query, completion: completion)
+    }
+    
     // MARK: Data wrapper
     private func fetchData<T: Decodable>(query: String, endpoint: Endpoint, completion: @escaping (Result<T, Error>) -> Void) {
         if accessToken.isEmpty {

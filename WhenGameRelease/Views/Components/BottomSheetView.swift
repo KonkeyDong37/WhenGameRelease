@@ -9,8 +9,6 @@ import SwiftUI
 
 fileprivate enum Constants {
     static let radius: CGFloat = 16
-    static let indicatorHeight: CGFloat = 4
-    static let indicatorWidth: CGFloat = 50
     static let snapRatio: CGFloat = 0.15
     static let minHeightRatio: CGFloat = 0.3
     static let interactiveFieldHeight: CGFloat = 35
@@ -31,17 +29,6 @@ struct BottomSheetView<Content: View>: View {
     
     private var offset: CGFloat {
         isOpen ? 0 : maxHeight - minHeight
-    }
-    
-    private var indicator: some View {
-        RoundedRectangle(cornerRadius: Constants.radius)
-            .fill(Color.secondary)
-            .frame(
-                width: Constants.indicatorWidth,
-                height: Constants.indicatorHeight
-            ).onTapGesture {
-                self.isOpen.toggle()
-            }
     }
     
     private var dragGesture: some Gesture {
@@ -78,7 +65,11 @@ struct BottomSheetView<Content: View>: View {
             ZStack(alignment: .top) {
                 VStack(spacing: 0) {
                     if showTopIndicator {
-                        self.indicator.padding(EdgeInsets(top: 15, leading: 0, bottom: 15, trailing: 0))
+                        SwipeIndicator()
+                            .padding(EdgeInsets(top: 15, leading: 0, bottom: 15, trailing: 0))
+                            .onTapGesture {
+                                self.isOpen.toggle()
+                            }
                     }
                     self.content
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
