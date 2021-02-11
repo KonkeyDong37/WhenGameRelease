@@ -38,7 +38,7 @@ struct SearchBar: View {
                         }
                     }
                 )
-                .padding(.horizontal, 10)
+                .padding(.horizontal)
                 .onTapGesture {
                     self.isEditing = true
                 }

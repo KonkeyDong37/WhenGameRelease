@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+fileprivate enum Constants {
+    static let edgeInsets: CGFloat = 16
+}
+
 struct SearchView: View {
     
     @Environment(\.colorScheme) var colorScheme
@@ -35,10 +39,14 @@ struct SearchView: View {
                 }
                 .padding(EdgeInsets(top: 8, leading: 0, bottom: 0, trailing: 0))
                 Divider()
-                List(searchGames.gamesFromSearch) { game in
-                    if let name = game.name {
-                        Text(name)
+                ScrollView {
+                    GridView(columns: 2, list: searchGames.gamesFromSearch) { (game) in
+                        SearchCell(game: game)
+                            .padding(6)
                     }
+                    .padding(.top, -10)
+                    .padding(12)
+                    .frame(width: proxy.size.width)
                 }
                 .frame(width: proxy.size.width)
             }
@@ -46,47 +54,43 @@ struct SearchView: View {
     }
 }
 
-struct ChangeObserver<Content: View, Value: Equatable>: View {
-    let content: Content
-    let value: Value
-    let action: (Value) -> Void
-
-    init(value: Value, action: @escaping (Value) -> Void, content: @escaping () -> Content) {
-        self.value = value
-        self.action = action
-        self.content = content()
-        _oldValue = State(initialValue: value)
+private struct SearchCell: View, Equatable {
+    
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.game.id == rhs.game.id
     }
-
-    @State private var oldValue: Value
-
+    
+    @Environment(\.colorScheme) private var colorScheme
+    @ObservedObject var imageLoader: ImageLoader = ImageLoader()
+    @EnvironmentObject var gameDetail: GameDetail
+    
+    var game: GameModel
+    
     var body: some View {
-        if oldValue != value {
-            DispatchQueue.main.async {
-                oldValue = value
-                self.action(self.value)
-            }
+        ZStack {
+            PosterImageView(image: imageLoader.image, iconSize: 24)
+                .aspectRatio(3/4, contentMode: .fill)
         }
-        return content
-    }
-}
-
-extension View {
-    func onDataChange<Value: Equatable>(of value: Value, perform action: @escaping (_ newValue: Value) -> Void) -> some View {
-        Group {
-            if #available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *) {
-                self.onChange(of: value, perform: action)
-            } else {
-                ChangeObserver(value: value, action: action) {
-                    self
-                }
-            }
+        .background(Color.init(#colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)))
+        .cornerRadius(8)
+        .onTapGesture {
+            gameDetail.showGameDetailView(showGameDetail: true, game: game, image: imageLoader.image)
+        }
+        .onAppear() {
+            imageLoader.getCover(with: game.cover?.imageId)
         }
     }
 }
 
 struct SearchView_Previews: PreviewProvider {
+    
+    static var searchGames: SearchController {
+        let controller = SearchController()
+        controller.gamesFromSearch = [GameModel(),GameModel(),GameModel(),GameModel(),GameModel()]
+        return controller
+    }
+    
     static var previews: some View {
-        SearchView()
+        SearchView(searchGames: searchGames)
     }
 }

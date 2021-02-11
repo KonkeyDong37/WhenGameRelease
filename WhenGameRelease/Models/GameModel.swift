@@ -120,17 +120,17 @@ protocol Game {
     var id: Int? { get }
     var name: String? { get }
     var category: Int? { get }
-    var cover: Int? { get }
+    var cover: GameCoverUrlModel? { get }
     var firstReleaseDate: Int64? { get }
 }
 
-struct GameModel: Game, Decodable, Identifiable {
+struct GameModel: Game, Decodable, Identifiable, Hashable {
     var id: Int?
     var name: String?
     var screenshots: [Int]?
     var category: Int?
     var aggregatedRating: Double?
-    var cover: Int?
+    var cover: GameCoverUrlModel?
     var firstReleaseDate: Int64?
     var ageRatings: [Int]?
     var dlcs: [Int]?
@@ -187,7 +187,13 @@ struct GameModel: Game, Decodable, Identifiable {
     }
 }
 
-struct GameCoverUrlModel: Decodable {
+struct GameModelSearch: Decodable, Identifiable, Hashable {
+    var id: Int
+    var name: String
+    var game: GameModel?
+}
+
+struct GameCoverUrlModel: Decodable, Hashable {
     var id: Int
     var imageId: String
 }

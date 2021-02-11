@@ -15,10 +15,15 @@ class SearchController: ObservableObject {
     
     func searchGames(query: String) {
         
-        gameService.fetchSerachFromQuery(query: query) { response in
+        gameService.fetchSerachFromQuery(query: query) { [weak self] response in
             switch response {
             case .success(let response):
-                self.gamesFromSearch = response
+                self?.gamesFromSearch = []
+                for item in response {
+                    if let game = item.game {
+                        self?.gamesFromSearch.append(game)
+                    }
+                }
             case .failure(let error):
                 print(error)
             }

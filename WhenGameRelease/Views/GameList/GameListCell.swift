@@ -50,7 +50,7 @@ struct GameListCell: View, Equatable {
             gameDetail.showGameDetailView(showGameDetail: true, game: game, image: imageLoader.image)
         }
         .onAppear() {
-            imageLoader.getCover(with: game.cover)
+            imageLoader.getCover(with: game.cover?.imageId)
         }
     }
 }

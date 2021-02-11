@@ -35,7 +35,7 @@ class GameService {
     func fetchRecentlyGames(completion: @escaping (Result<[GameModel], Error>) -> Void) {
         
         let timestamp: Int = Int(NSDate().timeIntervalSince1970)
-        let query = "fields *; where hypes > 0 & first_release_date < \(timestamp); limit 15; sort first_release_date desc;"
+        let query = "fields *,cover.image_id; where hypes > 0 & first_release_date < \(timestamp); limit 15; sort first_release_date desc;"
         
         fetchData(query: query, endpoint: .GAMES, completion: completion)
     }
@@ -128,8 +128,8 @@ class GameService {
     }
     
     // MARK: Fetch search
-    func fetchSerachFromQuery(query: String, completion: @escaping (Result<[GameModel], Error>) -> Void) {
-        let query = "fields *; search \"\(query)\"; limit 50;"
+    func fetchSerachFromQuery(query: String, completion: @escaping (Result<[GameModelSearch], Error>) -> Void) {
+        let query = "fields game.*,*,game.cover.image_id; search \"\(query)\"; limit 10;"
         
         fetchFromWrapper(endpoint: .SEARCH, query: query, completion: completion)
     }
@@ -152,6 +152,7 @@ class GameService {
         
         wrapper.apiJsonRequest(endpoint: endpoint, apicalypseQuery: query, dataResponse: { data in
             DispatchQueue.main.async {
+                print(data)
                 guard let jsonData = data.data(using: .utf8) else { return }
                 guard let company = self.decodeJSON(type: T.self, from: jsonData) else { return }
                 completion(.success(company))

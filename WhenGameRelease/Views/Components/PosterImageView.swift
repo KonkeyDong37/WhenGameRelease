@@ -14,6 +14,7 @@ struct PosterImageView: View {
     
     //    var coverId: Int?
     var image: UIImage = UIImage()
+    var iconSize: CGFloat = 50
     
     var body: some View {
         GeometryReader { geometry in
@@ -22,7 +23,7 @@ struct PosterImageView: View {
                     .foregroundColor(colorScheme == .dark ? GlobalConstants.ColorDarkTheme.lightGray : GlobalConstants.ColorLightTheme.grayDark)
                     .aspectRatio(contentMode: .fill)
                 Image(systemName: "photo.on.rectangle.angled")
-                    .font(.system(size: 50))
+                    .font(.system(size: iconSize))
                     .foregroundColor(Color(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)))
                 
                 Image(uiImage: image)

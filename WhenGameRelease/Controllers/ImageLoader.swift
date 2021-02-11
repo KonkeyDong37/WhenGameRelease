@@ -15,7 +15,7 @@ class ImageLoader: ObservableObject {
     
     @Published var image: UIImage = UIImage()
     
-    func getCover(with id: Int?) {
+    func getCover(with id: String?) {
         
         if let imageFromCache = self.imageCache.object(forKey: id as AnyObject) as? UIImage {
             self.image = imageFromCache
@@ -23,25 +23,15 @@ class ImageLoader: ObservableObject {
         }
         
         if let id = id {
-            gameService.getCoverUrl(with: id) { (response) in
-                switch response {
-                case .success(let response):
-                    let imageStringId = response[0].imageId
-                    let imageUrlString = imageBuilder(imageID: imageStringId, size: .FHD, imageType: .JPEG)
-                    guard let imageURL = URL(string: imageUrlString) else { return }
+            let imageUrlString = imageBuilder(imageID: id, size: .FHD, imageType: .JPEG)
+            guard let imageURL = URL(string: imageUrlString) else { return }
 
-                    URLSession.shared.dataTask(with: imageURL) { (data, res, error) in
-                        guard let data = data, let image = UIImage(data: data) else { return }
-                        DispatchQueue.main.async {
-                            self.imageCache.setObject(image, forKey: id as AnyObject)
-                            self.image = image
-                        }
-                    }.resume()
-                    
-                case .failure(let error):
-                    print(error)
+            URLSession.shared.dataTask(with: imageURL) { (data, res, error) in
+                guard let data = data, let image = UIImage(data: data) else { return }
+                DispatchQueue.main.async {
+                    self.imageCache.setObject(image, forKey: id as AnyObject)
+                    self.image = image
                 }
-            }
-        }
+            }.resume()        }
     }
 }
