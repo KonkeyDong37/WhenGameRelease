@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct SearchBar: View {
+    
+    @Environment(\.colorScheme) var colorScheme
+    
     @Binding var text: String
-
     @State private var isEditing = false
         
     var body: some View {
@@ -18,7 +20,7 @@ struct SearchBar: View {
             TextField("Search ...", text: $text)
                 .padding(7)
                 .padding(.horizontal, 25)
-                .background(Color(.systemGray6))
+                .background(colorScheme == .dark ? GlobalConstants.ColorDarkTheme.lightGray : GlobalConstants.ColorLightTheme.whiteDark)
                 .cornerRadius(8)
                 .overlay(
                     HStack {
@@ -47,7 +49,6 @@ struct SearchBar: View {
             if isEditing {
                 Button(action: {
                     self.isEditing = false
-                    self.text = ""
                     
                     // Dismiss the keyboard
                     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
@@ -64,7 +65,7 @@ struct SearchBar: View {
 
 struct SearchBar_Previews: PreviewProvider {
     
-    @State static var text = "Hello world!"
+    @State static var text = ""
     
     static var previews: some View {
         SearchBar(text: $text)

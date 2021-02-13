@@ -37,7 +37,7 @@ struct GameListView: View {
                     self.gameList.getGameList()
                 }
                 .sheet(isPresented: $showingSearch) {
-                    SearchView()
+                    SearchView(showingSearch: $showingSearch)
                 }
             }
         }

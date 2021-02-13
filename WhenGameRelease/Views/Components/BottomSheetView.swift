@@ -80,7 +80,7 @@ struct BottomSheetView<Content: View>: View {
                         .frame(width: geometry.size.width,
                                height: self.isOpen ?
                                 self.interactiveFieldHeight : geometry.size.height)
-                        .gesture(dragGesture)
+                        .highPriorityGesture(dragGesture)
                         .onTapGesture {
                             self.isOpen.toggle()
                         }
@@ -92,7 +92,7 @@ struct BottomSheetView<Content: View>: View {
             .frame(height: geometry.size.height, alignment: .bottom)
             .offset(y: max(self.offset + self.translation, 0))
             .animation(.spring(response: 0.4, dampingFraction: 0.8, blendDuration: 1))
-            .gesture(setGestureFromField ? nil : dragGesture)
+            .highPriorityGesture(setGestureFromField ? nil : dragGesture)
         }
     }
 }

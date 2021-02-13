@@ -152,23 +152,11 @@ struct GameModel: Game, Decodable, Identifiable, Hashable {
     var gameEngines: [Int]?
     var websites: [Int]?
     var gameModes: [Int]?
-    var coverUrl: URL? {
-        return getCoverURL()
-    }
     var releaseDateString: String {
         return convertDate()
     }
     var releasedStatus: String? {
         return getGameStatus()
-    }
-    
-    private func getCoverURL() -> URL? {
-        guard let cover = cover else { return nil }
-        let imageId = "\(cover)"
-        let imageURLString = imageBuilder(imageID: imageId, size: .COVER_BIG, imageType: .JPEG)
-        let imageURL = URL(string: imageURLString)
-        
-        return imageURL
     }
     
     private func convertDate() -> String {

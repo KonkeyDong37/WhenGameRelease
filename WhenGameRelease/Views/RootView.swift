@@ -9,6 +9,7 @@ import SwiftUI
 
 struct RootView: View {
     
+    @State private var showingDetail = false
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
@@ -34,7 +35,6 @@ struct RootView: View {
             }
         }
         .edgesIgnoringSafeArea(.bottom)
-        .environmentObject(GameDetail())
     }
 }
 

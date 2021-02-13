@@ -15,7 +15,8 @@ struct GameListCell: View, Equatable {
 
     @Environment(\.colorScheme) private var colorScheme
     @ObservedObject var imageLoader: ImageLoader = ImageLoader()
-    @EnvironmentObject var gameDetail: GameDetail
+    @ObservedObject var gameDetail: GameDetail = GameDetail.shared
+    @State private var showingDetail = false
     
     var game: GameModel
     
@@ -47,11 +48,15 @@ struct GameListCell: View, Equatable {
         .cornerRadius(20)
         .padding()
         .onTapGesture {
+            showingDetail.toggle()
             gameDetail.showGameDetailView(showGameDetail: true, game: game, image: imageLoader.image)
         }
         .onAppear() {
             imageLoader.getCover(with: game.cover?.imageId)
         }
+//        .sheet(isPresented: $showingDetail, content: {
+//            GameDetailView()
+//        })
     }
 }
 

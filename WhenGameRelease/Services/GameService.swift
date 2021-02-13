@@ -19,14 +19,14 @@ class GameService {
     
     // MARK: Fetch single game with id
     func fetchGame(withId id: Int, completion: @escaping (Result<GameModel, Error>) -> Void) {
-        let query = "fields *; where id = \(id);"
+        let query = "fields *,cover.image_id; where id = \(id);"
         
         fetchData(query: query, endpoint: .GAMES, completion: completion)
     }
     
     // MARK: Fetch last added games
     func fetchGames(completion: @escaping (Result<[GameModel], Error>) -> Void) {
-        let query = "fields *; sort first_release_date desc;"
+        let query = "fields *,cover.image_id; sort first_release_date desc;"
         
         fetchData(query: query, endpoint: .GAMES, completion: completion)
     }
@@ -40,16 +40,17 @@ class GameService {
         fetchData(query: query, endpoint: .GAMES, completion: completion)
     }
     
-    // MARK: Fetch game cover url
-    func getCoverUrl(with id: Int, completion: @escaping (Result<[GameCoverUrlModel], Error>) -> Void) {
-        let query = "fields image_id; where id = \(id);"
+    // MARK: Fetch coming soon games
+    func fetchComingSoonGames(completion: @escaping (Result<[GameModel], Error>) -> Void) {
         
-        fetchData(query: query, endpoint: .COVERS, completion: completion)
+        let timestamp: Int = Int(NSDate().timeIntervalSince1970)
+        let query = "fields *,cover.image_id; where hypes > 0 & first_release_date > \(timestamp); limit 10; sort first_release_date asc;"
+        
+        fetchData(query: query, endpoint: .GAMES, completion: completion)
     }
     
     // MARK: Fetch genres
     func fetchGenres(genresIds: String, completion: @escaping (Result<[GameGenres], Error>) -> Void) {
-        
         let query = "fields *; where id = (\(genresIds));"
         
         fetchData(query: query, endpoint: .GENRES, completion: completion)
@@ -129,7 +130,7 @@ class GameService {
     
     // MARK: Fetch search
     func fetchSerachFromQuery(query: String, completion: @escaping (Result<[GameModelSearch], Error>) -> Void) {
-        let query = "fields game.*,*,game.cover.image_id; search \"\(query)\"; limit 10;"
+        let query = "fields *,game.*,game.cover.image_id,game.status; search \"\(query)\"; limit 26;"
         
         fetchFromWrapper(endpoint: .SEARCH, query: query, completion: completion)
     }

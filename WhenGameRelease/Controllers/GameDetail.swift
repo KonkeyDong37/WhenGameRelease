@@ -10,6 +10,7 @@ import IGDB_SWIFT_API
 
 class GameDetail: ObservableObject {
     
+    static let shared = GameDetail()
     private let gameService = GameService.shared
 //    private let imageCache = NSCache<AnyObject, AnyObject>()
     
@@ -115,10 +116,10 @@ class GameDetail: ObservableObject {
     func getAgeRating(ageRatingArray: [Int]) {
         let ageRatingString = ageRatingArray.map { $0.description }.joined(separator: ",")
         
-        gameService.fetchAgeRating(ratingIds: ageRatingString) { (response) in
+        gameService.fetchAgeRating(ratingIds: ageRatingString) { [weak self] (response) in
             switch response {
             case .success(let response):
-                self.ageRating = response
+                self?.ageRating = response
             case .failure(let error):
                 print(error)
             }
@@ -128,10 +129,10 @@ class GameDetail: ObservableObject {
     func getVideos(videosIds: [Int]) {
         let videoIdsString = videosIds.map { $0.description }.joined(separator: ",")
         
-        gameService.fetchVideo(videoId: videoIdsString) { (response) in
+        gameService.fetchVideo(videoId: videoIdsString) { [weak self] (response) in
             switch response {
             case .success(let response):
-                self.videos = response
+                self?.videos = response
             case .failure(let error):
                 print(error)
             }
@@ -172,10 +173,10 @@ class GameDetail: ObservableObject {
     func getGameEngine(gameEngineIds: [Int]) {
         let stringIds = gameEngineIds.map { $0.description }.joined(separator: ",")
         
-        gameService.fetchGameEngine(engineIds: stringIds) { (response) in
+        gameService.fetchGameEngine(engineIds: stringIds) { [weak self] (response) in
             switch response {
             case .success(let response):
-                self.gameEngines = response
+                self?.gameEngines = response
             case .failure(let error):
                 print(error)
             }
@@ -185,10 +186,10 @@ class GameDetail: ObservableObject {
     func getGameKeywords(keywordsIds: [Int]) {
         let stringIds = keywordsIds.map { $0.description }.joined(separator: ",")
         
-        gameService.fetchKeywords(keywordsIds: stringIds) { (response) in
+        gameService.fetchKeywords(keywordsIds: stringIds) { [weak self] (response) in
             switch response {
             case .success(let response):
-                self.keywords = response
+                self?.keywords = response
             case .failure(let error):
                 print(error)
             }
@@ -198,10 +199,10 @@ class GameDetail: ObservableObject {
     func getGameWebsites(websitesIds: [Int]) {
         let stringIds = websitesIds.map { $0.description }.joined(separator: ",")
         
-        gameService.fetchGameWebsites(websitesIds: stringIds) { (response) in
+        gameService.fetchGameWebsites(websitesIds: stringIds) { [weak self] (response) in
             switch response {
             case .success(let response):
-                self.websites = response
+                self?.websites = response
             case .failure(let error):
                 print(error)
             }
@@ -211,10 +212,10 @@ class GameDetail: ObservableObject {
     func getGameModes(gameModesIds: [Int]) {
         let stringIds = gameModesIds.map { $0.description }.joined(separator: ",")
         
-        gameService.fetchGameModes(gameModesIds: stringIds) { (response) in
+        gameService.fetchGameModes(gameModesIds: stringIds) { [weak self] (response) in
             switch response {
             case .success(let response):
-                self.gameModes = response
+                self?.gameModes = response
             case .failure(let error):
                 print(error)
             }
@@ -224,10 +225,10 @@ class GameDetail: ObservableObject {
     func getGamePlatforms(gamePlatformIds: [Int]) {
         let stringIds = gamePlatformIds.map { $0.description }.joined(separator: ",")
         
-        gameService.fetchGamePlatforms(gamePlatformsIds: stringIds) { response in
+        gameService.fetchGamePlatforms(gamePlatformsIds: stringIds) { [weak self] response in
             switch response {
             case .success(let response):
-                self.gamePlatforms = response
+                self?.gamePlatforms = response
             case .failure(let error):
                 print(error)
             }

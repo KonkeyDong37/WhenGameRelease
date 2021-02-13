@@ -10,11 +10,13 @@ import SwiftUI
 struct GridView<Content: View, T: Hashable>: View {
     
     private let columns: Int
+    private let width: CGFloat
     private var list: [[T]] = []
     private let content: (T) -> Content
     
-    init(columns: Int, list: [T], @ViewBuilder content: @escaping (T) -> Content) {
+    init(columns: Int, width: CGFloat, list: [T], @ViewBuilder content: @escaping (T) -> Content) {
         self.columns = columns
+        self.width = width
         self.content = content
         self.setupList(list)
     }
@@ -41,16 +43,14 @@ struct GridView<Content: View, T: Hashable>: View {
     }
     
     var body: some View {
-        GeometryReader { proxy in
-            VStack(alignment: .leading, spacing: 0) {
-                ForEach(0 ..< self.list.count, id: \.self) { i  in
-                    HStack(spacing: 0) {
-                        ForEach(self.list[i], id: \.self) { object in
-                            
-                            // Your UI defined in the block is called from here.
-                            self.content(object)
-                                .frame(width: proxy.size.width / CGFloat(self.columns))
-                        }
+        VStack(alignment: .leading, spacing: 0) {
+            ForEach(0 ..< self.list.count, id: \.self) { i  in
+                HStack(alignment: .top, spacing: 0) {
+                    ForEach(self.list[i], id: \.self) { object in
+                        
+                        // Your UI defined in the block is called from here.
+                        self.content(object)
+                            .frame(width: width / CGFloat(self.columns))
                     }
                 }
             }

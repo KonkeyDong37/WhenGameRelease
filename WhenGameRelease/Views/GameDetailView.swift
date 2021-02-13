@@ -17,7 +17,7 @@ struct GameDetailView: View {
     
     @Environment(\.viewController) private var viewControllerHolder: UIViewController?
     @Environment(\.colorScheme) var colorScheme
-    @EnvironmentObject var gameDetail: GameDetail
+    @ObservedObject var gameDetail: GameDetail = GameDetail.shared
     @State private var imageShowIndex = 0
     @State private var box = true
     
@@ -40,7 +40,7 @@ struct GameDetailView: View {
                 return
             }
             gameDetail.showGameDetail = value.translation.height < 0
-            
+
             if !gameDetail.showGameDetail {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     imageShowIndex = 0
@@ -96,7 +96,7 @@ struct GameDetailView: View {
 
 fileprivate struct PosterImageCarousel: View {
     
-    @EnvironmentObject private var gameDetail: GameDetail
+    @ObservedObject private var gameDetail: GameDetail = GameDetail.shared
     @Binding var index: Int
     
     private var heightRatio: CGFloat {
