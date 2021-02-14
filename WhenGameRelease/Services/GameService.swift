@@ -12,21 +12,26 @@ class GameService {
     
     static let shared = GameService()
     
-    var accessToken = AccessResponse().token
-    let twithServices = TwithAuthServices()
+    private var accessToken = AccessResponse().token
+    private let twithServices = TwithAuthServices()
     
-    private init() {}
+    private func gameExtraFields(beforeParam: String = "") -> String {
+        let imageId = beforeParam + "cover.image_id"
+        let releaseDtates = beforeParam + "release_dates.*"
+        let releaseDatesPlatform = beforeParam + "release_dates.platform.*"
+        return "\(imageId),\(releaseDtates),\(releaseDatesPlatform)"
+    }
     
     // MARK: Fetch single game with id
     func fetchGame(withId id: Int, completion: @escaping (Result<GameModel, Error>) -> Void) {
-        let query = "fields *,cover.image_id; where id = \(id);"
+        let query = "fields *,\(gameExtraFields()); where id = \(id);"
         
         fetchData(query: query, endpoint: .GAMES, completion: completion)
     }
     
     // MARK: Fetch last added games
     func fetchGames(completion: @escaping (Result<[GameModel], Error>) -> Void) {
-        let query = "fields *,cover.image_id; sort first_release_date desc;"
+        let query = "fields *,\(gameExtraFields()); sort first_release_date desc;"
         
         fetchData(query: query, endpoint: .GAMES, completion: completion)
     }
@@ -35,7 +40,7 @@ class GameService {
     func fetchRecentlyGames(completion: @escaping (Result<[GameModel], Error>) -> Void) {
         
         let timestamp: Int = Int(NSDate().timeIntervalSince1970)
-        let query = "fields *,cover.image_id; where hypes > 0 & first_release_date < \(timestamp); limit 15; sort first_release_date desc;"
+        let query = "fields *,\(gameExtraFields()); where first_release_date < \(timestamp); limit 15; sort first_release_date desc;"
         
         fetchData(query: query, endpoint: .GAMES, completion: completion)
     }
@@ -44,7 +49,16 @@ class GameService {
     func fetchComingSoonGames(completion: @escaping (Result<[GameModel], Error>) -> Void) {
         
         let timestamp: Int = Int(NSDate().timeIntervalSince1970)
-        let query = "fields *,cover.image_id; where hypes > 0 & first_release_date > \(timestamp); limit 10; sort first_release_date asc;"
+        let query = "fields *,\(gameExtraFields()); where first_release_date > \(timestamp); limit 15; sort first_release_date asc;"
+        
+        fetchData(query: query, endpoint: .GAMES, completion: completion)
+    }
+    
+    // MARK: Fetch popular games
+    func fetchPopularGames(completion: @escaping (Result<[GameModel], Error>) -> Void) {
+        
+        let timestamp: Int = Int(NSDate().timeIntervalSince1970)
+        let query = "fields *,\(gameExtraFields()); where total_rating > 70 & first_release_date < \(timestamp); limit 10; sort first_release_date desc;"
         
         fetchData(query: query, endpoint: .GAMES, completion: completion)
     }
@@ -129,10 +143,19 @@ class GameService {
     }
     
     // MARK: Fetch search
-    func fetchSerachFromQuery(query: String, completion: @escaping (Result<[GameModelSearch], Error>) -> Void) {
-        let query = "fields *,game.*,game.cover.image_id,game.status; search \"\(query)\"; limit 26;"
+    func fetchSerach(query: String?, field: String?, id: Int?, completion: @escaping (Result<[GameModelSearch], Error>) -> Void) {
+        let fieldQuery = field != nil && id != nil ? "where game.\(field!) = (\(id!));" : ""
+        let stringQuery = query != nil ? "search \"\(query!)\";" : ""
+        let query = "fields *,game.*,\(gameExtraFields(beforeParam: "game.")); \(fieldQuery) \(stringQuery) limit 26;"
         
         fetchFromWrapper(endpoint: .SEARCH, query: query, completion: completion)
+    }
+    
+    // MARK: Fetch search from badges
+    func fetchSearchFromFielsd(field: String, id: String, completion: @escaping (Result<[GameModel], Error>) -> Void) {
+        let query = "fields *,\(gameExtraFields()); where \(field) = \(id); limit 26; sort first_release_date desc;"
+        
+        fetchData(query: query, endpoint: .GAMES, completion: completion)
     }
     
     // MARK: Data wrapper
@@ -153,7 +176,7 @@ class GameService {
         
         wrapper.apiJsonRequest(endpoint: endpoint, apicalypseQuery: query, dataResponse: { data in
             DispatchQueue.main.async {
-                print(data)
+//                print(data)
                 guard let jsonData = data.data(using: .utf8) else { return }
                 guard let company = self.decodeJSON(type: T.self, from: jsonData) else { return }
                 completion(.success(company))

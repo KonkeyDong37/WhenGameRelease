@@ -29,9 +29,11 @@ struct GameListCell: View, Equatable {
                 Text(game.name ?? "")
                     .font(Font.largeTitle.weight(.bold))
                     .foregroundColor(.white)
-                Text("\(game.releaseDateString)")
-                    .font(.headline)
-                    .foregroundColor(.white)
+                if let date = game.releaseDateString {
+                    Text("\(date)")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                }
             }
             .padding()
             

@@ -14,6 +14,7 @@ class GameDetail: ObservableObject {
     private let gameService = GameService.shared
 //    private let imageCache = NSCache<AnyObject, AnyObject>()
     
+    @Published var bottomSheetShown = false
     @Published var game: GameModel?
     @Published var showGameDetail = false
     @Published var image: UIImage? = nil
@@ -33,6 +34,9 @@ class GameDetail: ObservableObject {
         self.game = game
         self.showGameDetail = showGameDetail
         self.image = image
+        self.bottomSheetShown = false
+        
+        print(game)
         
         if let genres = game.genres {
             getGenres(genresIds: genres)

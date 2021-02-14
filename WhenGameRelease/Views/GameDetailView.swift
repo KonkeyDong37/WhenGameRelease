@@ -68,6 +68,7 @@ struct GameDetailView: View {
                     
                     BottomContentView(geometry: geometry,
                                       game: game,
+                                      bottomSheetShown: $gameDetail.bottomSheetShown,
                                       genres: $gameDetail.genres,
                                       companies: $gameDetail.companies,
                                       engines: $gameDetail.gameEngines,
@@ -160,13 +161,13 @@ fileprivate struct PosterImageCarousel: View {
 
 fileprivate struct BottomContentView: View {
     
-    @State private var bottomSheetShown = false
     @Environment(\.colorScheme) private var colorScheme
     @State private var box = true
     
     var geometry: GeometryProxy
     var game: GameModel
     
+    @Binding var bottomSheetShown: Bool
     @Binding var genres: [GameGenres]?
     @Binding var companies: [GameCompany]?
     @Binding var engines: [GameEngine]?
@@ -175,8 +176,6 @@ fileprivate struct BottomContentView: View {
     @Binding var websites: [GameWebsite]?
     @Binding var gameModes: [GameModes]?
     @Binding var platforms: [GamePlatform]?
-    
-    @GestureState private var translation: CGFloat = 0
     
     var body: some View {
         BottomSheetView(isOpen: self.$bottomSheetShown,
@@ -215,7 +214,7 @@ fileprivate struct BottomContentView: View {
                                 
                                 GameModesBox(gameModes: $gameModes)
                                 
-                                InvolvedCompany(companies: $companies, colorScheme: colorScheme)
+                                InvolvedCompany(companies: $companies)
                                 
                                 GameEngines(gameEngines: $engines)
                                 
@@ -241,17 +240,31 @@ struct GameTitle: View {
     var game: GameModel
     var colorScheme: ColorScheme
     
+    private var color: Color {
+        return colorScheme == .dark ?
+            GlobalConstants.ColorDarkTheme.lightGray :
+            GlobalConstants.ColorLightTheme.grayDark
+    }
+    
     var body: some View {
         VStack(alignment: .leading) {
             
             Text(game.name ?? "")
                 .font(Font.title.weight(.bold))
             HStack {
-                Text(game.releaseDateString)
-                    .font(Font.headline)
-                    .foregroundColor(colorScheme == .dark ?
-                                        GlobalConstants.ColorDarkTheme.lightGray :
-                                        GlobalConstants.ColorLightTheme.grayDark)
+                if let date = game.releaseDateString {
+                    Text(date)
+                        .font(Font.headline)
+                        .foregroundColor(colorScheme == .dark ?
+                                            GlobalConstants.ColorDarkTheme.lightGray :
+                                            GlobalConstants.ColorLightTheme.grayDark)
+                } else if let dateArr = game.releaseDates, let firstDate = dateArr[0], let date = firstDate.dateString {
+                    Text(date)
+                        .font(Font.headline)
+                        .foregroundColor(colorScheme == .dark ?
+                                            GlobalConstants.ColorDarkTheme.lightGray :
+                                            GlobalConstants.ColorLightTheme.grayDark)
+                }
                 if let status = game.releasedStatus {
                     BadgeText(text: status, textSize: 12, textColor: colorScheme == .dark ? .white : .black)
                         .opacity(0.4)
@@ -338,16 +351,16 @@ private struct Description: View {
     var colorScheme: ColorScheme
     
     var body: some View {
-        InfoBox(name: "Description") {
+        InfoBox(name: "Description", sidePadding: 0) {
             Text(game.summary ?? "")
                 .fixedSize(horizontal: false, vertical: true)
         }
-        
     }
 }
 
 private struct Genres: View {
     
+    private let controller: SearchController? = SearchController.shared
     @Binding var genres: [GameGenres]?
     var colorScheme: ColorScheme
     
@@ -355,7 +368,12 @@ private struct Genres: View {
         if let genres = genres {
             BadgesBox(name: "Genres") {
                 ForEach(genres) { genre in
-                    Button(action: {}, label: {
+                    Button(action: {
+                        controller?.searchGameFromField(fieldName: genre.name,
+                                                       queryField: "genres",
+                                                       id: genre.id)
+                        controller?.presentSearchView()
+                    }, label: {
                         BadgeText(text: genre.name)
                     })
                 }
@@ -366,14 +384,19 @@ private struct Genres: View {
 
 private struct InvolvedCompany: View {
     
+    private let controller: SearchController? = SearchController.shared
     @Binding var companies: [GameCompany]?
-    var colorScheme: ColorScheme
     
     var body: some View {
         if let companies = companies {
             BadgesBox(name: "Involved Companies") {
                 ForEach(companies) { company in
-                    Button(action: {}, label: {
+                    Button(action: {
+                        controller?.searchGameFromField(fieldName: company.name,
+                                                       queryField: "involved_companies",
+                                                       id: company.id)
+                        controller?.presentSearchView()
+                    }, label: {
                         BadgeText(text: company.name)
                     })
                 }
@@ -384,13 +407,19 @@ private struct InvolvedCompany: View {
 
 private struct AgeRatings: View {
     
+    private let controller: SearchController? = SearchController.shared
     @Binding var ageRating: [GameAgeRating]?
     
     var body: some View {
         if let ageRating = ageRating {
             BadgesBox(name: "Age rating") {
                 ForEach(ageRating) { rating in
-                    Button(action: {}, label: {
+                    Button(action: {
+                        controller?.searchGameFromField(fieldName: "\(rating.categoryString): \(rating.ratingString)",
+                                                       queryField: "age_ratings",
+                                                       id: rating.id)
+                        controller?.presentSearchView()
+                    }, label: {
                         BadgeText(text: "\(rating.categoryString): \(rating.ratingString)")
                     })
                 }
@@ -402,13 +431,17 @@ private struct AgeRatings: View {
 
 private struct GameEngines: View {
     
+    private let controller: SearchController? = SearchController.shared
     @Binding var gameEngines: [GameEngine]?
     
     var body: some View {
         if let gameEngines = gameEngines {
             BadgesBox(name: "Game engine") {
                 ForEach(gameEngines) { engine in
-                    Button(action: {}, label: {
+                    Button(action: {
+                        controller?.searchGameFromField(fieldName: engine.name, queryField: "game_engines", id: engine.id)
+                        controller?.presentSearchView()
+                    }, label: {
                         BadgeText(text: engine.name)
                     })
                 }
@@ -419,13 +452,17 @@ private struct GameEngines: View {
 
 private struct GameKeywords: View {
     
+    private let controller: SearchController? = SearchController.shared
     @Binding var keywords: [GameKeyword]?
     
     var body: some View {
         if let keywords = keywords {
             BadgesBox(name: "Keywords") {
                 ForEach(keywords) { keyword in
-                    Button(action: {}, label: {
+                    Button(action: {
+                        controller?.searchGameFromField(fieldName: keyword.name, queryField: "keywords", id: keyword.id)
+                        controller?.presentSearchView()
+                    }, label: {
                         BadgeText(text: keyword.name)
                     })
                 }
@@ -457,13 +494,17 @@ private struct GameWebsites: View {
 
 private struct GameModesBox: View {
     
+    private let controller: SearchController? = SearchController.shared
     @Binding var gameModes: [GameModes]?
     
     var body: some View {
         if let gameModes = gameModes {
             BadgesBox(name: "Game modes") {
                 ForEach(gameModes) { mode in
-                    Button {} label: {
+                    Button {
+                        controller?.searchGameFromField(fieldName: mode.name, queryField: "game_modes", id: mode.id)
+                        controller?.presentSearchView()
+                    } label: {
                         BadgeText(text: mode.name)
                     }
                 }
@@ -474,13 +515,19 @@ private struct GameModesBox: View {
 
 private struct GamePlatformsBox: View {
     
+    private let controller: SearchController? = SearchController.shared
     @Binding var platforms: [GamePlatform]?
     
     var body: some View {
         if let platforms = platforms {
             BadgesBox(name: "Platforms") {
                 ForEach(platforms) { platform in
-                    BadgeText(text: platform.name)
+                    Button {
+                        controller?.searchGameFromField(fieldName: platform.name, queryField: "platforms", id: platform.id)
+                        controller?.presentSearchView()
+                    } label: {
+                        BadgeText(text: platform.name)
+                    }
                 }
             }
         }
@@ -515,10 +562,12 @@ private struct BadgesBox<Content: View>: View {
 private struct InfoBox<Content: View>: View {
     
     var name: String
+    var sidePadding: CGFloat
     let content: Content
     
-    init(name: String, @ViewBuilder content: () -> Content) {
+    init(name: String, sidePadding: CGFloat = Constants.edgeInsets, @ViewBuilder content: () -> Content) {
         self.name = name
+        self.sidePadding = sidePadding
         self.content = content()
     }
     
@@ -526,7 +575,7 @@ private struct InfoBox<Content: View>: View {
         VStack(alignment: .leading, spacing: 5) {
             Text(name)
                 .font(.headline)
-                .padding(EdgeInsets(top: 0, leading: Constants.edgeInsets, bottom: 0, trailing: Constants.edgeInsets))
+                .padding(EdgeInsets(top: 0, leading: sidePadding, bottom: 0, trailing: sidePadding))
             self.content
         }
     }

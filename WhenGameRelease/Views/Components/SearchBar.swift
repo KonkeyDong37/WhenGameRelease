@@ -12,7 +12,7 @@ struct SearchBar: View {
     @Environment(\.colorScheme) var colorScheme
     
     @Binding var text: String
-    @State private var isEditing = false
+    @Binding var isEditing: Bool
         
     var body: some View {
         HStack {
@@ -55,7 +55,7 @@ struct SearchBar: View {
                 }) {
                     Text("Cancel")
                 }
-                .padding(.trailing, 10)
+                .padding(.trailing, 20)
                 .transition(.move(edge: .trailing))
                 .animation(.default)
             }
@@ -66,8 +66,9 @@ struct SearchBar: View {
 struct SearchBar_Previews: PreviewProvider {
     
     @State static var text = ""
+    @State static var isEditing = true
     
     static var previews: some View {
-        SearchBar(text: $text)
+        SearchBar(text: $text, isEditing: $isEditing)
     }
 }

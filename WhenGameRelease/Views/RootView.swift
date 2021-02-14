@@ -11,6 +11,7 @@ struct RootView: View {
     
     @State private var showingDetail = false
     @Environment(\.colorScheme) var colorScheme
+    @ObservedObject private var search: SearchController = SearchController.shared
     
     var body: some View {
         
@@ -32,6 +33,9 @@ struct RootView: View {
                                 GlobalConstants.ColorLightTheme.grayDark)
                 
                 GameDetailView()
+            }
+            .sheet(isPresented: $search.showSearchView) {
+                SearchView(showingSearch: $search.showSearchView)
             }
         }
         .edgesIgnoringSafeArea(.bottom)

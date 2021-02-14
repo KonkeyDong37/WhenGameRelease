@@ -116,6 +116,19 @@ fileprivate enum Website: Int, CustomStringConvertible, CaseIterable {
     }
 }
 
+private class ConvertDate {
+    func convert(date: Int64?) -> String? {
+        guard let releaseDate = date else { return nil }
+        let epocTime = TimeInterval(releaseDate)
+        let date = Date(timeIntervalSince1970: epocTime)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMMM d y"
+        let dateString = dateFormatter.string(from: date)
+        
+        return dateString
+    }
+}
+
 protocol Game {
     var id: Int? { get }
     var name: String? { get }
@@ -132,6 +145,7 @@ struct GameModel: Game, Decodable, Identifiable, Hashable {
     var aggregatedRating: Double?
     var cover: GameCoverUrlModel?
     var firstReleaseDate: Int64?
+    var releaseDates: [GameReleaseDateModel]?
     var ageRatings: [Int]?
     var dlcs: [Int]?
     var expansions: [Int]?
@@ -152,26 +166,25 @@ struct GameModel: Game, Decodable, Identifiable, Hashable {
     var gameEngines: [Int]?
     var websites: [Int]?
     var gameModes: [Int]?
-    var releaseDateString: String {
-        return convertDate()
+    var releaseDateString: String? {
+        return ConvertDate().convert(date: firstReleaseDate)
     }
     var releasedStatus: String? {
         return getGameStatus()
     }
     
-    private func convertDate() -> String {
-        let epocTime = TimeInterval(firstReleaseDate ?? 0)
-        let date = Date(timeIntervalSince1970: epocTime)
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MMMM d y"
-        let dateString = dateFormatter.string(from: date)
-        
-        return dateString
-    }
-    
     private func getGameStatus() -> String? {
         guard let status = status else { return nil }
         return ReleaseStatus(rawValue: status)?.description ?? nil
+    }
+}
+
+struct GameReleaseDateModel: Decodable, Hashable {
+    var id: Int
+    var date: Int64?
+    var platform: GamePlatform?
+    var dateString: String? {
+        return ConvertDate().convert(date: date)
     }
 }
 
@@ -202,7 +215,7 @@ struct GameCompany: Decodable, Identifiable {
 }
 
 struct GameAgeRating: Decodable, Identifiable {
-    var id: Int?
+    var id: Int
     private var category: Int
     private var rating: Int
     var ratingCoverUrl: String?
@@ -228,13 +241,13 @@ struct GameVideo: Decodable, Identifiable {
 }
 
 struct GameEngine: Decodable, Identifiable {
-    var id: Int?
+    var id: Int
     var name: String
     var logo: Int?
 }
 
 struct GameKeyword: Decodable, Identifiable {
-    var id: Int?
+    var id: Int
     var name: String
 }
 
@@ -282,11 +295,12 @@ struct GameWebsite: Decodable, Identifiable {
 }
 
 struct GameModes: Decodable, Identifiable {
-    var id: Int?
+    var id: Int
     var name: String
 }
 
-struct GamePlatform: Decodable, Identifiable {
-    var id: Int?
+struct GamePlatform: Decodable, Identifiable, Hashable {
+    var id: Int
     var name: String
+    var abbreviation: String?
 }

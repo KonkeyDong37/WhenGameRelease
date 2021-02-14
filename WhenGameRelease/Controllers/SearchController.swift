@@ -10,17 +10,29 @@ import Foundation
 class SearchController: ObservableObject {
     
     private let gameService = GameService.shared
+    static let shared = SearchController()
     
+    @Published var showSearchView = false
     @Published var gamesFromSearch: [GameModel] = []
     @Published var comingSoonGames: [GameModel] = []
+    @Published var popularGames: [GameModel] = []
+    @Published var isEditing = false
     @Published var isSearching = false
     @Published var nothingFound = false
+    @Published var queryField: String? = nil
+    @Published var fieldName: String? = nil
+    @Published var fieldId: Int? = nil
+    
+    func presentSearchView() {
+        self.isEditing = true
+        self.showSearchView = true
+    }
     
     func searchGames(query: String) {
         self.isSearching = true
         self.nothingFound = false
         
-        gameService.fetchSerachFromQuery(query: query) { [weak self] response in
+        gameService.fetchSerach(query: query, field: queryField, id: fieldId) { [weak self] response in
             self?.isSearching = false
             
             switch response {
@@ -47,6 +59,32 @@ class SearchController: ObservableObject {
             switch response {
             case .success(let response):
                 self?.comingSoonGames = response
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    
+    func getPopularGames() {
+        gameService.fetchPopularGames { [weak self] response in
+            switch response {
+            case .success(let response):
+                self?.popularGames = response
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    
+    func searchGameFromField(fieldName: String, queryField: String, id: Int) {
+        self.fieldName = fieldName
+        self.queryField = queryField
+        self.fieldId = id
+        
+        gameService.fetchSearchFromFielsd(field: queryField, id: "\(id)") { [weak self] response in
+            switch response {
+            case .success(let response):
+                self?.gamesFromSearch = response
             case .failure(let error):
                 print(error)
             }

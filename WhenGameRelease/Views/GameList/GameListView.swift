@@ -10,7 +10,7 @@ import SwiftUI
 struct GameListView: View {
     
     @ObservedObject var gameList: GameList = GameList()
-    @State private var showingSearch = false
+    @ObservedObject var search: SearchController = SearchController.shared
     
     var body: some View {
         GeometryReader { proxy in
@@ -27,7 +27,7 @@ struct GameListView: View {
                                         }),
                                         trailing:
                                             Button(action: {
-                                                showingSearch.toggle()
+                                                search.showSearchView.toggle()
                                             }, label: {
                                                 Image(systemName: "magnifyingglass").font(.system(size: 24, weight: .regular))
                                             })
@@ -35,9 +35,6 @@ struct GameListView: View {
                 .onAppear {
                     UITableView.appearance().separatorColor = .clear
                     self.gameList.getGameList()
-                }
-                .sheet(isPresented: $showingSearch) {
-                    SearchView(showingSearch: $showingSearch)
                 }
             }
         }

@@ -14,7 +14,7 @@ fileprivate enum Constants {
 struct SearchView: View {
     
     @Environment(\.colorScheme) var colorScheme
-    @ObservedObject var controller = SearchController()
+    @ObservedObject var controller = SearchController.shared
     @Binding var showingSearch: Bool
     
     private var bgColor: Color {
@@ -24,32 +24,14 @@ struct SearchView: View {
     var body: some View {
         GeometryReader { proxy in
             VStack(alignment: .leading) {
-                SearchViewHeader(searchGames: controller)
+                SearchViewHeader(searchGames: controller, isEditing: $controller.isEditing)
                 
                 ZStack {
-                    ScrollView {
-                        VStack(alignment: .leading) {
-                            VStack(alignment: .leading) {
-                                Text("Coming soon")
-                                    .font(.headline)
-                                    .padding(.leading)
-                                ScrollView(.horizontal, showsIndicators: false) {
-                                    HStack {
-                                        ForEach(controller.comingSoonGames) { game in
-                                            SearchCell(showingSearch: $showingSearch, game: game)
-                                                .frame(height: 200)
-                                        }
-                                    }
-                                    .padding(.leading)
-                                    .padding(.trailing)
-                                }
-                            }
-                        }
-                        .frame(width: proxy.size.width)
-                        .padding(.top)
+                    if controller.isEditing {
+                        SearchViewSearcingResults(controller: controller, showingSearch: $showingSearch)
+                    } else {
+                        SearchViewGameList(controller: controller, showingSearch: $showingSearch)
                     }
-                    
-//                    SearchViewSearcingResults(searchGames: controller, showingSearch: $showingSearch)
                 }
                 .overlay(Divider(), alignment: .top)
             }
@@ -66,6 +48,7 @@ struct SearchView: View {
         }
         .onAppear {
             controller.getComingSoonGames()
+            controller.getPopularGames()
         }
         .edgesIgnoringSafeArea(.bottom)
     }
@@ -81,6 +64,7 @@ private struct SearchViewHeader: View {
     @State private var searchText = ""
     
     @ObservedObject var searchGames: SearchController
+    @Binding var isEditing: Bool
     
     var body: some View {
         VStack {
@@ -93,7 +77,7 @@ private struct SearchViewHeader: View {
                     })
                 }
             } content: {
-                SearchBar(text: $searchText)
+                SearchBar(text: $searchText, isEditing: $isEditing)
             }
         }
         .padding(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
@@ -103,8 +87,8 @@ private struct SearchViewHeader: View {
 private struct SearchViewSearcingResults: View {
     
     @Environment(\.colorScheme) private var colorScheme
-    
-    @ObservedObject var searchGames: SearchController
+    @State private var alertIsPresenting = false
+    @ObservedObject var controller: SearchController
     @Binding var showingSearch: Bool
     
     private var bgColor: Color {
@@ -114,17 +98,36 @@ private struct SearchViewSearcingResults: View {
     var body: some View {
         GeometryReader { proxy in
             VStack {
-                if searchGames.isSearching {
+                if controller.isSearching {
                     ActivityIndicator()
                         .padding(.top, 30)
                         .padding(.bottom, 12)
                 }
-                if searchGames.nothingFound {
+                if controller.nothingFound {
                     Text("Nothing found")
                         .padding(.top, 50)
                 }
                 ScrollView {
-                    GridView(columns: 2, width: proxy.size.width - 24, list: searchGames.gamesFromSearch) { (game) in
+                    if let name = controller.fieldName {
+                        HStack {
+                            Button(action: {
+                                alertIsPresenting.toggle()
+                            }, label: {
+                                BadgeText(text: name)
+                            }).alert(isPresented: $alertIsPresenting) {
+                                Alert(title: Text("Remove keyword \(name) from search?"),
+                                      primaryButton: .destructive(Text("Remove")) {
+                                        controller.fieldName = nil
+                                        controller.queryField = nil
+                                        controller.fieldId = nil
+                                      },
+                                      secondaryButton: .cancel())
+                            }
+                        }
+                        .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
+                        .frame(width: proxy.size.width, alignment: .leading)
+                    }
+                    GridView(columns: 2, width: proxy.size.width - 24, list: controller.gamesFromSearch) { (game) in
                         SearchCell(showingSearch: $showingSearch, game: game)
                             .padding(6)
                     }
@@ -136,7 +139,54 @@ private struct SearchViewSearcingResults: View {
             }
             .frame(width: proxy.size.width, alignment: .top)
             .background(bgColor)
-//            .overlay(Divider(), alignment: .top)
+        }
+    }
+}
+
+private struct SearchViewGameList: View {
+    
+    @ObservedObject var controller: SearchController
+    @Binding var showingSearch: Bool
+    
+    var body: some View {
+        GeometryReader { proxy in
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    SearchViewGameListRow(name: "Popular games",
+                                          games: controller.popularGames,
+                                          showingSearch: $showingSearch)
+                    SearchViewGameListRow(name: "Coming soon",
+                                          games: controller.comingSoonGames,
+                                          showingSearch: $showingSearch)
+                }
+                .frame(width: proxy.size.width)
+                .padding(.top)
+            }
+        }
+    }
+}
+
+private struct SearchViewGameListRow: View {
+    
+    var name: String
+    var games: [GameModel]
+    @Binding var showingSearch: Bool
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text(name)
+                .font(.headline)
+                .padding(.leading)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack {
+                    ForEach(games) { game in
+                        SearchCell(showingSearch: $showingSearch, game: game)
+                            .frame(height: 200)
+                    }
+                }
+                .padding(.leading)
+                .padding(.trailing)
+            }
         }
     }
 }
@@ -188,6 +238,8 @@ struct SearchView_Previews: PreviewProvider {
         let controller = SearchController()
         controller.gamesFromSearch = [GameModel(),GameModel(),GameModel(),GameModel()]
         controller.comingSoonGames = [GameModel(),GameModel(),GameModel(),GameModel()]
+        controller.fieldName = "Action"
+        controller.isEditing = true
         return controller
     }
     @State static var showingSearch = true
