@@ -9,35 +9,64 @@ import SwiftUI
 
 struct GameListView: View {
     
-    @ObservedObject var gameList: GameList = GameList()
+    @ObservedObject var gameList: GameList = GameList.shared
     @ObservedObject var search: SearchController = SearchController.shared
+    
+    private var listType: GameTypeList {
+        return gameList.gameTypeList
+    }
+    
+    private var games: [GameModel] {
+        var games: [GameModel] = []
+        
+        switch listType {
+        case .lastRelease:
+            games = gameList.lastReleasedGames
+        case .comingSoon:
+            games = gameList.comingSoonGames
+        }
+        
+        return games
+    }
     
     var body: some View {
         GeometryReader { proxy in
             NavigationView {
                 NoSepratorList {
-                    ForEach(gameList.games) { game in
+                    ForEach(games) { game in
                         GameListCell(game: game).equatable()
                     }
                 }
-                .navigationBarTitle("Last Released", displayMode: .large)
+                .navigationBarTitle(Text(gameList.title), displayMode: .large)
                 .navigationBarItems(leading:
-                                        Button(action: {}, label: {
-                                            Image(systemName: "person.crop.circle").font(.system(size: 24, weight: .regular))
+                                        Button(action: {
+                                            switchGameList()
+                                        }, label: {
+                                            Image(systemName: "arrow.2.squarepath").font(.system(size: 24, weight: .regular))
                                         }),
-                                        trailing:
-                                            Button(action: {
-                                                search.showSearchView.toggle()
-                                            }, label: {
-                                                Image(systemName: "magnifyingglass").font(.system(size: 24, weight: .regular))
-                                            })
-                                        )
+                                    trailing:
+                                        Button(action: {
+                                            search.showSearchView.toggle()
+                                        }, label: {
+                                            Image(systemName: "magnifyingglass").font(.system(size: 24, weight: .regular))
+                                        })
+                )
                 .onAppear {
-                    UITableView.appearance().separatorColor = .clear
-                    self.gameList.getGameList()
+                    self.gameList.getGames(games: listType)
                 }
             }
         }
+    }
+    
+    private func switchGameList() {
+        switch listType {
+        case .lastRelease:
+            gameList.gameTypeList = .comingSoon
+        case .comingSoon:
+            gameList.gameTypeList = .lastRelease
+        }
+        
+        gameList.getGames(games: listType)
     }
 }
 
@@ -70,8 +99,8 @@ struct NoSepratorList<Content>: View where Content: View {
     }
 }
 
-//struct GameListView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        GameListView()
-//    }
-//}
+struct GameListView_Previews: PreviewProvider {
+    static var previews: some View {
+        GameListView()
+    }
+}

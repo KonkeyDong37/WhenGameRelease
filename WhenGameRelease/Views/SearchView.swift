@@ -47,7 +47,7 @@ struct SearchView: View {
             )
         }
         .onAppear {
-            controller.getComingSoonGames()
+//            controller.getComingSoonGames()
             controller.getPopularGames()
         }
         .edgesIgnoringSafeArea(.bottom)
@@ -145,8 +145,35 @@ private struct SearchViewSearcingResults: View {
 
 private struct SearchViewGameList: View {
     
+    @ObservedObject private var gameList = GameList.shared
     @ObservedObject var controller: SearchController
     @Binding var showingSearch: Bool
+    
+    private var listType: GameTypeList {
+        switch gameList.gameTypeList {
+        case .lastRelease:
+            return GameTypeList.comingSoon
+        case .comingSoon:
+            return GameTypeList.lastRelease
+        }
+    }
+    
+    private var games: [GameModel] {
+        var games: [GameModel] = []
+        
+        switch listType {
+        case .lastRelease:
+            games = gameList.lastReleasedGames
+        case .comingSoon:
+            games = gameList.comingSoonGames
+        }
+        
+        return games
+    }
+    
+    private var title: String {
+        return listType.description
+    }
     
     var body: some View {
         GeometryReader { proxy in
@@ -155,12 +182,15 @@ private struct SearchViewGameList: View {
                     SearchViewGameListRow(name: "Popular games",
                                           games: controller.popularGames,
                                           showingSearch: $showingSearch)
-                    SearchViewGameListRow(name: "Coming soon",
-                                          games: controller.comingSoonGames,
+                    SearchViewGameListRow(name: title,
+                                          games: games,
                                           showingSearch: $showingSearch)
                 }
                 .frame(width: proxy.size.width)
                 .padding(.top)
+            }
+            .onAppear {
+                self.gameList.getGames(games: listType)
             }
         }
     }
