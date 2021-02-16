@@ -116,8 +116,8 @@ fileprivate enum Website: Int, CustomStringConvertible, CaseIterable {
     }
 }
 
-private class ConvertDate {
-    func convert(date: Int64?) -> String? {
+private class ConvertData {
+    func convertDate(date: Int64?) -> String? {
         guard let releaseDate = date else { return nil }
         let epocTime = TimeInterval(releaseDate)
         let date = Date(timeIntervalSince1970: epocTime)
@@ -127,6 +127,11 @@ private class ConvertDate {
         
         return dateString
     }
+    
+    func convertStatus(status: Int?) -> String? {
+        guard let status = status else { return nil }
+        return ReleaseStatus(rawValue: status)?.description ?? nil
+    }
 }
 
 protocol Game {
@@ -135,48 +140,62 @@ protocol Game {
     var category: Int? { get }
     var cover: GameCoverUrlModel? { get }
     var firstReleaseDate: Int64? { get }
+    var status: Int? { get }
+    var releaseDateString: String? { get }
+    var releasedStatus: String? { get }
 }
 
-struct GameModel: Game, Decodable, Identifiable, Hashable {
+struct GameListModel: Game, Decodable, Identifiable, Hashable {
     var id: Int?
     var name: String?
-    var screenshots: [Int]?
     var category: Int?
-    var aggregatedRating: Double?
     var cover: GameCoverUrlModel?
     var firstReleaseDate: Int64?
+    var status: Int?
+    var releaseDateString: String? {
+        return ConvertData().convertDate(date: firstReleaseDate)
+    }
+    var releasedStatus: String? {
+        return ConvertData().convertStatus(status: status)
+    }
+}
+
+struct GameModel: Game, Decodable, Hashable {
+    var id: Int?
+    var name: String?
+    var category: Int?
+    var cover: GameCoverUrlModel?
+    var firstReleaseDate: Int64?
+    var status: Int?
+    var releaseDateString: String? {
+        return ConvertData().convertDate(date: firstReleaseDate)
+    }
+    var releasedStatus: String? {
+        return ConvertData().convertStatus(status: status)
+    }
+    
+    var screenshots: [GameScreenshots]?
+    var aggregatedRating: Double?
     var releaseDates: [GameReleaseDateModel]?
-    var ageRatings: [Int]?
+    var ageRatings: [GameAgeRating]?
     var dlcs: [Int]?
     var expansions: [Int]?
-    var genres: [Int]?
+    var genres: [GameGenres]?
     var hypes: Int?
-    var involvedCompanies: [Int]?
-    var keywords: [Int]?
-    var platforms: [Int]?
+    var involvedCompanies: [GameInvolvedCompany]?
+    var keywords: [GameKeyword]?
+    var platforms: [GamePlatform]?
     var rating: Double?
     var ratingCount: Int?
     var follows: Int?
     var similarGames: [Int]?
-    var status: Int?
     var summary: String?
     var themes: [Int]?
     var versionTitle: String?
     var videos: [Int]?
-    var gameEngines: [Int]?
-    var websites: [Int]?
-    var gameModes: [Int]?
-    var releaseDateString: String? {
-        return ConvertDate().convert(date: firstReleaseDate)
-    }
-    var releasedStatus: String? {
-        return getGameStatus()
-    }
-    
-    private func getGameStatus() -> String? {
-        guard let status = status else { return nil }
-        return ReleaseStatus(rawValue: status)?.description ?? nil
-    }
+    var gameEngines: [GameEngine]?
+    var websites: [GameWebsite]?
+    var gameModes: [GameModes]?
 }
 
 struct GameReleaseDateModel: Decodable, Hashable {
@@ -184,14 +203,14 @@ struct GameReleaseDateModel: Decodable, Hashable {
     var date: Int64?
     var platform: GamePlatform?
     var dateString: String? {
-        return ConvertDate().convert(date: date)
+        return ConvertData().convertDate(date: date)
     }
 }
 
 struct GameModelSearch: Decodable, Identifiable, Hashable {
     var id: Int
     var name: String
-    var game: GameModel?
+    var game: GameListModel?
 }
 
 struct GameCoverUrlModel: Decodable, Hashable {
@@ -199,26 +218,25 @@ struct GameCoverUrlModel: Decodable, Hashable {
     var imageId: String
 }
 
-struct GameGenres: Decodable, Identifiable {
+struct GameGenres: Decodable, Hashable {
     var id: Int
     var name: String
 }
 
-struct GameInvolvedCompany: Decodable {
-    var company: Int
+struct GameInvolvedCompany: Decodable, Hashable {
+    var id: Int
+    var company: GameCompany
 }
 
-struct GameCompany: Decodable, Identifiable {
+struct GameCompany: Decodable, Identifiable, Hashable {
     var id: Int
     var name: String
-    var logo: Int?
 }
 
-struct GameAgeRating: Decodable, Identifiable {
+struct GameAgeRating: Decodable, Identifiable, Hashable {
     var id: Int
     private var category: Int
     private var rating: Int
-    var ratingCoverUrl: String?
     
     var categoryString: String {
         return AgeRatingCategory(rawValue: category)?.description ?? ""
@@ -230,7 +248,7 @@ struct GameAgeRating: Decodable, Identifiable {
     
 }
 
-struct GameScreenshots: Decodable, Identifiable {
+struct GameScreenshots: Decodable, Identifiable, Hashable {
     var id: Int?
     var imageId: String
 }
@@ -240,22 +258,20 @@ struct GameVideo: Decodable, Identifiable {
     var videoId: String?
 }
 
-struct GameEngine: Decodable, Identifiable {
-    var id: Int
-    var name: String
-    var logo: Int?
-}
-
-struct GameKeyword: Decodable, Identifiable {
+struct GameEngine: Decodable, Identifiable, Hashable {
     var id: Int
     var name: String
 }
 
-struct GameWebsite: Decodable, Identifiable {
+struct GameKeyword: Decodable, Identifiable, Hashable {
+    var id: Int
+    var name: String
+}
+
+struct GameWebsite: Decodable, Identifiable, Hashable {
     var id: Int?
     var category: Int
     var url: String
-    var trusted: Bool
     
     var name: String {
         return Website(rawValue: category)?.description ?? ""
@@ -294,7 +310,7 @@ struct GameWebsite: Decodable, Identifiable {
     }
 }
 
-struct GameModes: Decodable, Identifiable {
+struct GameModes: Decodable, Identifiable, Hashable {
     var id: Int
     var name: String
 }

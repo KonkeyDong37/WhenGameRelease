@@ -16,8 +16,8 @@ struct GameListView: View {
         return gameList.gameTypeList
     }
     
-    private var games: [GameModel] {
-        var games: [GameModel] = []
+    private var games: [GameListModel] {
+        var games: [GameListModel] = []
         
         switch listType {
         case .lastRelease:

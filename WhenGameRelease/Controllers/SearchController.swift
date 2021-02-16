@@ -14,9 +14,9 @@ class SearchController: ObservableObject {
     static let shared = SearchController()
     
     @Published var showSearchView = false
-    @Published var gamesFromSearch: [GameModel] = []
-    @Published var comingSoonGames: [GameModel] = []
-    @Published var popularGames: [GameModel] = []
+    @Published var gamesFromSearch: [GameListModel] = []
+    @Published var comingSoonGames: [GameListModel] = []
+    @Published var popularGames: [GameListModel] = []
     @Published var isEditing = false
     @Published var isSearching = false
     @Published var nothingFound = false

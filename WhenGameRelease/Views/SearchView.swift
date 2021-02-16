@@ -47,7 +47,6 @@ struct SearchView: View {
             )
         }
         .onAppear {
-//            controller.getComingSoonGames()
             controller.getPopularGames()
         }
         .edgesIgnoringSafeArea(.bottom)
@@ -158,8 +157,8 @@ private struct SearchViewGameList: View {
         }
     }
     
-    private var games: [GameModel] {
-        var games: [GameModel] = []
+    private var games: [GameListModel] {
+        var games: [GameListModel] = []
         
         switch listType {
         case .lastRelease:
@@ -199,7 +198,7 @@ private struct SearchViewGameList: View {
 private struct SearchViewGameListRow: View {
     
     var name: String
-    var games: [GameModel]
+    var games: [GameListModel]
     @Binding var showingSearch: Bool
     
     var body: some View {
@@ -232,7 +231,7 @@ private struct SearchCell: View, Equatable {
     @ObservedObject var gameDetail: GameDetail = GameDetail.shared
     
     @Binding var showingSearch: Bool
-    var game: GameModel
+    var game: GameListModel
     
     var body: some View {
         ZStack {
@@ -266,8 +265,8 @@ struct SearchView_Previews: PreviewProvider {
     
     static var searchGames: SearchController {
         let controller = SearchController()
-        controller.gamesFromSearch = [GameModel(),GameModel(),GameModel(),GameModel()]
-        controller.comingSoonGames = [GameModel(),GameModel(),GameModel(),GameModel()]
+        controller.gamesFromSearch = [GameListModel(),GameListModel(),GameListModel(),GameListModel()]
+        controller.comingSoonGames = [GameListModel(),GameListModel(),GameListModel(),GameListModel()]
         controller.fieldName = "Action"
         controller.isEditing = true
         return controller

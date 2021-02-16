@@ -18,7 +18,7 @@ struct GameListCell: View, Equatable {
     @ObservedObject var gameDetail: GameDetail = GameDetail.shared
     @State private var showingDetail = false
     
-    var game: GameModel
+    var game: GameListModel
     
     var body: some View {
         GeometryReader { geometry in

@@ -68,16 +68,7 @@ struct GameDetailView: View {
                     
                     BottomContentView(geometry: geometry,
                                       game: game,
-                                      bottomSheetShown: $gameDetail.bottomSheetShown,
-                                      genres: $gameDetail.genres,
-                                      companies: $gameDetail.companies,
-                                      engines: $gameDetail.gameEngines,
-                                      ageRating: $gameDetail.ageRating,
-                                      keywords: $gameDetail.keywords,
-                                      websites: $gameDetail.websites,
-                                      gameModes: $gameDetail.gameModes,
-                                      platforms: $gameDetail.gamePlatforms)
-                    
+                                      bottomSheetShown: $gameDetail.bottomSheetShown)
                     
                 }
             }
@@ -168,14 +159,6 @@ fileprivate struct BottomContentView: View {
     var game: GameModel
     
     @Binding var bottomSheetShown: Bool
-    @Binding var genres: [GameGenres]?
-    @Binding var companies: [GameCompany]?
-    @Binding var engines: [GameEngine]?
-    @Binding var ageRating: [GameAgeRating]?
-    @Binding var keywords: [GameKeyword]?
-    @Binding var websites: [GameWebsite]?
-    @Binding var gameModes: [GameModes]?
-    @Binding var platforms: [GamePlatform]?
     
     var body: some View {
         BottomSheetView(isOpen: self.$bottomSheetShown,
@@ -206,21 +189,21 @@ fileprivate struct BottomContentView: View {
                         Group {
                             
                             VStack(spacing: 10) {
-                                Genres(genres: $genres, colorScheme: colorScheme)
+                                Genres(genres: game.genres, colorScheme: colorScheme)
                                 
-                                GameWebsites(websites: $websites)
+                                GameWebsites(websites: game.websites)
                                 
-                                GameKeywords(keywords: $keywords)
+                                GameKeywords(keywords: game.keywords)
                                 
-                                GameModesBox(gameModes: $gameModes)
+                                GameModesBox(gameModes: game.gameModes)
                                 
-                                InvolvedCompany(companies: $companies)
+                                InvolvedCompany(companies: game.involvedCompanies)
                                 
-                                GameEngines(gameEngines: $engines)
+                                GameEngines(gameEngines: game.gameEngines)
                                 
-                                AgeRatings(ageRating: $ageRating)
+                                AgeRatings(ageRating: game.ageRatings)
                                 
-                                GamePlatformsBox(platforms: $platforms)
+                                GamePlatformsBox(platforms: game.platforms)
                             }
                             
                         }
@@ -361,13 +344,13 @@ private struct Description: View {
 private struct Genres: View {
     
     private let controller: SearchController? = SearchController.shared
-    @Binding var genres: [GameGenres]?
+    var genres: [GameGenres]?
     var colorScheme: ColorScheme
     
     var body: some View {
         if let genres = genres {
             BadgesBox(name: "Genres") {
-                ForEach(genres) { genre in
+                ForEach(genres, id: \.self) { genre in
                     Button(action: {
                         controller?.searchGameFromField(fieldName: genre.name,
                                                        queryField: "genres",
@@ -385,19 +368,19 @@ private struct Genres: View {
 private struct InvolvedCompany: View {
     
     private let controller: SearchController? = SearchController.shared
-    @Binding var companies: [GameCompany]?
+    var companies: [GameInvolvedCompany]?
     
     var body: some View {
         if let companies = companies {
             BadgesBox(name: "Involved Companies") {
-                ForEach(companies) { company in
+                ForEach(companies, id: \.self) { company in
                     Button(action: {
-                        controller?.searchGameFromField(fieldName: company.name,
+                        controller?.searchGameFromField(fieldName: company.company.name,
                                                        queryField: "involved_companies",
-                                                       id: company.id)
+                                                       id: company.company.id)
                         controller?.presentSearchView()
                     }, label: {
-                        BadgeText(text: company.name)
+                        BadgeText(text: company.company.name)
                     })
                 }
             }
@@ -408,7 +391,7 @@ private struct InvolvedCompany: View {
 private struct AgeRatings: View {
     
     private let controller: SearchController? = SearchController.shared
-    @Binding var ageRating: [GameAgeRating]?
+    var ageRating: [GameAgeRating]?
     
     var body: some View {
         if let ageRating = ageRating {
@@ -432,7 +415,7 @@ private struct AgeRatings: View {
 private struct GameEngines: View {
     
     private let controller: SearchController? = SearchController.shared
-    @Binding var gameEngines: [GameEngine]?
+    var gameEngines: [GameEngine]?
     
     var body: some View {
         if let gameEngines = gameEngines {
@@ -453,7 +436,7 @@ private struct GameEngines: View {
 private struct GameKeywords: View {
     
     private let controller: SearchController? = SearchController.shared
-    @Binding var keywords: [GameKeyword]?
+    var keywords: [GameKeyword]?
     
     var body: some View {
         if let keywords = keywords {
@@ -473,7 +456,7 @@ private struct GameKeywords: View {
 
 private struct GameWebsites: View {
     
-    @Binding var websites: [GameWebsite]?
+    var websites: [GameWebsite]?
     
     var body: some View {
         if let websites = websites {
@@ -495,7 +478,7 @@ private struct GameWebsites: View {
 private struct GameModesBox: View {
     
     private let controller: SearchController? = SearchController.shared
-    @Binding var gameModes: [GameModes]?
+    var gameModes: [GameModes]?
     
     var body: some View {
         if let gameModes = gameModes {
@@ -516,7 +499,7 @@ private struct GameModesBox: View {
 private struct GamePlatformsBox: View {
     
     private let controller: SearchController? = SearchController.shared
-    @Binding var platforms: [GamePlatform]?
+    var platforms: [GamePlatform]?
     
     var body: some View {
         if let platforms = platforms {

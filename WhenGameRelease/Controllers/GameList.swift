@@ -24,8 +24,8 @@ class GameList: ObservableObject {
     static let shared = GameList()
     
     var gameService = GameService.shared
-    @Published var lastReleasedGames: [GameModel] = []
-    @Published var comingSoonGames: [GameModel] = []
+    @Published var lastReleasedGames: [GameListModel] = []
+    @Published var comingSoonGames: [GameListModel] = []
     @Published var gameTypeList: GameTypeList = .lastRelease
     @Published var title: String = ""
     
