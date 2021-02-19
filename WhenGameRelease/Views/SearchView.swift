@@ -16,6 +16,7 @@ struct SearchView: View {
     @Environment(\.colorScheme) var colorScheme
     @ObservedObject var controller = SearchController.shared
     @Binding var showingSearch: Bool
+    var viewFromTab: Bool
     
     private var bgColor: Color {
         return colorScheme == .dark ? GlobalConstants.ColorDarkTheme.darkGray : GlobalConstants.ColorLightTheme.white
@@ -24,7 +25,7 @@ struct SearchView: View {
     var body: some View {
         GeometryReader { proxy in
             VStack(alignment: .leading) {
-                SearchViewHeader(searchGames: controller, isEditing: $controller.isEditing)
+                SearchViewHeader(searchGames: controller, isEditing: $controller.isEditing, viewFromTab: viewFromTab)
                 
                 ZStack {
                     if controller.isEditing {
@@ -36,7 +37,6 @@ struct SearchView: View {
                 .overlay(Divider(), alignment: .top)
             }
             .frame(height: proxy.size.height, alignment: .top)
-            .background(bgColor)
             .onTapGesture(perform: {
                 dismissKeypad()
             })
@@ -46,6 +46,7 @@ struct SearchView: View {
                 })
             )
         }
+        .background(bgColor.edgesIgnoringSafeArea(.all))
         .onAppear {
             controller.getPopularGames()
         }
@@ -65,9 +66,13 @@ private struct SearchViewHeader: View {
     @ObservedObject var searchGames: SearchController
     @Binding var isEditing: Bool
     
+    var viewFromTab: Bool
+    
     var body: some View {
         VStack {
-            SwipeIndicator()
+            if !viewFromTab {
+                SwipeIndicator()
+            }
             ChangeObserver(value: searchText) { query in
                 if !searchText.isEmpty {
                     timer?.invalidate()
@@ -274,7 +279,7 @@ struct SearchView_Previews: PreviewProvider {
     @State static var showingSearch = true
     
     static var previews: some View {
-        SearchView(controller: searchGames, showingSearch: $showingSearch)
+        SearchView(controller: searchGames, showingSearch: $showingSearch, viewFromTab: false)
     }
 }
 

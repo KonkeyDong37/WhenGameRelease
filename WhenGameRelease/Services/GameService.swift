@@ -14,6 +14,7 @@ class GameService {
     
     private var accessToken = AccessResponse().token
     private let twithServices = TwithAuthServices()
+    private let gamesOffset = GlobalConstants.gamesOffset
     
     private func gamesExtraFields(beforeParam: String = "") -> String {
         let imageId = beforeParam + "cover.image_id"
@@ -22,7 +23,7 @@ class GameService {
     }
     
     private func gameExtraFields() -> String {
-        let releaseDtates = "release_dates.*,release_dates.platform.*"
+        let releaseDtates = "release_dates.id,release_dates.date,release_dates.platform,release_dates.platform.id,release_dates.platform.name,release_dates.platform.abbreviation"
         let genres = "genres.id,genres.name"
         let screenshots = "screenshots.id,screenshots.image_id"
         let ageRating = "age_ratings.id,age_ratings.category,age_ratings.rating"
@@ -51,19 +52,19 @@ class GameService {
     }
     
     // MARK: Fetch recently relesed games
-    func fetchRecentlyGames(completion: @escaping (Result<[GameListModel], Error>) -> Void) {
+    func fetchRecentlyGames(offset: Int, completion: @escaping (Result<[GameListModel], Error>) -> Void) {
         
         let timestamp: Int = Int(NSDate().timeIntervalSince1970)
-        let query = "fields *,\(gamesExtraFields()); where first_release_date < \(timestamp); limit 15; sort first_release_date desc;"
+        let query = "fields *,\(gamesExtraFields()); where first_release_date < \(timestamp); limit \(gamesOffset); sort first_release_date desc; offset \(offset);"
         
         fetchData(query: query, endpoint: .GAMES, completion: completion)
     }
     
     // MARK: Fetch coming soon games
-    func fetchComingSoonGames(completion: @escaping (Result<[GameListModel], Error>) -> Void) {
+    func fetchComingSoonGames(offset: Int, completion: @escaping (Result<[GameListModel], Error>) -> Void) {
         
         let timestamp: Int = Int(NSDate().timeIntervalSince1970)
-        let query = "fields *,\(gamesExtraFields()); where first_release_date > \(timestamp); limit 15; sort first_release_date asc;"
+        let query = "fields *,\(gamesExtraFields()); where first_release_date > \(timestamp); limit \(gamesOffset); sort first_release_date asc; offset \(offset);"
         
         fetchData(query: query, endpoint: .GAMES, completion: completion)
     }
