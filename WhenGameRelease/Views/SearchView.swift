@@ -282,16 +282,3 @@ struct SearchView_Previews: PreviewProvider {
         SearchView(controller: searchGames, showingSearch: $showingSearch, viewFromTab: false)
     }
 }
-
-//struct SearchView_Dark_Previews: PreviewProvider {
-//
-//    static var searchGames: SearchController {
-//        let controller = SearchController()
-//        controller.gamesFromSearch = [GameModel(status: 0),GameModel(),GameModel(),GameModel(),GameModel()]
-//        return controller
-//    }
-//
-//    static var previews: some View {
-//        SearchView(searchGames: searchGames).preferredColorScheme(.dark)
-//    }
-//}

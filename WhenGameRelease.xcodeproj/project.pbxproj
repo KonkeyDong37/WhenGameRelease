@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -14,6 +14,10 @@
 		8A01606925CB11EA00229EF2 /* BadgeText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A01606825CB11EA00229EF2 /* BadgeText.swift */; };
 		8A09DAE725E0708B005EBA88 /* NewsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A09DAE625E0708B005EBA88 /* NewsListView.swift */; };
 		8A09DAEB25E07131005EBA88 /* NewsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A09DAEA25E07131005EBA88 /* NewsList.swift */; };
+		8A09DAF025E161CE005EBA88 /* URLImage in Frameworks */ = {isa = PBXBuildFile; productRef = 8A09DAEF25E161CE005EBA88 /* URLImage */; };
+		8A09DAF825E169B3005EBA88 /* NewsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A09DAF725E169B3005EBA88 /* NewsView.swift */; };
+		8A09DAFC25E1731F005EBA88 /* Data Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A09DAFB25E1731F005EBA88 /* Data Extension.swift */; };
+		8A09DAFF25E17337005EBA88 /* StringProtocol Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A09DAFE25E17337005EBA88 /* StringProtocol Extension.swift */; };
 		8A104626257A2B83004B9B6D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A104625257A2B83004B9B6D /* AppDelegate.swift */; };
 		8A104628257A2B83004B9B6D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A104627257A2B83004B9B6D /* SceneDelegate.swift */; };
 		8A10462F257A2B85004B9B6D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8A10462E257A2B85004B9B6D /* Preview Assets.xcassets */; };
@@ -48,6 +52,7 @@
 		8AB27AE525B5F68B00AEFEED /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB27AE425B5F68B00AEFEED /* RootView.swift */; };
 		8AB27AE925B6C3B900AEFEED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8AB27AE825B6C3B900AEFEED /* Assets.xcassets */; };
 		8AB27AF425B9BEC900AEFEED /* PosterImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB27AF325B9BEC900AEFEED /* PosterImageView.swift */; };
+		8AD3369925E1B7F90058EA54 /* UIImageView Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD3369825E1B7F90058EA54 /* UIImageView Extension.swift */; };
 		9F80A05783F9E11ED9A96199 /* Pods_WhenGameRelease.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91260C1926A6E7BDD28DB5E9 /* Pods_WhenGameRelease.framework */; };
 /* End PBXBuildFile section */
 
@@ -59,6 +64,9 @@
 		8A01606825CB11EA00229EF2 /* BadgeText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeText.swift; sourceTree = "<group>"; };
 		8A09DAE625E0708B005EBA88 /* NewsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsListView.swift; sourceTree = "<group>"; };
 		8A09DAEA25E07131005EBA88 /* NewsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsList.swift; sourceTree = "<group>"; };
+		8A09DAF725E169B3005EBA88 /* NewsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsView.swift; sourceTree = "<group>"; };
+		8A09DAFB25E1731F005EBA88 /* Data Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data Extension.swift"; sourceTree = "<group>"; };
+		8A09DAFE25E17337005EBA88 /* StringProtocol Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StringProtocol Extension.swift"; sourceTree = "<group>"; };
 		8A104622257A2B83004B9B6D /* WhenGameRelease.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WhenGameRelease.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A104625257A2B83004B9B6D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8A104627257A2B83004B9B6D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -95,6 +103,7 @@
 		8AB27AE425B5F68B00AEFEED /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		8AB27AE825B6C3B900AEFEED /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8AB27AF325B9BEC900AEFEED /* PosterImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosterImageView.swift; sourceTree = "<group>"; };
+		8AD3369825E1B7F90058EA54 /* UIImageView Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView Extension.swift"; sourceTree = "<group>"; };
 		91260C1926A6E7BDD28DB5E9 /* Pods_WhenGameRelease.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WhenGameRelease.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4E3BFE11E6EA9DA522DBD64 /* Pods-WhenGameRelease.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WhenGameRelease.debug.xcconfig"; path = "Target Support Files/Pods-WhenGameRelease/Pods-WhenGameRelease.debug.xcconfig"; sourceTree = "<group>"; };
 		C65B7B5144070A56213A5DFB /* Pods-WhenGameRelease.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WhenGameRelease.release.xcconfig"; path = "Target Support Files/Pods-WhenGameRelease/Pods-WhenGameRelease.release.xcconfig"; sourceTree = "<group>"; };
@@ -105,6 +114,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A09DAF025E161CE005EBA88 /* URLImage in Frameworks */,
 				9F80A05783F9E11ED9A96199 /* Pods_WhenGameRelease.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -207,6 +217,7 @@
 				8A83710025E06C1900BA9D27 /* GameListView.swift */,
 				8A85EEAE25B58AA40084AD44 /* GameDetailView.swift */,
 				8A09DAE625E0708B005EBA88 /* NewsListView.swift */,
+				8A09DAF725E169B3005EBA88 /* NewsView.swift */,
 				8A77D4FB25D4742100304B3B /* SearchView.swift */,
 				8A01606725CB11C400229EF2 /* Components */,
 			);
@@ -256,6 +267,9 @@
 				8AB27AE125B5EF2E00AEFEED /* Color Extension.swift */,
 				8A01605E25C850BB00229EF2 /* UIViewController Extension.swift */,
 				8A6CFBD825D556C00074D2F4 /* View Extension.swift */,
+				8A09DAFB25E1731F005EBA88 /* Data Extension.swift */,
+				8A09DAFE25E17337005EBA88 /* StringProtocol Extension.swift */,
+				8AD3369825E1B7F90058EA54 /* UIImageView Extension.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -279,6 +293,7 @@
 			);
 			name = WhenGameRelease;
 			packageProductDependencies = (
+				8A09DAEF25E161CE005EBA88 /* URLImage */,
 			);
 			productName = WhenGameRelease;
 			productReference = 8A104622257A2B83004B9B6D /* WhenGameRelease.app */;
@@ -308,6 +323,7 @@
 			);
 			mainGroup = 8A104619257A2B83004B9B6D;
 			packageReferences = (
+				8A09DAEE25E161CE005EBA88 /* XCRemoteSwiftPackageReference "url-image" */,
 			);
 			productRefGroup = 8A104623257A2B83004B9B6D /* Products */;
 			projectDirPath = "";
@@ -387,6 +403,7 @@
 				8A015FEA25C8230F00229EF2 /* AVPlayerViewControllerManager.swift in Sources */,
 				8AB27AE525B5F68B00AEFEED /* RootView.swift in Sources */,
 				8A6CFBD925D556C00074D2F4 /* View Extension.swift in Sources */,
+				8AD3369925E1B7F90058EA54 /* UIImageView Extension.swift in Sources */,
 				8A104626257A2B83004B9B6D /* AppDelegate.swift in Sources */,
 				8AB27ACF25B5AF7000AEFEED /* Constants.swift in Sources */,
 				8A85EE9B25B24F190084AD44 /* GameModel.swift in Sources */,
@@ -400,6 +417,8 @@
 				8A104628257A2B83004B9B6D /* SceneDelegate.swift in Sources */,
 				8A85EE9E25B252380084AD44 /* GameDetail.swift in Sources */,
 				8A01605F25C850BB00229EF2 /* UIViewController Extension.swift in Sources */,
+				8A09DAFC25E1731F005EBA88 /* Data Extension.swift in Sources */,
+				8A09DAFF25E17337005EBA88 /* StringProtocol Extension.swift in Sources */,
 				8A09DAEB25E07131005EBA88 /* NewsList.swift in Sources */,
 				8AB27ADC25B5DC0900AEFEED /* Double Extension.swift in Sources */,
 				8AB27AE225B5EF2E00AEFEED /* Color Extension.swift in Sources */,
@@ -411,6 +430,7 @@
 				8A85EEAB25B58A240084AD44 /* BottomSheetView.swift in Sources */,
 				8AB27AF425B9BEC900AEFEED /* PosterImageView.swift in Sources */,
 				8A83710125E06C1900BA9D27 /* GameListView.swift in Sources */,
+				8A09DAF825E169B3005EBA88 /* NewsView.swift in Sources */,
 				8A77D4FC25D4742100304B3B /* SearchView.swift in Sources */,
 				8A85EE0225ACE11D0084AD44 /* GameService.swift in Sources */,
 				8A01606325C86FC800229EF2 /* ImageCarouselView.swift in Sources */,
@@ -617,6 +637,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8A09DAEE25E161CE005EBA88 /* XCRemoteSwiftPackageReference "url-image" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/dmytro-anokhin/url-image";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.2.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8A09DAEF25E161CE005EBA88 /* URLImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8A09DAEE25E161CE005EBA88 /* XCRemoteSwiftPackageReference "url-image" */;
+			productName = URLImage;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8A10461A257A2B83004B9B6D /* Project object */;
 }

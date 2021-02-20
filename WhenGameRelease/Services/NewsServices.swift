@@ -12,6 +12,12 @@ private struct API {
     static let host = "www.gamespot.com"
     
     static let news = "/api/articles/"
+    static let videos = "/api/videos/"
+    
+    enum Path: String {
+       case NEWS = "/api/articles/"
+       case VIDEO = "/api/videos/"
+   }
 }
 
 class NewsServices {
@@ -21,17 +27,27 @@ class NewsServices {
     private let token = GamespotAccessToken.token
     private let urlNewsPath = API.news
     
-    func fetchNewsList(completion: @escaping (Result<NewsModel, Error>) -> Void) {
+    func fetchNewsList(completion: @escaping (Result<NewsModel<NewsListModel>, Error>) -> Void) {
         let params: [String : String] = [
             "sort" : "publish_date:desc",
-            "limit" : "10"
+            "limit" : "10",
+            "filter" : "categories:18"
         ]
         
-        fetchData(params: params, completion: completion)
+        fetchData(path: .NEWS, params: params, completion: completion)
     }
     
-    private func fetchData<T: Decodable>(params: [String : String], completion: @escaping (Result<T, Error>) -> Void) {
-        self.request(path: self.urlNewsPath, params: params) { (data, error) in
+    func fetchVideo(url: URL, completion: @escaping (Result<NewsModel<NewsVideoModel>, Error>) -> Void) {
+        let params: [String: String] = (url.urlComponents?.queryItems ?? []).reduce(into: [:]) {
+            params, queryItem in
+            params[queryItem.name] = queryItem.value
+        }
+        
+        fetchData(path: .VIDEO, params: params, completion: completion)
+    }
+    
+    private func fetchData<T: Decodable>(path: API.Path, params: [String : String], completion: @escaping (Result<T, Error>) -> Void) {
+        self.request(path: path, params: params) { (data, error) in
             if let error = error {
                 completion(.failure(error))
             }
@@ -40,12 +56,12 @@ class NewsServices {
         }
     }
     
-    private func request(path: String, params: [String : String], completion: @escaping (Data?, Error?) -> Void) {
+    private func request(path: API.Path, params: [String : String], completion: @escaping (Data?, Error?) -> Void) {
         
         var allParams = params
         allParams["api_key"] = token
         allParams["format"] = "json"
-        let url = self.url(from: path, params: allParams)
+        let url = self.url(from: path.rawValue, params: allParams)
         
         let request = URLRequest(url: url)
         let task = self.createDataTask(from: request, completion: completion)
