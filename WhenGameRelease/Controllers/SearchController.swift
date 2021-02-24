@@ -10,7 +10,6 @@ import Foundation
 class SearchController: ObservableObject {
     
     private let gameService = GameService.shared
-//    @ObservedObject private let gameList = GameList.shared
     static let shared = SearchController()
     
     @Published var showSearchView = false

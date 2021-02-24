@@ -15,9 +15,10 @@ struct PosterImageView: View {
     //    var coverId: Int?
     var image: UIImage = UIImage()
     var iconSize: CGFloat = 50
+    var category: Int?
     
     var body: some View {
-        GeometryReader { geometry in
+        GeometryReader { proxy in
             ZStack {
                 Rectangle()
                     .foregroundColor(colorScheme == .dark ? GlobalConstants.ColorDarkTheme.lightGray : GlobalConstants.ColorLightTheme.grayDark)
@@ -29,16 +30,24 @@ struct PosterImageView: View {
                 Image(uiImage: image)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-                    .frame(width: geometry.size.width, height: geometry.size.height)
+                    .frame(width: proxy.size.width, height: proxy.size.height)
+                
+                if let category = category, let text = GameCategory(rawValue: category)?.description {
+                    HStack {
+                        BadgeText(text: text)
+                            .padding()
+                    }
+                    .frame(width: proxy.size.width, height: proxy.size.height, alignment: Alignment(horizontal: .leading, vertical: .top))
+                }
                 
             }
-            .frame(width: geometry.size.width, height: geometry.size.height)
+            .frame(width: proxy.size.width, height: proxy.size.height)
         }
     }
 }
 
-//struct PosterImageView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        PosterImageView()
-//    }
-//}
+struct PosterImageView_Previews: PreviewProvider {
+    static var previews: some View {
+        PosterImageView(category: 0)
+    }
+}

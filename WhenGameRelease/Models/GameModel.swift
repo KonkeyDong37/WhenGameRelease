@@ -116,6 +116,30 @@ fileprivate enum Website: Int, CustomStringConvertible, CaseIterable {
     }
 }
 
+enum GameCategory: Int, CustomStringConvertible, CaseIterable {
+    case mainGame = 0
+    case dlcAddon = 1
+    case expansion = 2
+    case bundle = 3
+    case standaloneExpansion = 4
+    case mod = 5
+    case episode = 6
+    case season = 7
+    
+    var description: String {
+        switch self {
+        case .mainGame: return "Game"
+        case .dlcAddon: return "DLC"
+        case .expansion: return "Expansion"
+        case .bundle: return "Bundle"
+        case .standaloneExpansion: return "Standalone expansion"
+        case .mod: return "Mod"
+        case .episode: return "Episode"
+        case .season: return "Season"
+        }
+    }
+}
+
 private class ConvertData {
     func convertDate(date: Int64?) -> String? {
         guard let releaseDate = date else { return nil }
@@ -143,6 +167,7 @@ protocol Game {
     var status: Int? { get }
     var releaseDateString: String? { get }
     var releasedStatus: String? { get }
+    var categoryString: String? { get }
 }
 
 struct GameListModel: Game, Decodable, Identifiable, Hashable {
@@ -157,6 +182,10 @@ struct GameListModel: Game, Decodable, Identifiable, Hashable {
     }
     var releasedStatus: String? {
         return ConvertData().convertStatus(status: status)
+    }
+    var categoryString: String? {
+        guard let category = category else { return nil }
+        return GameCategory(rawValue: category)?.description
     }
 }
 
@@ -196,6 +225,10 @@ struct GameModel: Game, Decodable, Hashable {
     var gameEngines: [GameEngine]?
     var websites: [GameWebsite]?
     var gameModes: [GameModes]?
+    var categoryString: String? {
+        guard let category = category else { return nil }
+        return GameCategory(rawValue: category)?.description
+    }
 }
 
 struct GameReleaseDateModel: Decodable, Hashable {

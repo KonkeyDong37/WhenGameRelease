@@ -110,7 +110,7 @@ fileprivate struct PosterImageCarousel: View {
         GeometryReader { geometry in
             HStack(alignment: .bottom) {
                 ImageCarouselView(index: $index.animation(), maxIndex: gameDetail.screenshots.count) {
-                    PosterImageView(image: gameDetail.image ?? UIImage())
+                    PosterImageView(image: gameDetail.image ?? UIImage(), category: gameDetail.game?.category)
                     ForEach(gameDetail.videos) { id in
                         if let strinId = id.videoId {
                             VideoPlayer(videoId: strinId)

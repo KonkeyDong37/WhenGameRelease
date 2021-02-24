@@ -27,14 +27,6 @@ struct NewsView: View {
                     Text("By: \(news.authors) on \(news.publishDateConvert ?? "")")
                     Text(news.title)
                         .font(.title)
-    //                if let url = URL(string: news.image.original) {
-    //                    URLImage(url: url) { image in
-    //                        image
-    //                            .resizable()
-    //                            .aspectRatio(contentMode: .fit)
-    //                            .cornerRadius(10)
-    //                    }
-    //                }
                     if let video = controller.video {
                         VideoPlayerWrapper(video: video)
                             .aspectRatio(16/9, contentMode: .fit)

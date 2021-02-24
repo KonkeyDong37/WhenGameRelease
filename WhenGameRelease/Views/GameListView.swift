@@ -145,13 +145,22 @@ struct GameListCell: View, Equatable {
             }
             .padding()
             
-            if let status = game.releasedStatus {
-                Section {
-                    BadgeText(text: status)
+            
+                HStack {
+                    if let category = game.categoryString {
+                        if GameCategory.mainGame != GameCategory(rawValue: game.category!) {
+                            BadgeText(text: category)
+                            Spacer()
+                        }
+                    }
+                    if let status = game.releasedStatus {
+                        Spacer()
+                        BadgeText(text: status)
+                    }
                 }
                 .padding()
                 .frame(width: geometry.size.width, height: geometry.size.height, alignment: Alignment(horizontal: .trailing, vertical: .bottom))
-            }
+            
         }
         .frame(height: 550, alignment: .top)
         .background(Color.init(#colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)))

@@ -183,9 +183,6 @@ private struct SearchViewGameList: View {
         GeometryReader { proxy in
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    SearchViewGameListRow(name: "Popular games",
-                                          games: controller.popularGames,
-                                          showingSearch: $showingSearch)
                     SearchViewGameListRow(name: title,
                                           games: games,
                                           showingSearch: $showingSearch)

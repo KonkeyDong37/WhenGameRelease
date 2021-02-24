@@ -78,6 +78,15 @@ class GameService {
         fetchData(query: query, endpoint: .GAMES, completion: completion)
     }
     
+    // MARK: Fetch DLC's
+    func fetchDlcs(category: GameCategory, offset: Int, completion: @escaping (Result<[GameListModel], Error>) -> Void) {
+        
+        let query = "fields *,\(gamesExtraFields()); where category = (\(category.rawValue)); limit \(gamesOffset); sort first_release_date desc; offset \(offset);"
+        
+        fetchData(query: query, endpoint: .GAMES, completion: completion)
+        
+    }
+    
     // MARK: Fetch search
     func fetchSerach(query: String?, field: String?, id: Int?, completion: @escaping (Result<[GameModelSearch], Error>) -> Void) {
         let fieldQuery = field != nil && id != nil ? "where game.\(field!) = (\(id!));" : ""
