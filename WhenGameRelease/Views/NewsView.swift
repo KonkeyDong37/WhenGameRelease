@@ -64,20 +64,8 @@ struct VideoPlayerWrapper: UIViewControllerRepresentable {
         guard let url = URL(string: video.hdUrl) else { return AVPlayerViewController() }
         let player = AVPlayer(url: url)
         let playerViewController = AVPlayerViewController()
-        var poster: UIView {
-            guard let url = URL(string: video.image.original) else { return UIView() }
-            let image = UIImageView()
-            image.load(url: url)
-//            image.translatesAutoresizingMaskIntoConstraints = false
-//            image.leadingAnchor.constraint(equalTo: playerViewController.view.leadingAnchor).isActive = true
-//            image.trailingAnchor.constraint(equalTo: playerViewController.view.trailingAnchor).isActive = true
-//            image.heightAnchor.constraint(equalToConstant: 100).isActive = true
-//            image.centerYAnchor.constraint(equalTo: playerViewController.view.centerYAnchor).isActive = true
-            return image
-        }
         playerViewController.entersFullScreenWhenPlaybackBegins = true
         playerViewController.exitsFullScreenWhenPlaybackEnds = true
-        playerViewController.contentOverlayView?.addSubview(poster)
         playerViewController.player = player
         
         return playerViewController
