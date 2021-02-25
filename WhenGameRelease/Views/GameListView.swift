@@ -176,9 +176,9 @@ struct GameListCell: View, Equatable {
     }
 }
 
-struct GameListView_Previews: PreviewProvider {
-    static var previews: some View {
-        GameListView()
-            .preferredColorScheme(.dark)
-    }
-}
+//struct GameListView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        GameListView()
+//            .preferredColorScheme(.dark)
+//    }
+//}

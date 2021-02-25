@@ -32,7 +32,7 @@ struct RootView: View {
                         .tabItem {
                             Image(systemName: "bolt.fill")
                         }.tag(1)
-                    Text("Game")
+                    PopularGamesView()
                         .tabItem {
                             Image(systemName: "safari.fill")
                         }.tag(2)

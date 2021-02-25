@@ -263,19 +263,19 @@ private struct SearchCell: View, Equatable {
     }
 }
 
-struct SearchView_Previews: PreviewProvider {
-    
-    static var searchGames: SearchController {
-        let controller = SearchController()
-        controller.gamesFromSearch = [GameListModel(),GameListModel(),GameListModel(),GameListModel()]
-        controller.comingSoonGames = [GameListModel(),GameListModel(),GameListModel(),GameListModel()]
-        controller.fieldName = "Action"
-        controller.isEditing = true
-        return controller
-    }
-    @State static var showingSearch = true
-    
-    static var previews: some View {
-        SearchView(controller: searchGames, showingSearch: $showingSearch, viewFromTab: false)
-    }
-}
+//struct SearchView_Previews: PreviewProvider {
+//
+//    static var searchGames: SearchController {
+//        let controller = SearchController()
+//        controller.gamesFromSearch = [GameListModel(),GameListModel(),GameListModel(),GameListModel()]
+//        controller.comingSoonGames = [GameListModel(),GameListModel(),GameListModel(),GameListModel()]
+//        controller.fieldName = "Action"
+//        controller.isEditing = true
+//        return controller
+//    }
+//    @State static var showingSearch = true
+//
+//    static var previews: some View {
+//        SearchView(controller: searchGames, showingSearch: $showingSearch, viewFromTab: false)
+//    }
+//}

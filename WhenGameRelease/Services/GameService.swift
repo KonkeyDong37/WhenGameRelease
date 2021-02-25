@@ -78,10 +78,13 @@ class GameService {
         fetchData(query: query, endpoint: .GAMES, completion: completion)
     }
     
-    // MARK: Fetch DLC's
-    func fetchDlcs(category: GameCategory, offset: Int, completion: @escaping (Result<[GameListModel], Error>) -> Void) {
+    // MARK: Fetch Games form category
+    func fetchGames(from category: String, offset: Int, released: Bool, completion: @escaping (Result<[GameListModel], Error>) -> Void) {
         
-        let query = "fields *,\(gamesExtraFields()); where category = (\(category.rawValue)); limit \(gamesOffset); sort first_release_date desc; offset \(offset);"
+        let timestamp: Int = Int(NSDate().timeIntervalSince1970)
+        let sortSign = released ? "<" : ">"
+        let sortType = released ? "desc" : "asc"
+        let query = "fields *,\(gamesExtraFields()); where category = (\(category)) & first_release_date \(sortSign) \(timestamp); limit \(gamesOffset); sort first_release_date \(sortType); offset \(offset);"
         
         fetchData(query: query, endpoint: .GAMES, completion: completion)
         

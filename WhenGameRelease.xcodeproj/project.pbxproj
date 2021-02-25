@@ -55,6 +55,7 @@
 		8AD3369925E1B7F90058EA54 /* UIImageView Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD3369825E1B7F90058EA54 /* UIImageView Extension.swift */; };
 		8AD3369C25E6BC960058EA54 /* PopularGamesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD3369B25E6BC960058EA54 /* PopularGamesView.swift */; };
 		8AD3369F25E6BD6F0058EA54 /* PopularGames.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD3369E25E6BD6F0058EA54 /* PopularGames.swift */; };
+		8AD336A325E784C00058EA54 /* Binding Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD336A225E784C00058EA54 /* Binding Extension.swift */; };
 		9F80A05783F9E11ED9A96199 /* Pods_WhenGameRelease.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91260C1926A6E7BDD28DB5E9 /* Pods_WhenGameRelease.framework */; };
 /* End PBXBuildFile section */
 
@@ -108,6 +109,7 @@
 		8AD3369825E1B7F90058EA54 /* UIImageView Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView Extension.swift"; sourceTree = "<group>"; };
 		8AD3369B25E6BC960058EA54 /* PopularGamesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopularGamesView.swift; sourceTree = "<group>"; };
 		8AD3369E25E6BD6F0058EA54 /* PopularGames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopularGames.swift; sourceTree = "<group>"; };
+		8AD336A225E784C00058EA54 /* Binding Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Binding Extension.swift"; sourceTree = "<group>"; };
 		91260C1926A6E7BDD28DB5E9 /* Pods_WhenGameRelease.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WhenGameRelease.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4E3BFE11E6EA9DA522DBD64 /* Pods-WhenGameRelease.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WhenGameRelease.debug.xcconfig"; path = "Target Support Files/Pods-WhenGameRelease/Pods-WhenGameRelease.debug.xcconfig"; sourceTree = "<group>"; };
 		C65B7B5144070A56213A5DFB /* Pods-WhenGameRelease.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WhenGameRelease.release.xcconfig"; path = "Target Support Files/Pods-WhenGameRelease/Pods-WhenGameRelease.release.xcconfig"; sourceTree = "<group>"; };
@@ -276,6 +278,7 @@
 				8A09DAFB25E1731F005EBA88 /* Data Extension.swift */,
 				8A09DAFE25E17337005EBA88 /* StringProtocol Extension.swift */,
 				8AD3369825E1B7F90058EA54 /* UIImageView Extension.swift */,
+				8AD336A225E784C00058EA54 /* Binding Extension.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -403,6 +406,7 @@
 				8A85EE2325ADCF410084AD44 /* AccessResponse.swift in Sources */,
 				8A7F2D1925D4889F0091FFC8 /* SearchController.swift in Sources */,
 				8A09DAE725E0708B005EBA88 /* NewsListView.swift in Sources */,
+				8AD336A325E784C00058EA54 /* Binding Extension.swift in Sources */,
 				8A77D4ED25D2D69E00304B3B /* UIScrollViewWrapper.swift in Sources */,
 				8A85EEAF25B58AA40084AD44 /* GameDetailView.swift in Sources */,
 				8A85EE2025ADCD260084AD44 /* TwithAccessTokens.swift in Sources */,
