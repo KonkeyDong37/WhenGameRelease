@@ -24,27 +24,36 @@ struct NewsListView: View {
     
     var body: some View {
         NavigationView {
-            List {
-                ForEach(controller.newsList) { news in
-                    NavigationLink(
-                        destination: NewsView(news: news),
-                        label: {
-                            NewsListCellView(news: news)
-                        })
-                        .listRowBackground(bgColor)
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    ForEach(controller.newsList) { news in
+                        NavigationLink(
+                            destination: NewsView(news: news),
+                            label: {
+                                NewsListCellView(news: news)
+                                    .onAppear {
+                                        if controller.newsList.last?.id == news.id {
+                                            controller.getNextNews()
+                                        }
+                                    }
+                            })
+                    }
                 }
             }
-            .background(bgColor.edgesIgnoringSafeArea(.all))
             .navigationBarTitle(Text("Game news"), displayMode: .large)
+            .background(bgColor.edgesIgnoringSafeArea(.all))
         }
         .onAppear {
             controller.getNews()
         }
-        
     }
 }
 
-private struct NewsListCellView: View {
+private struct NewsListCellView: View, Equatable {
+    
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.news.id == rhs.news.id
+    }
     
     @Environment(\.colorScheme) private var colorScheme
     private var colorDate: Color {
@@ -83,16 +92,16 @@ private struct NewsListCellView: View {
     }
 }
 
-struct NewsListView_Previews: PreviewProvider {
-    
-    static var controller: NewsList {
-        let controller = NewsList()
-        controller.newsList = [NewsListModel(id: 1, authors: "Author", title: "Title", deck: "Description", body: "Text", image: NewsImageModel(original: "", screenTiny: "https://gamespot1.cbsistatic.com/uploads/screen_tiny/1597/15971423/3798961-2178171702-Elah4cWWkAMeODb.jpg"), publishDate: "2021-02-20 06:20:00", videosApiUrl: nil)]
-        return controller
-    }
-    
-    static var previews: some View {
-        NewsListView(controller: controller)
-        //            .preferredColorScheme(.dark)
-    }
-}
+//struct NewsListView_Previews: PreviewProvider {
+//
+//    static var controller: NewsList {
+//        let controller = NewsList()
+//        controller.newsList = [NewsListModel(id: 1, authors: "Author", title: "Title", deck: "Description", body: "Text", image: NewsImageModel(original: "", screenTiny: "https://gamespot1.cbsistatic.com/uploads/screen_tiny/1597/15971423/3798961-2178171702-Elah4cWWkAMeODb.jpg"), publishDate: "2021-02-20 06:20:00", videosApiUrl: nil)]
+//        return controller
+//    }
+//
+//    static var previews: some View {
+//        NewsListView(controller: controller)
+//        //            .preferredColorScheme(.dark)
+//    }
+//}

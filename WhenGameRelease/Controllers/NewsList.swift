@@ -15,12 +15,20 @@ class NewsList: ObservableObject {
     @Published var newsList: [NewsListModel] = []
     @Published var convertedText: String = ""
     @Published var video: NewsVideoModel? = nil
+    @Published var awaitResponse = false
     
-    func getNews() {
-        newsServices.fetchNewsList { [weak self] response in
+    private let limit = 10
+    private var offset = 0
+    
+    func getNews(refresh: Bool = true) {
+        newsServices.fetchNewsList(offset: offset, limit: limit) { [weak self] response in
             switch response {
             case .success(let news):
-                self?.newsList = news.results
+                if refresh {
+                    self?.newsList = news.results
+                } else {
+                    self?.newsList.append(contentsOf: news.results)
+                }
             case .failure(let error):
                 print("ERROR Gamespot news: \(error)")
             }
@@ -44,5 +52,16 @@ class NewsList: ObservableObject {
         DispatchQueue.main.async {
             self.convertedText = text.html2String
         }
+    }
+    
+    func getNextNews() {
+        offset += limit
+        
+        getNews(refresh: false)
+    }
+    
+    private func shouldLoadMoreGames() -> Bool {
+        guard !awaitResponse else { return false }
+        return true
     }
 }

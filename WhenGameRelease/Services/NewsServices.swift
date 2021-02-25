@@ -27,11 +27,12 @@ class NewsServices {
     private let token = GamespotAccessToken.token
     private let urlNewsPath = API.news
     
-    func fetchNewsList(completion: @escaping (Result<NewsModel<NewsListModel>, Error>) -> Void) {
+    func fetchNewsList(offset: Int, limit: Int, completion: @escaping (Result<NewsModel<NewsListModel>, Error>) -> Void) {
         let params: [String : String] = [
             "sort" : "publish_date:desc",
-            "limit" : "10",
-            "filter" : "categories:18"
+            "limit" : "\(limit)",
+            "filter" : "categories:18",
+            "offset" : "\(offset)"
         ]
         
         fetchData(path: .NEWS, params: params, completion: completion)

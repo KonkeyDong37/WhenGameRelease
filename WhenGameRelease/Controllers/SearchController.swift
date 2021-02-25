@@ -54,21 +54,6 @@ class SearchController: ObservableObject {
         }
     }
     
-//    func getComingSoonGames() {
-//        gameService.fetchComingSoonGames { [weak self] response in
-//            switch response {
-//            case .success(let response):
-//                self?.comingSoonGames = response
-//            case .failure(let error):
-//                print(error)
-//            }
-//        }
-//    }
-//    
-//    func getLastReleaseGames() {
-//        
-//    }
-    
     func getPopularGames() {
         gameService.fetchPopularGames { [weak self] response in
             switch response {

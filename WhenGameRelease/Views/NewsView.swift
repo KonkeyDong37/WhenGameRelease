@@ -68,9 +68,9 @@ struct VideoPlayerWrapper: UIViewControllerRepresentable {
     }
 }
 
-struct NewsView_Previews: PreviewProvider {
-    static var previews: some View {
-        NewsView(news: NewsListModel(id: 1, authors: "Author", title: "Title", deck: "Description", body: "Text", image: NewsImageModel(original: "https://gamespot1.cbsistatic.com/uploads/original/1597/15971423/3798961-2178171702-Elah4cWWkAMeODb.jpg", screenTiny: "https://gamespot1.cbsistatic.com/uploads/screen_tiny/1597/15971423/3798961-2178171702-Elah4cWWkAMeODb.jpg"), publishDate: "2021-02-20 06:20:00", videosApiUrl: nil))
-        
-    }
-}
+//struct NewsView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        NewsView(news: NewsListModel(id: 1, authors: "Author", title: "Title", deck: "Description", body: "Text", image: NewsImageModel(original: "https://gamespot1.cbsistatic.com/uploads/original/1597/15971423/3798961-2178171702-Elah4cWWkAMeODb.jpg", screenTiny: "https://gamespot1.cbsistatic.com/uploads/screen_tiny/1597/15971423/3798961-2178171702-Elah4cWWkAMeODb.jpg"), publishDate: "2021-02-20 06:20:00", videosApiUrl: nil))
+//        
+//    }
+//}

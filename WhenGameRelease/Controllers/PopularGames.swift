@@ -106,11 +106,6 @@ class PopularGames: ObservableObject {
         }
     }
     
-    func shouldLoadMoreGames() -> Bool {
-        guard !awaitResponse else { return false }
-        return true
-    }
-    
     func loadMoreGames(with category: GameCategory) {
         switch category {
         case .mainGame: return
@@ -128,5 +123,10 @@ class PopularGames: ObservableObject {
             seasonsCount += gamesOffset
             getGames(from: category, refresh: false)
         }
+    }
+    
+    private func shouldLoadMoreGames() -> Bool {
+        guard !awaitResponse else { return false }
+        return true
     }
 }
