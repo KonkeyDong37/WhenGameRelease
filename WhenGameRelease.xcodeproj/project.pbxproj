@@ -12,6 +12,7 @@
 		8A01605F25C850BB00229EF2 /* UIViewController Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A01605E25C850BB00229EF2 /* UIViewController Extension.swift */; };
 		8A01606325C86FC800229EF2 /* ImageCarouselView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A01606225C86FC800229EF2 /* ImageCarouselView.swift */; };
 		8A01606925CB11EA00229EF2 /* BadgeText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A01606825CB11EA00229EF2 /* BadgeText.swift */; };
+		8A022EA425ED4317004E669C /* DynamicOverlay in Frameworks */ = {isa = PBXBuildFile; productRef = 8A022EA325ED4317004E669C /* DynamicOverlay */; };
 		8A09DAE725E0708B005EBA88 /* NewsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A09DAE625E0708B005EBA88 /* NewsListView.swift */; };
 		8A09DAEB25E07131005EBA88 /* NewsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A09DAEA25E07131005EBA88 /* NewsList.swift */; };
 		8A09DAF025E161CE005EBA88 /* URLImage in Frameworks */ = {isa = PBXBuildFile; productRef = 8A09DAEF25E161CE005EBA88 /* URLImage */; };
@@ -122,6 +123,7 @@
 			files = (
 				8A09DAF025E161CE005EBA88 /* URLImage in Frameworks */,
 				9F80A05783F9E11ED9A96199 /* Pods_WhenGameRelease.framework in Frameworks */,
+				8A022EA425ED4317004E669C /* DynamicOverlay in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -303,6 +305,7 @@
 			name = WhenGameRelease;
 			packageProductDependencies = (
 				8A09DAEF25E161CE005EBA88 /* URLImage */,
+				8A022EA325ED4317004E669C /* DynamicOverlay */,
 			);
 			productName = WhenGameRelease;
 			productReference = 8A104622257A2B83004B9B6D /* WhenGameRelease.app */;
@@ -333,6 +336,7 @@
 			mainGroup = 8A104619257A2B83004B9B6D;
 			packageReferences = (
 				8A09DAEE25E161CE005EBA88 /* XCRemoteSwiftPackageReference "url-image" */,
+				8A022EA225ED4317004E669C /* XCRemoteSwiftPackageReference "DynamicOverlay" */,
 			);
 			productRefGroup = 8A104623257A2B83004B9B6D /* Products */;
 			projectDirPath = "";
@@ -651,6 +655,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		8A022EA225ED4317004E669C /* XCRemoteSwiftPackageReference "DynamicOverlay" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/fabernovel/DynamicOverlay.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		8A09DAEE25E161CE005EBA88 /* XCRemoteSwiftPackageReference "url-image" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/dmytro-anokhin/url-image";
@@ -662,6 +674,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		8A022EA325ED4317004E669C /* DynamicOverlay */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8A022EA225ED4317004E669C /* XCRemoteSwiftPackageReference "DynamicOverlay" */;
+			productName = DynamicOverlay;
+		};
 		8A09DAEF25E161CE005EBA88 /* URLImage */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8A09DAEE25E161CE005EBA88 /* XCRemoteSwiftPackageReference "url-image" */;

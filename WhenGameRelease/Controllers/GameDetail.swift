@@ -15,10 +15,18 @@ class GameDetail: ObservableObject {
     
     @Published var bottomSheetShown = false
     @Published var showGameDetail = false
-    @Published var game: GameModel?
-    @Published var image: UIImage? = nil
+    @Published var game: GameModel? = GameModel()
+    @Published var image: UIImage? = UIImage()
     @Published var videos: [GameVideo] = []
     @Published var screenshots: [UIImage] = []
+    
+    func dismissGameDetailView() {
+        bottomSheetShown = false
+        game = GameModel()
+        image = UIImage()
+        videos = []
+        screenshots = []
+    }
     
     func showGameDetailView(showGameDetail: Bool, game: GameListModel, image: UIImage?) {
         self.screenshots = []
@@ -33,11 +41,12 @@ class GameDetail: ObservableObject {
         self.bottomSheetShown = false
         
         if let id = game.id {
-            getGame(game: id) { [weak self] game in
-                if let screenshots = game.screenshots {
-                    self?.getScreenshots(screenshots: screenshots)
+                getGame(game: id) { [weak self] game in
+                    if let screenshots = game.screenshots {
+                        self?.getScreenshots(screenshots: screenshots)
+                    }
                 }
-            }
+            
         }
     
     }

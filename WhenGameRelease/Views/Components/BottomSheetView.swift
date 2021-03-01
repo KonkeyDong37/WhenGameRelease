@@ -92,7 +92,7 @@ struct BottomSheetView<Content: View>: View {
             .frame(height: geometry.size.height, alignment: .bottom)
             .offset(y: max(self.offset + self.translation, 0))
             .animation(.spring(response: 0.4, dampingFraction: 0.8, blendDuration: 1))
-            .highPriorityGesture(setGestureFromField ? nil : dragGesture)
+            .simultaneousGesture(setGestureFromField ? nil : dragGesture)
         }
     }
 }

@@ -7,10 +7,15 @@
 
 import SwiftUI
 import AVKit
+import DynamicOverlay
 
 fileprivate enum Constants {
     static let bottomSheetHeight: CGFloat = 260
     static let edgeInsets: CGFloat = 16
+}
+
+fileprivate enum Notch: CaseIterable, Equatable {
+    case min, max
 }
 
 struct GameDetailView: View {
@@ -19,7 +24,7 @@ struct GameDetailView: View {
     @Environment(\.colorScheme) var colorScheme
     @ObservedObject var gameDetail: GameDetail = GameDetail.shared
     @State private var imageShowIndex = 0
-    @State private var box = true
+    @State var isCompact = false
     
     @GestureState private var translation: CGFloat = 0
     
@@ -40,10 +45,11 @@ struct GameDetailView: View {
                 return
             }
             gameDetail.showGameDetail = value.translation.height < 0
-
+            
             if !gameDetail.showGameDetail {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     imageShowIndex = 0
+                    gameDetail.dismissGameDetailView()
                 }
             }
         }
@@ -65,11 +71,8 @@ struct GameDetailView: View {
                     PosterImageCarousel(index: $imageShowIndex)
                         .frame(width: geometry.size.width, height: geometry.size.height)
                         .simultaneousGesture(dismissGesture(height: geometry.size.height))
-                    
-                    BottomContentView(geometry: geometry,
-                                      game: game,
-                                      bottomSheetShown: $gameDetail.bottomSheetShown)
-                    
+                        .dynamicOverlay(BottomContentView(proxy: geometry, game: game))
+                        .dynamicOverlayBehavior(overlayBehavior)
                 }
             }
             .frame(width: geometry.size.width, height: geometry.size.height, alignment: .top)
@@ -79,6 +82,17 @@ struct GameDetailView: View {
             .animation(.spring(response: 0.4, dampingFraction: 0.8, blendDuration: 1))
         }
         .edgesIgnoringSafeArea(.all)
+    }
+    
+    var overlayBehavior: some DynamicOverlayBehavior {
+        MagneticNotchOverlayBehavior<Notch> { notch in
+            switch notch {
+            case .max:
+                return .fractional(0.93)
+            case .min:
+                return .absolute(Double(Constants.bottomSheetHeight))
+            }
+        }
     }
     
 }
@@ -153,68 +167,78 @@ fileprivate struct PosterImageCarousel: View {
 fileprivate struct BottomContentView: View {
     
     @Environment(\.colorScheme) private var colorScheme
-    @State private var box = true
     
-    var geometry: GeometryProxy
+    var proxy: GeometryProxy
     var game: GameModel
     
-    @Binding var bottomSheetShown: Bool
+    var bgColor: Color {
+        return colorScheme == .dark ?
+            GlobalConstants.ColorDarkTheme.darkGray :
+            GlobalConstants.ColorLightTheme.white
+    }
     
     var body: some View {
-        BottomSheetView(isOpen: self.$bottomSheetShown,
-                        maxHeight: geometry.size.height * 0.92,
-                        minHeight: Constants.bottomSheetHeight,
-                        bgColor: colorScheme == .dark ?
-                            GlobalConstants.ColorDarkTheme.darkGray :
-                            GlobalConstants.ColorLightTheme.white,
-                        showTopIndicator: true) {
+        
+        
+        ScrollView(showsIndicators: false) {
+            SwipeIndicator()
+                .padding(.top)
+                .padding(.bottom, 5)
             
-     
-                UIScrollViewWrapper(scrollToTop: $bottomSheetShown) {
-                    VStack(alignment: .leading, spacing: 25.0) {
-                        
-                        Group {
-                            GameTitle(game: game, colorScheme: colorScheme)
-                            
-                            AddToFavoriteButton()
-                            
-                            InfoTop(game: game, colorScheme: colorScheme)
-                            
-                            Divider()
-                            
-                            Description(game: game, colorScheme: colorScheme)
-                        }
-                        .padding(EdgeInsets(top: 0, leading: Constants.edgeInsets, bottom: 0, trailing: Constants.edgeInsets))
-                        
-                        Group {
-                            
-                            VStack(spacing: 10) {
-                                Genres(genres: game.genres, colorScheme: colorScheme)
-                                
-                                GameWebsites(websites: game.websites)
-                                
-                                GameKeywords(keywords: game.keywords)
-                                
-                                GameModesBox(gameModes: game.gameModes)
-                                
-                                InvolvedCompany(companies: game.involvedCompanies)
-                                
-                                GameEngines(gameEngines: game.gameEngines)
-                                
-                                AgeRatings(ageRating: game.ageRatings)
-                                
-                                GamePlatformsBox(platforms: game.platforms)
-                            }
-                            
-                        }
-                        
-                    }
-                    .frame(width: geometry.size.width)
-                    .padding(.bottom)
+            VStack(alignment: .leading, spacing: 25.0) {
+                
+                Group {
+                    GameTitle(game: game, colorScheme: colorScheme)
+                    
+                    AddToFavoriteButton()
+                    
+                    InfoTop(game: game, colorScheme: colorScheme)
+                    
+                    Divider()
+                    
+                    Description(game: game, colorScheme: colorScheme)
                 }
-            
+                .padding(EdgeInsets(top: 0, leading: Constants.edgeInsets, bottom: 0, trailing: Constants.edgeInsets))
+                
+                Group {
+                    
+                    VStack(spacing: 10) {
+                        Genres(genres: game.genres, colorScheme: colorScheme)
+                        
+                        GameWebsites(websites: game.websites)
+                        
+                        GameKeywords(keywords: game.keywords)
+                        
+                        GameModesBox(gameModes: game.gameModes)
+                        
+                        InvolvedCompany(companies: game.involvedCompanies)
+                        
+                        GameEngines(gameEngines: game.gameEngines)
+                        
+                        AgeRatings(ageRating: game.ageRatings)
+                        
+                        GamePlatformsBox(platforms: game.platforms)
+                    }
+                    
+                }
+                
+            }
+            .frame(width: proxy.size.width)
+            .padding(.bottom, 36)
         }
-        .frame(width: geometry.size.width)
+        .drivingScrollView()
+        
+        .background(bgColor)
+        .cornerRadius(16)
+        
+    }
+}
+
+struct ViewOffsetKey: PreferenceKey {
+    typealias Value = CGFloat
+    static var defaultValue = CGFloat.zero
+    static func reduce(value: inout Value, nextValue: () -> Value) {
+        value += nextValue()
     }
 }
 
@@ -353,8 +377,8 @@ private struct Genres: View {
                 ForEach(genres, id: \.self) { genre in
                     Button(action: {
                         controller?.searchGameFromField(fieldName: genre.name,
-                                                       queryField: "genres",
-                                                       id: genre.id)
+                                                        queryField: "genres",
+                                                        id: genre.id)
                         controller?.presentSearchView()
                     }, label: {
                         BadgeText(text: genre.name)
@@ -376,8 +400,8 @@ private struct InvolvedCompany: View {
                 ForEach(companies, id: \.self) { company in
                     Button(action: {
                         controller?.searchGameFromField(fieldName: company.company.name,
-                                                       queryField: "involved_companies",
-                                                       id: company.company.id)
+                                                        queryField: "involved_companies",
+                                                        id: company.company.id)
                         controller?.presentSearchView()
                     }, label: {
                         BadgeText(text: company.company.name)
@@ -399,14 +423,14 @@ private struct AgeRatings: View {
                 ForEach(ageRating) { rating in
                     Button(action: {
                         controller?.searchGameFromField(fieldName: "\(rating.categoryString): \(rating.ratingString)",
-                                                       queryField: "age_ratings",
-                                                       id: rating.id)
+                                                        queryField: "age_ratings",
+                                                        id: rating.id)
                         controller?.presentSearchView()
                     }, label: {
                         BadgeText(text: "\(rating.categoryString): \(rating.ratingString)")
                     })
                 }
-
+                
             }
         }
     }
