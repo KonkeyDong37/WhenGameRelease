@@ -40,7 +40,7 @@ struct RootView: View {
                         .tabItem {
                             Image(systemName: "magnifyingglass")
                         }.tag(3)
-                    Text("User")
+                    UserView()
                         .tabItem {
                             Image(systemName: "person.crop.circle")
                         }.tag(4)

@@ -13,6 +13,9 @@
 		8A01606325C86FC800229EF2 /* ImageCarouselView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A01606225C86FC800229EF2 /* ImageCarouselView.swift */; };
 		8A01606925CB11EA00229EF2 /* BadgeText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A01606825CB11EA00229EF2 /* BadgeText.swift */; };
 		8A022EA425ED4317004E669C /* DynamicOverlay in Frameworks */ = {isa = PBXBuildFile; productRef = 8A022EA325ED4317004E669C /* DynamicOverlay */; };
+		8A022EA725ED599C004E669C /* UserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A022EA625ED599C004E669C /* UserView.swift */; };
+		8A022EAB25ED6794004E669C /* UserController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A022EAA25ED6794004E669C /* UserController.swift */; };
+		8A022EAF25ED8550004E669C /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A022EAE25ED8550004E669C /* ImagePicker.swift */; };
 		8A09DAE725E0708B005EBA88 /* NewsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A09DAE625E0708B005EBA88 /* NewsListView.swift */; };
 		8A09DAEB25E07131005EBA88 /* NewsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A09DAEA25E07131005EBA88 /* NewsList.swift */; };
 		8A09DAF025E161CE005EBA88 /* URLImage in Frameworks */ = {isa = PBXBuildFile; productRef = 8A09DAEF25E161CE005EBA88 /* URLImage */; };
@@ -66,6 +69,9 @@
 		8A01605E25C850BB00229EF2 /* UIViewController Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController Extension.swift"; sourceTree = "<group>"; };
 		8A01606225C86FC800229EF2 /* ImageCarouselView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCarouselView.swift; sourceTree = "<group>"; };
 		8A01606825CB11EA00229EF2 /* BadgeText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeText.swift; sourceTree = "<group>"; };
+		8A022EA625ED599C004E669C /* UserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserView.swift; sourceTree = "<group>"; };
+		8A022EAA25ED6794004E669C /* UserController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserController.swift; sourceTree = "<group>"; };
+		8A022EAE25ED8550004E669C /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		8A09DAE625E0708B005EBA88 /* NewsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsListView.swift; sourceTree = "<group>"; };
 		8A09DAEA25E07131005EBA88 /* NewsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsList.swift; sourceTree = "<group>"; };
 		8A09DAF725E169B3005EBA88 /* NewsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsView.swift; sourceTree = "<group>"; };
@@ -170,6 +176,7 @@
 				8A6CFBD525D556780074D2F4 /* ChangeObserver.swift */,
 				8A6CFBDB25D55C2D0074D2F4 /* GridView.swift */,
 				8A6CFBDE25D7114F0074D2F4 /* ActivityIndicator.swift */,
+				8A022EAE25ED8550004E669C /* ImagePicker.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -228,6 +235,7 @@
 				8A09DAF725E169B3005EBA88 /* NewsView.swift */,
 				8AD3369B25E6BC960058EA54 /* PopularGamesView.swift */,
 				8A77D4FB25D4742100304B3B /* SearchView.swift */,
+				8A022EA625ED599C004E669C /* UserView.swift */,
 				8A01606725CB11C400229EF2 /* Components */,
 			);
 			path = Views;
@@ -242,6 +250,7 @@
 				8AD3369E25E6BD6F0058EA54 /* PopularGames.swift */,
 				8A7F2D1825D4889F0091FFC8 /* SearchController.swift */,
 				8A85EE8C25B02E330084AD44 /* ImageLoader.swift */,
+				8A022EAA25ED6794004E669C /* UserController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -409,6 +418,7 @@
 			files = (
 				8A85EE2325ADCF410084AD44 /* AccessResponse.swift in Sources */,
 				8A7F2D1925D4889F0091FFC8 /* SearchController.swift in Sources */,
+				8A022EAB25ED6794004E669C /* UserController.swift in Sources */,
 				8A09DAE725E0708B005EBA88 /* NewsListView.swift in Sources */,
 				8AD336A325E784C00058EA54 /* Binding Extension.swift in Sources */,
 				8A77D4ED25D2D69E00304B3B /* UIScrollViewWrapper.swift in Sources */,
@@ -434,6 +444,7 @@
 				8A09DAFC25E1731F005EBA88 /* Data Extension.swift in Sources */,
 				8A09DAFF25E17337005EBA88 /* StringProtocol Extension.swift in Sources */,
 				8A09DAEB25E07131005EBA88 /* NewsList.swift in Sources */,
+				8A022EA725ED599C004E669C /* UserView.swift in Sources */,
 				8AB27ADC25B5DC0900AEFEED /* Double Extension.swift in Sources */,
 				8AB27AE225B5EF2E00AEFEED /* Color Extension.swift in Sources */,
 				8AB27AD225B5C4DC00AEFEED /* Date Extension.swift in Sources */,
@@ -450,6 +461,7 @@
 				8A85EE0225ACE11D0084AD44 /* GameService.swift in Sources */,
 				8A01606325C86FC800229EF2 /* ImageCarouselView.swift in Sources */,
 				8AD3369F25E6BD6F0058EA54 /* PopularGames.swift in Sources */,
+				8A022EAF25ED8550004E669C /* ImagePicker.swift in Sources */,
 				8A8370F925DFE0A300BA9D27 /* NewsServices.swift in Sources */,
 				8A85EE1625ADCB390084AD44 /* TwithAuthServices.swift in Sources */,
 			);

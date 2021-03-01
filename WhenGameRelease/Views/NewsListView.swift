@@ -37,6 +37,8 @@ struct NewsListView: View {
                                         }
                                     }
                             })
+                        
+                        Divider()
                     }
                 }
             }
@@ -56,8 +58,12 @@ private struct NewsListCellView: View, Equatable {
     }
     
     @Environment(\.colorScheme) private var colorScheme
+    
     private var colorDate: Color {
         return colorScheme == .dark ? GlobalConstants.ColorDarkTheme.lightGray : GlobalConstants.ColorLightTheme.grayDark
+    }
+    private var bgColor: Color {
+        return colorScheme == .dark ? GlobalConstants.ColorDarkTheme.lightGray : GlobalConstants.ColorLightTheme.whiteDark
     }
     
     var news: NewsListModel
@@ -70,7 +76,8 @@ private struct NewsListCellView: View, Equatable {
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .cornerRadius(10)
-                }            }
+                }
+            }
             VStack(alignment: .leading) {
                 Text(news.title)
                     .font(Font.system(size: 20, weight: .bold))
@@ -88,20 +95,20 @@ private struct NewsListCellView: View, Equatable {
                     .foregroundColor(colorDate)
             }
         }
-        .padding([.top, .bottom])
+        .padding()
     }
 }
 
-//struct NewsListView_Previews: PreviewProvider {
-//
-//    static var controller: NewsList {
-//        let controller = NewsList()
-//        controller.newsList = [NewsListModel(id: 1, authors: "Author", title: "Title", deck: "Description", body: "Text", image: NewsImageModel(original: "", screenTiny: "https://gamespot1.cbsistatic.com/uploads/screen_tiny/1597/15971423/3798961-2178171702-Elah4cWWkAMeODb.jpg"), publishDate: "2021-02-20 06:20:00", videosApiUrl: nil)]
-//        return controller
-//    }
-//
-//    static var previews: some View {
-//        NewsListView(controller: controller)
-//        //            .preferredColorScheme(.dark)
-//    }
-//}
+struct NewsListView_Previews: PreviewProvider {
+
+    static var controller: NewsList {
+        let controller = NewsList()
+        controller.newsList = [NewsListModel(id: 1, authors: "Author", title: "Title", deck: "Description", body: "Text", image: NewsImageModel(original: "", screenTiny: "https://gamespot1.cbsistatic.com/uploads/screen_tiny/1597/15971423/3798961-2178171702-Elah4cWWkAMeODb.jpg"), publishDate: "2021-02-20 06:20:00", videosApiUrl: nil)]
+        return controller
+    }
+
+    static var previews: some View {
+        NewsListView(controller: controller)
+        //            .preferredColorScheme(.dark)
+    }
+}

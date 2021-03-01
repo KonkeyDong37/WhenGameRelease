@@ -52,10 +52,6 @@ class UIScrollViewViewController: UIViewController, UIScrollViewDelegate {
         self.scrollView.addSubview(self.hostingController.view)
         self.pinEdges(of: self.hostingController.view, to: self.scrollView)
         self.hostingController.didMove(toParent: self)
-        
-        let gesture = UIPanGestureRecognizer(target: self, action: #selector(gestureRecognizer))
-        gesture.delegate = self
-        self.view.addGestureRecognizer(gesture)
     }
     
     func pinEdges(of viewA: UIView, to viewB: UIView) {
@@ -66,24 +62,5 @@ class UIScrollViewViewController: UIViewController, UIScrollViewDelegate {
             viewA.topAnchor.constraint(equalTo: viewB.topAnchor),
             viewA.bottomAnchor.constraint(equalTo: viewB.bottomAnchor),
         ])
-    }
-}
-
-extension UIScrollViewViewController: UIGestureRecognizerDelegate {
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        let gesture = (gestureRecognizer as! UIPanGestureRecognizer)
-        let scrollOffset = scrollView.contentOffset.y
-        let direction = gesture.translation(in: view).y
-        
-        print("Offfset", scrollOffset)
-        print("Direction", direction)
-        
-        if scrollOffset == 0 && direction > 0 {
-            scrollView.isScrollEnabled = false
-        } else {
-            scrollView.isScrollEnabled = true
-        }
-        
-        return false
     }
 }
