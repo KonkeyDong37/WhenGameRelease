@@ -193,6 +193,9 @@ private struct UserViewFavoriteGames: View {
         .onAppear {
             viewModel.sortGames(games: favoriteGames)
         }
+        .onChange(of: favoriteGames.count, perform: { value in
+            viewModel.sortGames(games: favoriteGames)
+        })
     }
     
     private func getGames(_ tag: Int) {
