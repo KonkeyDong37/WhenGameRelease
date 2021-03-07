@@ -14,7 +14,7 @@ fileprivate enum Constants {
 struct SearchView: View {
     
     @Environment(\.colorScheme) var colorScheme
-    @ObservedObject var controller = SearchController.shared
+    @ObservedObject var viewModel: SearchViewModel = .shared
     @Binding var showingSearch: Bool
     var viewFromTab: Bool
     
@@ -25,13 +25,13 @@ struct SearchView: View {
     var body: some View {
         GeometryReader { proxy in
             VStack(alignment: .leading) {
-                SearchViewHeader(searchGames: controller, isEditing: $controller.isEditing, viewFromTab: viewFromTab)
+                SearchViewHeader(viewModel: viewModel, isEditing: $viewModel.isEditing, viewFromTab: viewFromTab)
                 
                 ZStack {
-                    if controller.isEditing {
-                        SearchViewSearcingResults(controller: controller, showingSearch: $showingSearch)
+                    if viewModel.isEditing {
+                        SearchViewSearcingResults(viewModel: viewModel, showingSearch: $showingSearch)
                     } else {
-                        SearchViewGameList(controller: controller, showingSearch: $showingSearch)
+                        SearchViewGameList(showingSearch: $showingSearch)
                     }
                 }
                 .overlay(Divider(), alignment: .top)
@@ -48,7 +48,7 @@ struct SearchView: View {
         }
         .background(bgColor.edgesIgnoringSafeArea(.all))
         .onAppear {
-            controller.getPopularGames()
+            viewModel.getPopularGames()
         }
         .edgesIgnoringSafeArea(.bottom)
     }
@@ -63,7 +63,7 @@ private struct SearchViewHeader: View {
     @State private var timer: Timer?
     @State private var searchText = ""
     
-    @ObservedObject var searchGames: SearchController
+    @ObservedObject var viewModel: SearchViewModel
     @Binding var isEditing: Bool
     
     var viewFromTab: Bool
@@ -77,7 +77,7 @@ private struct SearchViewHeader: View {
                 if !searchText.isEmpty {
                     timer?.invalidate()
                     timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: false, block: { _ in
-                        searchGames.searchGames(query: query)
+                        viewModel.searchGames(query: query)
                     })
                 }
             } content: {
@@ -92,7 +92,7 @@ private struct SearchViewSearcingResults: View {
     
     @Environment(\.colorScheme) private var colorScheme
     @State private var alertIsPresenting = false
-    @ObservedObject var controller: SearchController
+    @ObservedObject var viewModel: SearchViewModel
     @Binding var showingSearch: Bool
     
     private var bgColor: Color {
@@ -102,17 +102,17 @@ private struct SearchViewSearcingResults: View {
     var body: some View {
         GeometryReader { proxy in
             VStack {
-                if controller.isSearching {
+                if viewModel.isSearching {
                     ActivityIndicator()
                         .padding(.top, 30)
                         .padding(.bottom, 12)
                 }
-                if controller.nothingFound {
+                if viewModel.nothingFound {
                     Text("Nothing found")
                         .padding(.top, 50)
                 }
                 ScrollView {
-                    if let name = controller.fieldName {
+                    if let name = viewModel.fieldName {
                         HStack {
                             Button(action: {
                                 alertIsPresenting.toggle()
@@ -121,9 +121,9 @@ private struct SearchViewSearcingResults: View {
                             }).alert(isPresented: $alertIsPresenting) {
                                 Alert(title: Text("Remove keyword \(name) from search?"),
                                       primaryButton: .destructive(Text("Remove")) {
-                                        controller.fieldName = nil
-                                        controller.queryField = nil
-                                        controller.fieldId = nil
+                                        viewModel.fieldName = nil
+                                        viewModel.queryField = nil
+                                        viewModel.fieldId = nil
                                       },
                                       secondaryButton: .cancel())
                             }
@@ -131,7 +131,7 @@ private struct SearchViewSearcingResults: View {
                         .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
                         .frame(width: proxy.size.width, alignment: .leading)
                     }
-                    GridView(columns: 2, width: proxy.size.width - 24, list: controller.gamesFromSearch) { (game) in
+                    GridView(columns: 2, width: proxy.size.width - 24, list: viewModel.gamesFromSearch) { (game) in
                         SearchCell(showingSearch: $showingSearch, game: game)
                             .padding(6)
                     }
@@ -149,12 +149,11 @@ private struct SearchViewSearcingResults: View {
 
 private struct SearchViewGameList: View {
     
-    @ObservedObject private var gameList = GameList.shared
-    @ObservedObject var controller: SearchController
+    @ObservedObject private var viewModel: GameListViewModel = .shared
     @Binding var showingSearch: Bool
     
     private var listType: GameTypeList {
-        switch gameList.gameTypeList {
+        switch viewModel.gameTypeList {
         case .lastRelease:
             return GameTypeList.comingSoon
         case .comingSoon:
@@ -167,9 +166,9 @@ private struct SearchViewGameList: View {
         
         switch listType {
         case .lastRelease:
-            games = gameList.lastReleasedGames
+            games = viewModel.lastReleasedGames
         case .comingSoon:
-            games = gameList.comingSoonGames
+            games = viewModel.comingSoonGames
         }
         
         return games
@@ -191,7 +190,7 @@ private struct SearchViewGameList: View {
                 .padding(.top)
             }
             .onAppear {
-                self.gameList.getGames(games: listType)
+                self.viewModel.getGames(games: listType)
             }
         }
     }
@@ -230,7 +229,7 @@ private struct SearchCell: View, Equatable {
     
     @Environment(\.colorScheme) private var colorScheme
     @ObservedObject var imageLoader: ImageLoader = ImageLoader()
-    @ObservedObject var gameDetail: GameDetail = GameDetail.shared
+    @ObservedObject var viewModel: GameDetailViewModel = .shared
     
     @Binding var showingSearch: Bool
     var game: GameListModel
@@ -254,7 +253,7 @@ private struct SearchCell: View, Equatable {
         .onTapGesture {
             showingSearch.toggle()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                gameDetail.showGameDetailView(showGameDetail: true, game: game, image: imageLoader.image)
+                viewModel.showGameDetailView(showGameDetail: true, game: game, image: imageLoader.image)
             }
         }
         .onAppear() {

@@ -18,7 +18,7 @@ class TwithAuthServices {
             "grant_type" : "client_credentials"
         ]
         
-        AF.request(url, method: .post, parameters: params).responseJSON { (response) in
+        AF.request(url, method: .post, parameters: params).responseJSON { [weak self] (response) in
             
             if let error = response.error {
                 print("Error received requestion data: \(error.localizedDescription)")
@@ -27,7 +27,7 @@ class TwithAuthServices {
             }
             guard let data = response.data else { return }
             
-            let decoded = self.decodeJSON(type: AccessResponseModel.self, from: data)
+            let decoded = self?.decodeJSON(type: AccessResponseModel.self, from: data)
             completion(decoded)
         }
     }

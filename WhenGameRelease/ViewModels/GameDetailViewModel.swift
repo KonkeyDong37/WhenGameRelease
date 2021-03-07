@@ -8,10 +8,10 @@
 import UIKit
 import IGDB_SWIFT_API
 
-class GameDetail: ObservableObject {
+class GameDetailViewModel: ObservableObject {
     
-    static let shared = GameDetail()
-    private let gameService = GameService.shared
+    static let shared = GameDetailViewModel()
+    private let gameService = GameService()
     
     @Published var bottomSheetShown = false
     @Published var showGameDetail = false

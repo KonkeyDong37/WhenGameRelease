@@ -19,11 +19,11 @@ enum GameTypeList: Int, CustomStringConvertible {
     }
 }
 
-class GameList: ObservableObject {
+class GameListViewModel: ObservableObject {
     
-    static let shared = GameList()
+    static let shared = GameListViewModel()
     
-    private let gameService = GameService.shared
+    private let gameService = GameService()
     @Published var lastReleasedGames: [GameListModel] = []
     @Published var comingSoonGames: [GameListModel] = []
     @Published var gameTypeList: GameTypeList = .lastRelease
@@ -70,6 +70,7 @@ class GameList: ObservableObject {
     private func getComingSoonGames(refreshList: Bool = true) {
         guard shouldLoadMoreGames() else { return }
         self.awaitResponse = true
+        
         if refreshList {
             appearsSoonGamesCount = 0
         }

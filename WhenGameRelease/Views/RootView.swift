@@ -12,7 +12,6 @@ struct RootView: View {
     @State private var showingDetail = false
     @State private var showSearchInTab = true
     @Environment(\.colorScheme) var colorScheme
-    @ObservedObject private var search: SearchController = SearchController.shared
     
     private var bgColor: Color {
         return colorScheme == .dark ? GlobalConstants.ColorDarkTheme.darkGray : GlobalConstants.ColorLightTheme.white
@@ -44,9 +43,6 @@ struct RootView: View {
                         .tabItem {
                             Image(systemName: "person.crop.circle")
                         }.tag(4)
-                }
-                .sheet(isPresented: $search.showSearchView) {
-                    SearchView(showingSearch: $search.showSearchView, viewFromTab: false)
                 }
                 .accentColor(colorScheme == .dark ?
                                 GlobalConstants.ColorDarkTheme.white :

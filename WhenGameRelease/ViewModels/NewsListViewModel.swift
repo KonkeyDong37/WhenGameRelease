@@ -7,11 +7,9 @@
 
 import Foundation
 
-class NewsList: ObservableObject {
+class NewsListViewModel: ObservableObject {
     
-    static let shared = NewsList()
-    
-    private let newsServices = NewsServices.shared
+    private let newsServices = NewsServices()
     @Published var newsList: [NewsListModel] = []
     @Published var convertedText: String = ""
     @Published var video: NewsVideoModel? = nil

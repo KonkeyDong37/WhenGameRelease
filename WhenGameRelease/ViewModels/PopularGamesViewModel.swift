@@ -12,10 +12,10 @@ enum ReleasedStatus: String {
     case upcoming = "Upcoming"
 }
 
-class PopularGames: ObservableObject {
+class PopularGamesViewModle: ObservableObject {
     
-    static let shared = PopularGames()
-    private let gameService = GameService.shared
+//    static let shared = PopularGames()
+    private let gameService = GameService()
     
     @Published var releasedStatus: ReleasedStatus = .released
     @Published var popularGames: [GameListModel] = []

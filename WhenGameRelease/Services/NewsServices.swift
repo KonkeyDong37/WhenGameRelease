@@ -22,8 +22,6 @@ private struct API {
 
 class NewsServices {
     
-    static let shared = NewsServices()
-    
     private let token = GamespotAccessToken.token
     private let urlNewsPath = API.news
     

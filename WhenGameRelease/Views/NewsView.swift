@@ -11,7 +11,7 @@ import AVKit
 
 struct NewsView: View {
     
-    @ObservedObject var controller: NewsList = NewsList()
+    @ObservedObject var viewModel = NewsListViewModel()
     @Environment(\.colorScheme) private var colorScheme
     
     var news: NewsListModel
@@ -27,12 +27,12 @@ struct NewsView: View {
                     Text("By: \(news.authors) on \(news.publishDateConvert ?? "")")
                     Text(news.title)
                         .font(.title)
-                    if let video = controller.video {
+                    if let video = viewModel.video {
                         VideoPlayerWrapper(video: video)
                             .aspectRatio(16/9, contentMode: .fit)
                             .cornerRadius(10)
                     }
-                    Text(controller.convertedText)
+                    Text(viewModel.convertedText)
                 }
                 .padding()
             }
@@ -40,8 +40,8 @@ struct NewsView: View {
             .navigationBarTitle(Text(""), displayMode: .inline)
             .background(bgColor.edgesIgnoringSafeArea(.all))
             .onAppear {
-                controller.convertText(text: news.body)
-                controller.getVideo(with: news.videosApiUrl ?? nil)
+                viewModel.convertText(text: news.body)
+                viewModel.getVideo(with: news.videosApiUrl ?? nil)
             }
         }
     }

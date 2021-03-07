@@ -16,6 +16,7 @@ struct ImagePicker: UIViewControllerRepresentable {
     func makeUIViewController(context: UIViewControllerRepresentableContext<ImagePicker>) -> UIImagePickerController {
         let picker = UIImagePickerController()
         picker.delegate = context.coordinator
+        picker.allowsEditing = true
         return picker
     }
     
@@ -35,10 +36,31 @@ struct ImagePicker: UIViewControllerRepresentable {
         }
         
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-            if let uiImage = info[.originalImage] as? UIImage {
-                parent.image = uiImage
+            if let uiImage = info[.editedImage] as? UIImage {
+                let widthRatio = 100 / uiImage.size.width
+                let heightRatio = 100 / uiImage.size.height
+                let scaleFactor = min(widthRatio, heightRatio)
+                
+                // Compute the new image size that preserves aspect ratio
+                let scaledImageSize = CGSize(
+                    width: uiImage.size.width * scaleFactor,
+                    height: uiImage.size.height * scaleFactor
+                )
+                
+                // Draw and return the resized UIImage
+                let renderer = UIGraphicsImageRenderer(
+                    size: scaledImageSize
+                )
+                
+                let scaledImage = renderer.image { _ in
+                    uiImage.draw(in: CGRect(
+                        origin: .zero,
+                        size: scaledImageSize
+                    ))
+                }
+                parent.image = scaledImage
             }
-
+            
             parent.presentationMode.wrappedValue.dismiss()
         }
     }

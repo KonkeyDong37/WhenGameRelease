@@ -22,14 +22,16 @@ struct GameDetailView: View {
     
     @Environment(\.viewController) private var viewControllerHolder: UIViewController?
     @Environment(\.colorScheme) var colorScheme
-    @ObservedObject var gameDetail: GameDetail = GameDetail.shared
+    
+    @ObservedObject var viewModel: GameDetailViewModel = .shared
+    
     @State private var imageShowIndex = 0
     @State var isCompact = false
     
     @GestureState private var translation: CGFloat = 0
     
     private func offset(maxHeight: CGFloat) -> CGFloat {
-        return gameDetail.showGameDetail ? 0 : maxHeight
+        return viewModel.showGameDetail ? 0 : maxHeight
     }
     
     private var viewController: UIViewController? {
@@ -44,12 +46,12 @@ struct GameDetailView: View {
             guard abs(value.translation.height) > snapDistance else {
                 return
             }
-            gameDetail.showGameDetail = value.translation.height < 0
+            viewModel.showGameDetail = value.translation.height < 0
             
-            if !gameDetail.showGameDetail {
+            if !viewModel.showGameDetail {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     imageShowIndex = 0
-                    gameDetail.dismissGameDetailView()
+                    viewModel.dismissGameDetailView()
                 }
             }
         }
@@ -59,9 +61,9 @@ struct GameDetailView: View {
         GeometryReader { geometry in
             
             ZStack(alignment: .top) {
-                if let game = gameDetail.game {
+                if let game = viewModel.game {
                     
-                    PosterImageView(image: gameDetail.image ?? UIImage())
+                    PosterImageView(image: viewModel.image ?? UIImage())
                         .scaledToFill()
                         .frame(width: geometry.size.width, height: geometry.size.height, alignment: .top)
                     
@@ -102,7 +104,8 @@ struct GameDetailView: View {
 
 fileprivate struct PosterImageCarousel: View {
     
-    @ObservedObject private var gameDetail: GameDetail = GameDetail.shared
+    @ObservedObject private var viewModel: GameDetailViewModel = .shared
+    
     @Binding var index: Int
     
     private var heightRatio: CGFloat {
@@ -123,14 +126,14 @@ fileprivate struct PosterImageCarousel: View {
     var body: some View {
         GeometryReader { geometry in
             HStack(alignment: .bottom) {
-                ImageCarouselView(index: $index.animation(), maxIndex: gameDetail.screenshots.count) {
-                    PosterImageView(image: gameDetail.image ?? UIImage(), category: gameDetail.game?.category)
-                    ForEach(gameDetail.videos) { id in
+                ImageCarouselView(index: $index.animation(), maxIndex: viewModel.screenshots.count) {
+                    PosterImageView(image: viewModel.image ?? UIImage(), category: viewModel.game?.category)
+                    ForEach(viewModel.videos) { id in
                         if let strinId = id.videoId {
                             VideoPlayer(videoId: strinId)
                         }
                     }
-                    ForEach(gameDetail.screenshots, id: \.self) { screenShot in
+                    ForEach(viewModel.screenshots, id: \.self) { screenShot in
                         GeometryReader { geometry in
                             VStack(alignment: .center) {
                                 Image(uiImage: screenShot)
@@ -190,7 +193,7 @@ fileprivate struct BottomContentView: View {
                 Group {
                     GameTitle(game: game, colorScheme: colorScheme)
                     
-                    AddToFavoriteButton()
+                    AddToFavoriteButton(game: game)
                     
                     InfoTop(game: game, colorScheme: colorScheme)
                     
@@ -231,14 +234,6 @@ fileprivate struct BottomContentView: View {
         .background(bgColor)
         .cornerRadius(16)
         
-    }
-}
-
-struct ViewOffsetKey: PreferenceKey {
-    typealias Value = CGFloat
-    static var defaultValue = CGFloat.zero
-    static func reduce(value: inout Value, nextValue: () -> Value) {
-        value += nextValue()
     }
 }
 
@@ -283,18 +278,73 @@ struct GameTitle: View {
 
 private struct AddToFavoriteButton: View {
     
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.managedObjectContext) var moc
+    @FetchRequest(entity: FavoriteGames.entity(), sortDescriptors: []) var favoriteGames: FetchedResults<FavoriteGames>
+    
+    var game: GameModel
+    
+    private var alreadyInFavorite: Bool {
+        guard let id = game.id else { return false }
+        guard let _ = favoriteGames.first(where: { $0.id == id }) else { return false }
+        return true
+    }
+    private var buttonText: String {
+        if alreadyInFavorite {
+            return "Don't want to play"
+        } else {
+            return "Want to play!"
+        }
+    }
+    private var buttonBgColor: Color {
+        if alreadyInFavorite {
+            return colorScheme == .dark ?
+                GlobalConstants.ColorDarkTheme.lightGray :
+                GlobalConstants.ColorLightTheme.grayLight
+        } else {
+            return GlobalConstants.colorBlue
+        }
+    }
+    
     var body: some View {
         GeometryReader { geometry in
-            Button(action: {}, label: {
-                Text("Add to favorite")
+            Button(action: {
+                addToFavorite()
+            }, label: {
+                Text(buttonText)
                     .frame(width: geometry.size.width, height: 50, alignment: .center)
                     .foregroundColor(.white)
-                    .background(GlobalConstants.colorBlue)
+                    .background(buttonBgColor)
             })
             .frame(width: geometry.size.width, height: 50)
             .cornerRadius(30)
         }
         .frame(height: 50)
+    }
+    
+    private func addToFavorite() {
+        guard let id = game.id else { return }
+        
+        if alreadyInFavorite {
+            guard let game = favoriteGames.first(where: { $0.id == id }) else { return }
+            moc.delete(game)
+        } else {
+            let idInt64 = Int64(id)
+            let game = FavoriteGames(context: moc)
+            
+            game.id = idInt64
+            game.releaseDate = self.game.firstReleaseDate ?? 0
+        }
+        
+        saveContext()
+    }
+    
+    private func saveContext() {
+        do {
+            try moc.save()
+        } catch {
+            print("Error saving managed object context: \(error)")
+        }
     }
 }
 
@@ -367,7 +417,7 @@ private struct Description: View {
 
 private struct Genres: View {
     
-    private let controller: SearchController? = SearchController.shared
+    private let viewModel: SearchViewModel? = .shared
     var genres: [GameGenres]?
     var colorScheme: ColorScheme
     
@@ -376,10 +426,10 @@ private struct Genres: View {
             BadgesBox(name: "Genres") {
                 ForEach(genres, id: \.self) { genre in
                     Button(action: {
-                        controller?.searchGameFromField(fieldName: genre.name,
+                        viewModel?.searchGameFromField(fieldName: genre.name,
                                                         queryField: "genres",
                                                         id: genre.id)
-                        controller?.presentSearchView()
+                        viewModel?.presentSearchView()
                     }, label: {
                         BadgeText(text: genre.name)
                     })
@@ -391,7 +441,7 @@ private struct Genres: View {
 
 private struct InvolvedCompany: View {
     
-    private let controller: SearchController? = SearchController.shared
+    private let viewModel: SearchViewModel? = .shared
     var companies: [GameInvolvedCompany]?
     
     var body: some View {
@@ -399,10 +449,10 @@ private struct InvolvedCompany: View {
             BadgesBox(name: "Involved Companies") {
                 ForEach(companies, id: \.self) { company in
                     Button(action: {
-                        controller?.searchGameFromField(fieldName: company.company.name,
+                        viewModel?.searchGameFromField(fieldName: company.company.name,
                                                         queryField: "involved_companies",
                                                         id: company.company.id)
-                        controller?.presentSearchView()
+                        viewModel?.presentSearchView()
                     }, label: {
                         BadgeText(text: company.company.name)
                     })
@@ -414,7 +464,7 @@ private struct InvolvedCompany: View {
 
 private struct AgeRatings: View {
     
-    private let controller: SearchController? = SearchController.shared
+    private let viewModel: SearchViewModel? = .shared
     var ageRating: [GameAgeRating]?
     
     var body: some View {
@@ -422,10 +472,10 @@ private struct AgeRatings: View {
             BadgesBox(name: "Age rating") {
                 ForEach(ageRating) { rating in
                     Button(action: {
-                        controller?.searchGameFromField(fieldName: "\(rating.categoryString): \(rating.ratingString)",
+                        viewModel?.searchGameFromField(fieldName: "\(rating.categoryString): \(rating.ratingString)",
                                                         queryField: "age_ratings",
                                                         id: rating.id)
-                        controller?.presentSearchView()
+                        viewModel?.presentSearchView()
                     }, label: {
                         BadgeText(text: "\(rating.categoryString): \(rating.ratingString)")
                     })
@@ -438,7 +488,7 @@ private struct AgeRatings: View {
 
 private struct GameEngines: View {
     
-    private let controller: SearchController? = SearchController.shared
+    private let viewModel: SearchViewModel? = .shared
     var gameEngines: [GameEngine]?
     
     var body: some View {
@@ -446,8 +496,8 @@ private struct GameEngines: View {
             BadgesBox(name: "Game engine") {
                 ForEach(gameEngines) { engine in
                     Button(action: {
-                        controller?.searchGameFromField(fieldName: engine.name, queryField: "game_engines", id: engine.id)
-                        controller?.presentSearchView()
+                        viewModel?.searchGameFromField(fieldName: engine.name, queryField: "game_engines", id: engine.id)
+                        viewModel?.presentSearchView()
                     }, label: {
                         BadgeText(text: engine.name)
                     })
@@ -459,7 +509,7 @@ private struct GameEngines: View {
 
 private struct GameKeywords: View {
     
-    private let controller: SearchController? = SearchController.shared
+    private let viewModel: SearchViewModel? = .shared
     var keywords: [GameKeyword]?
     
     var body: some View {
@@ -467,8 +517,8 @@ private struct GameKeywords: View {
             BadgesBox(name: "Keywords") {
                 ForEach(keywords) { keyword in
                     Button(action: {
-                        controller?.searchGameFromField(fieldName: keyword.name, queryField: "keywords", id: keyword.id)
-                        controller?.presentSearchView()
+                        viewModel?.searchGameFromField(fieldName: keyword.name, queryField: "keywords", id: keyword.id)
+                        viewModel?.presentSearchView()
                     }, label: {
                         BadgeText(text: keyword.name)
                     })
@@ -501,7 +551,7 @@ private struct GameWebsites: View {
 
 private struct GameModesBox: View {
     
-    private let controller: SearchController? = SearchController.shared
+    private let viewModel: SearchViewModel? = .shared
     var gameModes: [GameModes]?
     
     var body: some View {
@@ -509,8 +559,8 @@ private struct GameModesBox: View {
             BadgesBox(name: "Game modes") {
                 ForEach(gameModes) { mode in
                     Button {
-                        controller?.searchGameFromField(fieldName: mode.name, queryField: "game_modes", id: mode.id)
-                        controller?.presentSearchView()
+                        viewModel?.searchGameFromField(fieldName: mode.name, queryField: "game_modes", id: mode.id)
+                        viewModel?.presentSearchView()
                     } label: {
                         BadgeText(text: mode.name)
                     }
@@ -522,7 +572,7 @@ private struct GameModesBox: View {
 
 private struct GamePlatformsBox: View {
     
-    private let controller: SearchController? = SearchController.shared
+    private let viewModel: SearchViewModel? = .shared
     var platforms: [GamePlatform]?
     
     var body: some View {
@@ -530,8 +580,8 @@ private struct GamePlatformsBox: View {
             BadgesBox(name: "Platforms") {
                 ForEach(platforms) { platform in
                     Button {
-                        controller?.searchGameFromField(fieldName: platform.name, queryField: "platforms", id: platform.id)
-                        controller?.presentSearchView()
+                        viewModel?.searchGameFromField(fieldName: platform.name, queryField: "platforms", id: platform.id)
+                        viewModel?.presentSearchView()
                     } label: {
                         BadgeText(text: platform.name)
                     }

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PopularGamesView: View {
     
-    @ObservedObject var controller: PopularGames = PopularGames.shared
+    @ObservedObject var viewModel = PopularGamesViewModle()
     @Environment(\.colorScheme) private var colorScheme
     
     private var bgColor: Color {
@@ -20,7 +20,7 @@ struct PopularGamesView: View {
     @State private var selected = 0
     @State private var category: GameCategory = .dlcAddon
     private var releaseStatus: ReleasedStatus {
-        return controller.releasedStatus
+        return viewModel.releasedStatus
     }
     
     var body: some View {
@@ -36,7 +36,7 @@ struct PopularGamesView: View {
                     .pickerStyle(SegmentedPickerStyle())
                     
                     ViewGameListRow(name: "Popular games",
-                                    games: controller.popularGames,
+                                    games: viewModel.popularGames,
                                     screenWidth: proxy.size.width)
                     
                     HStack {
@@ -57,13 +57,13 @@ struct PopularGamesView: View {
                 .frame(width: proxy.size.width)
                 .padding(.top)
                 
-                GameListCells(controller: controller, category: $category)
+                GameListCells(viewModel: viewModel, category: $category)
             }
         }
         .background(bgColor.edgesIgnoringSafeArea(.all))
         .onAppear {
-            controller.getPopularGames()
-            controller.getGames(from: category)
+            viewModel.getPopularGames()
+            viewModel.getGames(from: category)
         }
     }
     
@@ -79,18 +79,18 @@ struct PopularGamesView: View {
             category = .season
         }
         
-        controller.getGames(from: category)
+        viewModel.getGames(from: category)
     }
     
     private func switchGameList() {
         switch releaseStatus {
         case .released:
-            controller.releasedStatus = .upcoming
+            viewModel.releasedStatus = .upcoming
         case .upcoming:
-            controller.releasedStatus = .released
+            viewModel.releasedStatus = .released
         }
         
-        controller.getGames(from: category)
+        viewModel.getGames(from: category)
     }
 }
 
@@ -131,7 +131,7 @@ private struct Cell: View, Equatable {
     
     @Environment(\.colorScheme) private var colorScheme
     @ObservedObject var imageLoader: ImageLoader = ImageLoader()
-    @ObservedObject var gameDetail: GameDetail = GameDetail.shared
+    @ObservedObject var viewModel: GameDetailViewModel = .shared
     
     var game: GameListModel
     
@@ -152,7 +152,7 @@ private struct Cell: View, Equatable {
         .background(Color(#colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)))
         .cornerRadius(16)
         .onTapGesture {
-            gameDetail.showGameDetailView(showGameDetail: true, game: game, image: imageLoader.image)
+            viewModel.showGameDetailView(showGameDetail: true, game: game, image: imageLoader.image)
         }
         .onAppear() {
             imageLoader.getCover(with: game.cover?.imageId)
@@ -162,36 +162,36 @@ private struct Cell: View, Equatable {
 
 private struct GameListCells: View {
     
-    @ObservedObject var controller: PopularGames
+    @ObservedObject var viewModel: PopularGamesViewModle
     @Binding var category: GameCategory
     
     var body: some View {
         if category == .dlcAddon {
-            ForEach(controller.dlc) { game in
+            ForEach(viewModel.dlc) { game in
                 GameListCell(game: game).equatable()
                     .onAppear {
-                        if controller.dlc.last == game {
-                            controller.loadMoreGames(with: category)
+                        if viewModel.dlc.last == game {
+                            viewModel.loadMoreGames(with: category)
                         }
                     }
             }
         }
         if category == .episode {
-            ForEach(controller.episodes) { game in
+            ForEach(viewModel.episodes) { game in
                 GameListCell(game: game).equatable()
                     .onAppear {
-                        if controller.episodes.last == game {
-                            controller.loadMoreGames(with: category)
+                        if viewModel.episodes.last == game {
+                            viewModel.loadMoreGames(with: category)
                         }
                     }
             }
         }
         if category == .season {
-            ForEach(controller.seasons) { game in
+            ForEach(viewModel.seasons) { game in
                 GameListCell(game: game).equatable()
                     .onAppear {
-                        if controller.seasons.last == game {
-                            controller.loadMoreGames(with: category)
+                        if viewModel.seasons.last == game {
+                            viewModel.loadMoreGames(with: category)
                         }
                     }
             }
@@ -201,15 +201,15 @@ private struct GameListCells: View {
 
 struct PopularGamesView_Previews: PreviewProvider {
 
-    static var controller: PopularGames {
-        let controller = PopularGames()
-        controller.popularGames = [GameListModel(),GameListModel(),GameListModel(),GameListModel()]
-        controller.dlc = [GameListModel(),GameListModel(),GameListModel(),GameListModel()]
-        return controller
+    static var viewModel: PopularGamesViewModle {
+        let viewModel = PopularGamesViewModle()
+        viewModel.popularGames = [GameListModel(),GameListModel(),GameListModel(),GameListModel()]
+        viewModel.dlc = [GameListModel(),GameListModel(),GameListModel(),GameListModel()]
+        return viewModel
     }
 
     static var previews: some View {
-        PopularGamesView(controller: controller)
+        PopularGamesView(viewModel: viewModel)
             .preferredColorScheme(.dark)
     }
 }

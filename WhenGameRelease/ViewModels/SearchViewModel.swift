@@ -7,10 +7,10 @@
 
 import Foundation
 
-class SearchController: ObservableObject {
+class SearchViewModel: ObservableObject {
     
-    private let gameService = GameService.shared
-    static let shared = SearchController()
+    private let gameService = GameService()
+    static let shared = SearchViewModel()
     
     @Published var showSearchView = false
     @Published var gamesFromSearch: [GameListModel] = []

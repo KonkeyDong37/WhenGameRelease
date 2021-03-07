@@ -10,15 +10,15 @@ import URLImage
 
 struct NewsListView: View {
     
-    @ObservedObject var controller: NewsList
+    @ObservedObject var viewModel: NewsListViewModel
     @Environment(\.colorScheme) private var colorScheme
     
     private var bgColor: Color {
         return colorScheme == .dark ? GlobalConstants.ColorDarkTheme.darkGray : GlobalConstants.ColorLightTheme.white
     }
     
-    init(controller: NewsList = NewsList.shared) {
-        self.controller = controller
+    init(viewModel: NewsListViewModel = NewsListViewModel()) {
+        self.viewModel = viewModel
         UITableView.appearance().backgroundColor = UIColor.clear
     }
     
@@ -26,14 +26,14 @@ struct NewsListView: View {
         NavigationView {
             ScrollView {
                 LazyVStack(spacing: 0) {
-                    ForEach(controller.newsList) { news in
+                    ForEach(viewModel.newsList) { news in
                         NavigationLink(
                             destination: NewsView(news: news),
                             label: {
                                 NewsListCellView(news: news)
                                     .onAppear {
-                                        if controller.newsList.last?.id == news.id {
-                                            controller.getNextNews()
+                                        if viewModel.newsList.last?.id == news.id {
+                                            viewModel.getNextNews()
                                         }
                                     }
                             })
@@ -46,7 +46,7 @@ struct NewsListView: View {
             .background(bgColor.edgesIgnoringSafeArea(.all))
         }
         .onAppear {
-            controller.getNews()
+            viewModel.getNews()
         }
     }
 }
@@ -101,14 +101,14 @@ private struct NewsListCellView: View, Equatable {
 
 struct NewsListView_Previews: PreviewProvider {
 
-    static var controller: NewsList {
-        let controller = NewsList()
-        controller.newsList = [NewsListModel(id: 1, authors: "Author", title: "Title", deck: "Description", body: "Text", image: NewsImageModel(original: "", screenTiny: "https://gamespot1.cbsistatic.com/uploads/screen_tiny/1597/15971423/3798961-2178171702-Elah4cWWkAMeODb.jpg"), publishDate: "2021-02-20 06:20:00", videosApiUrl: nil)]
-        return controller
+    static var viewModel: NewsListViewModel {
+        let viewModel = NewsListViewModel()
+        viewModel.newsList = [NewsListModel(id: 1, authors: "Author", title: "Title", deck: "Description", body: "Text", image: NewsImageModel(original: "", screenTiny: "https://gamespot1.cbsistatic.com/uploads/screen_tiny/1597/15971423/3798961-2178171702-Elah4cWWkAMeODb.jpg"), publishDate: "2021-02-20 06:20:00", videosApiUrl: nil)]
+        return viewModel
     }
 
     static var previews: some View {
-        NewsListView(controller: controller)
+        NewsListView(viewModel: viewModel)
         //            .preferredColorScheme(.dark)
     }
 }

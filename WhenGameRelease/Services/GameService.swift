@@ -10,8 +10,6 @@ import IGDB_SWIFT_API
 
 class GameService {
     
-    static let shared = GameService()
-    
     private var accessToken = AccessResponse().token
     private let twithServices = TwithAuthServices()
     private let gamesOffset = GlobalConstants.gamesOffset
@@ -40,6 +38,13 @@ class GameService {
     // MARK: Fetch single game with id
     func fetchGame(withId id: Int, completion: @escaping (Result<[GameModel], Error>) -> Void) {
         let query = "fields *,\(gameExtraFields()); where id = \(id);"
+        
+        fetchData(query: query, endpoint: .GAMES, completion: completion)
+    }
+    
+    // MARK: Fetch games with id's
+    func fetchGames(withIds ids: String, sort: String, offset: Int, completion: @escaping (Result<[GameListModel], Error>) -> Void) {
+        let query = "fields *, \(gamesExtraFields()); where id = (\(ids)); sort first_release_date \(sort); offset \(offset); limit \(gamesOffset);"
         
         fetchData(query: query, endpoint: .GAMES, completion: completion)
     }
@@ -126,8 +131,8 @@ class GameService {
             DispatchQueue.main.async {
 //                print(data)
                 guard let jsonData = data.data(using: .utf8) else { return }
-                guard let company = self.decodeJSON(type: T.self, from: jsonData) else { return }
-                completion(.success(company))
+                guard let decodedData = self.decodeJSON(type: T.self, from: jsonData) else { return }
+                completion(.success(decodedData))
             }
             
         }, errorResponse: { error in

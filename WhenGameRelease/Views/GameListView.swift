@@ -11,8 +11,8 @@ import SwiftUI
 struct GameListView: View {
     
     @Environment(\.colorScheme) private var colorScheme
-    @ObservedObject var gameList: GameList = GameList.shared
-    @ObservedObject var search: SearchController = SearchController.shared
+    @ObservedObject var viewModel: GameListViewModel = .shared
+    @ObservedObject var search: SearchViewModel = .shared
     @State var isRefreshing = false
     
     private var bgColor: Color {
@@ -20,7 +20,7 @@ struct GameListView: View {
     }
     
     private var listType: GameTypeList {
-        return gameList.gameTypeList
+        return viewModel.gameTypeList
     }
     
     private var games: [GameListModel] {
@@ -28,9 +28,9 @@ struct GameListView: View {
         
         switch listType {
         case .lastRelease:
-            games = gameList.lastReleasedGames
+            games = viewModel.lastReleasedGames
         case .comingSoon:
-            games = gameList.comingSoonGames
+            games = viewModel.comingSoonGames
         }
         
         return games
@@ -46,13 +46,13 @@ struct GameListView: View {
                         GameListCell(game: game).equatable()
                             .onAppear {
                                 if games.last == game {
-                                    gameList.loadMoreGames()
+                                    viewModel.loadMoreGames()
                                 }
                             }
                     }
                 }
                 .background(bgColor.edgesIgnoringSafeArea(.all))
-                .navigationBarTitle(Text(gameList.title), displayMode: .large)
+                .navigationBarTitle(Text(viewModel.title), displayMode: .large)
                 .navigationBarItems(leading:
                                         Button(action: {
                                             switchGameList()
@@ -66,8 +66,11 @@ struct GameListView: View {
                                             Image(systemName: "magnifyingglass").font(.system(size: 24, weight: .regular))
                                         })
                 )
+                .sheet(isPresented: $search.showSearchView) {
+                    SearchView(showingSearch: $search.showSearchView, viewFromTab: false)
+                }
                 .onAppear {
-                    self.gameList.getGames(games: listType)
+                    self.viewModel.getGames(games: listType)
                 }
             }
         }
@@ -76,12 +79,12 @@ struct GameListView: View {
     private func switchGameList() {
         switch listType {
         case .lastRelease:
-            gameList.gameTypeList = .comingSoon
+            viewModel.gameTypeList = .comingSoon
         case .comingSoon:
-            gameList.gameTypeList = .lastRelease
+            viewModel.gameTypeList = .lastRelease
         }
         
-        gameList.getGames(games: listType)
+        viewModel.getGames(games: listType)
     }
 }
 
@@ -123,7 +126,7 @@ struct GameListCell: View, Equatable {
 
     @Environment(\.colorScheme) private var colorScheme
     @ObservedObject var imageLoader: ImageLoader = ImageLoader()
-    @ObservedObject var gameDetail: GameDetail = GameDetail.shared
+    @ObservedObject var viewModel: GameDetailViewModel = .shared
     @State private var showingDetail = false
     
     var game: GameListModel
@@ -168,7 +171,7 @@ struct GameListCell: View, Equatable {
         .padding()
         .onTapGesture {
             showingDetail.toggle()
-            gameDetail.showGameDetailView(showGameDetail: true, game: game, image: imageLoader.image)
+            viewModel.showGameDetailView(showGameDetail: true, game: game, image: imageLoader.image)
         }
         .onAppear() {
             imageLoader.getCover(with: game.cover?.imageId)
