@@ -281,7 +281,7 @@ private struct AddToFavoriteButton: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.managedObjectContext) var moc
     @FetchRequest(entity: FavoriteGames.entity(), sortDescriptors: []) var favoriteGames: FetchedResults<FavoriteGames>
-    
+        
     var game: GameModel
     
     private var alreadyInFavorite: Bool {
@@ -324,16 +324,27 @@ private struct AddToFavoriteButton: View {
     
     private func addToFavorite() {
         guard let id = game.id else { return }
+        let notificationManager = LocalNotificationManager()
+        let notificationId = "\(UUID())_\(id)"
         
         if alreadyInFavorite {
             guard let game = favoriteGames.first(where: { $0.id == id }) else { return }
+            UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers:[notificationId])
             moc.delete(game)
         } else {
             let idInt64 = Int64(id)
             let game = FavoriteGames(context: moc)
+            let releaseDate = self.game.firstReleaseDate ?? 0
+            let gameName = self.game.name ?? ""
+            let timeNow = Int64(NSDate().timeIntervalSince1970)
             
             game.id = idInt64
-            game.releaseDate = self.game.firstReleaseDate ?? 0
+            game.releaseDate = releaseDate
+            game.title = gameName
+            
+            if releaseDate != 0 && releaseDate > timeNow {
+                notificationManager.sendNotification(id: notificationId, title: gameName, subtitle: nil, body: "Release today!", launchIn: releaseDate)
+            }
         }
         
         saveContext()

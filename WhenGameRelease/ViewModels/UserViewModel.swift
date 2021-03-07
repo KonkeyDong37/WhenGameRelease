@@ -31,6 +31,7 @@ class UserViewModel: ObservableObject {
     private var releasedGamesCount: Int = 0
     
     func getGames(refresh: Bool = true) {
+        print(true)
         guard shouldLoadMoreGames() else { return }
         self.awaitResponse = true
         
@@ -83,6 +84,8 @@ class UserViewModel: ObservableObject {
                 
                 self?.awaitResponse = false
             }
+        } else {
+            self.awaitResponse = false
         }
     }
     
