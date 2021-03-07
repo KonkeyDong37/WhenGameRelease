@@ -22,7 +22,7 @@ struct GlobalConstants {
     }
     
     struct ColorDarkTheme {
-        static let darkGray = Color(#colorLiteral(red: 0.09875857085, green: 0.102155365, blue: 0.1025749668, alpha: 1))
+        static let darkGray = Color(#colorLiteral(red: 0.09803921569, green: 0.1019607843, blue: 0.1019607843, alpha: 1))
         static let lightGray = Color(#colorLiteral(red: 0.2549019608, green: 0.262745098, blue: 0.2705882353, alpha: 1))
         static let blue = GlobalConstants.colorBlue
         static let white = Color(#colorLiteral(red: 0.9333333333, green: 0.9333333333, blue: 0.9333333333, alpha: 1))
