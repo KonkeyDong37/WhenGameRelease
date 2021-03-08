@@ -31,12 +31,18 @@ class LocalNotificationManager: ObservableObject {
         content.body = body
         
         
-        let date = Date(milliseconds: launchIn)
+        let epocTime = TimeInterval(launchIn)
+        let date = Date(timeIntervalSince1970: epocTime)
         let interval = date.timeIntervalSinceNow
+        print("Services: ", interval, date, epocTime)
         
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: interval, repeats: false)
         let request = UNNotificationRequest(identifier: id, content: content, trigger: trigger)
         
         UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+    }
+    
+    func deleteNotification(withId id: String) {
+        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers:[id])
     }
 }

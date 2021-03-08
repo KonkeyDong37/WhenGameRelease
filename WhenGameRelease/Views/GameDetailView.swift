@@ -329,7 +329,7 @@ private struct AddToFavoriteButton: View {
         
         if alreadyInFavorite {
             guard let game = favoriteGames.first(where: { $0.id == id }) else { return }
-            UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers:[notificationId])
+            notificationManager.deleteNotification(withId: notificationId)
             moc.delete(game)
         } else {
             let idInt64 = Int64(id)
@@ -341,6 +341,8 @@ private struct AddToFavoriteButton: View {
             game.id = idInt64
             game.releaseDate = releaseDate
             game.title = gameName
+            
+            print("View: ", timeNow, releaseDate)
             
             if releaseDate != 0 && releaseDate > timeNow {
                 notificationManager.sendNotification(id: notificationId, title: gameName, subtitle: nil, body: "Release today!", launchIn: releaseDate)
