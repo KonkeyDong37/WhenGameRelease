@@ -19,6 +19,11 @@ class NewsListViewModel: ObservableObject {
     private var offset = 0
     
     func getNews(refresh: Bool = true) {
+        
+        if refresh {
+            offset = 0
+        }
+        
         newsServices.fetchNewsList(offset: offset, limit: limit) { [weak self] response in
             switch response {
             case .success(let news):

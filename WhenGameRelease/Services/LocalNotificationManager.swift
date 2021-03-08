@@ -34,7 +34,6 @@ class LocalNotificationManager: ObservableObject {
         let epocTime = TimeInterval(launchIn)
         let date = Date(timeIntervalSince1970: epocTime)
         let interval = date.timeIntervalSinceNow
-        print("Services: ", interval, date, epocTime)
         
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: interval, repeats: false)
         let request = UNNotificationRequest(identifier: id, content: content, trigger: trigger)

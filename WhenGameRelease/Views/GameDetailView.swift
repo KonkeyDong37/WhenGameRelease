@@ -342,8 +342,6 @@ private struct AddToFavoriteButton: View {
             game.releaseDate = releaseDate
             game.title = gameName
             
-            print("View: ", timeNow, releaseDate)
-            
             if releaseDate != 0 && releaseDate > timeNow {
                 notificationManager.sendNotification(id: notificationId, title: gameName, subtitle: nil, body: "Release today!", launchIn: releaseDate)
             }
