@@ -140,7 +140,7 @@ enum GameCategory: Int, CustomStringConvertible, CaseIterable {
     }
 }
 
-private class ConvertData {
+private class ConvertDate {
     func convertDate(date: Int64?) -> String? {
         guard let releaseDate = date else { return nil }
         let epocTime = TimeInterval(releaseDate)
@@ -178,10 +178,10 @@ struct GameListModel: Game, Decodable, Identifiable, Hashable {
     var firstReleaseDate: Int64?
     var status: Int?
     var releaseDateString: String? {
-        return ConvertData().convertDate(date: firstReleaseDate)
+        return ConvertDate().convertDate(date: firstReleaseDate)
     }
     var releasedStatus: String? {
-        return ConvertData().convertStatus(status: status)
+        return ConvertDate().convertStatus(status: status)
     }
     var categoryString: String? {
         guard let category = category else { return nil }
@@ -197,10 +197,10 @@ struct GameModel: Game, Decodable, Hashable {
     var firstReleaseDate: Int64?
     var status: Int?
     var releaseDateString: String? {
-        return ConvertData().convertDate(date: firstReleaseDate)
+        return ConvertDate().convertDate(date: firstReleaseDate)
     }
     var releasedStatus: String? {
-        return ConvertData().convertStatus(status: status)
+        return ConvertDate().convertStatus(status: status)
     }
     
     var screenshots: [GameScreenshots]?
@@ -221,7 +221,7 @@ struct GameModel: Game, Decodable, Hashable {
     var summary: String?
     var themes: [Int]?
     var versionTitle: String?
-    var videos: [Int]?
+    var videos: [GameVideo]?
     var gameEngines: [GameEngine]?
     var websites: [GameWebsite]?
     var gameModes: [GameModes]?
@@ -236,7 +236,7 @@ struct GameReleaseDateModel: Decodable, Hashable {
     var date: Int64?
     var platform: GamePlatform?
     var dateString: String? {
-        return ConvertData().convertDate(date: date)
+        return ConvertDate().convertDate(date: date)
     }
 }
 
@@ -286,7 +286,7 @@ struct GameScreenshots: Decodable, Identifiable, Hashable {
     var imageId: String
 }
 
-struct GameVideo: Decodable, Identifiable {
+struct GameVideo: Decodable, Identifiable, Hashable {
     var id: Int?
     var videoId: String?
 }

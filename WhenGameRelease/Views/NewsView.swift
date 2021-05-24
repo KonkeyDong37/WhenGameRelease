@@ -14,6 +14,7 @@ struct NewsView: View {
     @ObservedObject var viewModel = NewsListViewModel()
     @Environment(\.colorScheme) private var colorScheme
     
+    @State var fullScreen = false
     var news: NewsListModel
     
     private var bgColor: Color {
@@ -27,12 +28,15 @@ struct NewsView: View {
                     Text("By: \(news.authors) on \(news.publishDateConvert ?? "")")
                     Text(news.title)
                         .font(.title)
-                    if let video = viewModel.video {
-                        VideoPlayerWrapper(video: video)
+                    if let video = viewModel.video, let url = URL(string: video.hdUrl) {
+//                        VideoPlayerWrapper(video: video)
+//                            .aspectRatio(16/9, contentMode: .fit)
+//                            .cornerRadius(10)
+                        VideoPlayer(player: AVPlayer(url: url))
                             .aspectRatio(16/9, contentMode: .fit)
                             .cornerRadius(10)
                     }
-                    Text(viewModel.convertedText)
+                    Text(viewModel.convertedText ?? "")
                 }
                 .padding()
             }
@@ -56,15 +60,15 @@ struct VideoPlayerWrapper: UIViewControllerRepresentable {
         guard let url = URL(string: video.hdUrl) else { return AVPlayerViewController() }
         let player = AVPlayer(url: url)
         let playerViewController = AVPlayerViewController()
+        
+        playerViewController.player = player
         playerViewController.entersFullScreenWhenPlaybackBegins = true
         playerViewController.exitsFullScreenWhenPlaybackEnds = true
-        playerViewController.player = player
         
         return playerViewController
     }
     
     func updateUIViewController(_ uiViewController: AVPlayerViewController, context: Context) {
-        
     }
 }
 

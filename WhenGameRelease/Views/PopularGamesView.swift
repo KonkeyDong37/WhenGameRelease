@@ -16,7 +16,7 @@ struct PopularGamesView: View {
         return colorScheme == .dark ? GlobalConstants.ColorDarkTheme.darkGray : GlobalConstants.ColorLightTheme.white
     }
     
-    private let listTypes = ["DLC's", "Episods", "Seasons"]
+    private let listTypes = ["DLC", "Episods", "Seasons"]
     @State private var selected = 0
     @State private var category: GameCategory = .dlcAddon
     private var releaseStatus: ReleasedStatus {

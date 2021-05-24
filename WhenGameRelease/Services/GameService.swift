@@ -24,6 +24,7 @@ class GameService {
         let releaseDtates = "release_dates.id,release_dates.date,release_dates.platform,release_dates.platform.id,release_dates.platform.name,release_dates.platform.abbreviation"
         let genres = "genres.id,genres.name"
         let screenshots = "screenshots.id,screenshots.image_id"
+        let trailers = "videos.id,videos.video_id"
         let ageRating = "age_ratings.id,age_ratings.category,age_ratings.rating"
         let involvedCompanies = "involved_companies.company.id,involved_companies.company.name"
         let keywords = "keywords.id,keywords.name"
@@ -32,7 +33,9 @@ class GameService {
         let websites = "websites.id,websites.category,websites.url"
         let gameModes = "game_modes.id,game_modes.name"
         
-        return "\(gamesExtraFields()),\(releaseDtates),\(genres),\(screenshots),\(ageRating),\(involvedCompanies),\(keywords),\(platforms),\(engine),\(websites),\(gameModes)"
+        let paramString = "\(gamesExtraFields()),\(releaseDtates),\(genres),\(screenshots),\(trailers),\(ageRating),\(involvedCompanies),\(keywords),\(platforms),\(engine),\(websites),\(gameModes)"
+        
+        return paramString
     }
     
     // MARK: Fetch single game with id

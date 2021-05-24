@@ -10,7 +10,6 @@ import Foundation
 import MediaPlayer
 import XCDYouTubeKit
 
-
 extension UIViewController {
     func topMostViewController() -> UIViewController {
         if self.presentedViewController == nil {

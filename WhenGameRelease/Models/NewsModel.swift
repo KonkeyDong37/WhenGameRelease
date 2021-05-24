@@ -23,13 +23,17 @@ struct NewsListModel: Decodable, Identifiable {
     let publishDate: String
     let videosApiUrl: String?
     
+    // Конвертированная дата в читаемом виде
     var publishDateConvert: String? {
         return convertDate(date: publishDate)
     }
+    
+    // Конвертированный текст новости
     var plainText: String {
         return convertToPlainText(text: body)
     }
     
+    // Функция конвертирования даты из таймштампа в читаемый вид
     private func convertDate(date: String) -> String? {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
@@ -39,6 +43,7 @@ struct NewsListModel: Decodable, Identifiable {
         return dateString
     }
     
+    // Функция конвертирования html текста в читаемый вид
     private func convertToPlainText(text: String) -> String {
         let data = Data(text.utf8)
         guard let attributedString = try? NSAttributedString(data: data, options: [.documentType: NSAttributedString.DocumentType.html], documentAttributes: nil) else { return "" }

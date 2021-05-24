@@ -11,8 +11,8 @@ class NewsListViewModel: ObservableObject {
     
     private let newsServices = NewsServices()
     @Published var newsList: [NewsListModel] = []
-    @Published var convertedText: String = ""
-    @Published var video: NewsVideoModel? = nil
+    @Published var convertedText: String?
+    @Published var video: NewsVideoModel?
     @Published var awaitResponse = false
     
     private let limit = 10

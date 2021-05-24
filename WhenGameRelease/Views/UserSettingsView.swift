@@ -9,22 +9,24 @@ import SwiftUI
 
 struct UserSettingsView: View {
     
+    @Environment(\.scenePhase) private var scenePhase
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.managedObjectContext) var moc
     @FetchRequest(entity: User.entity(), sortDescriptors: []) var user: FetchedResults<User>
+    @ObservedObject private var notificationService = NotificationService()
     
     @Binding var isPresented: Bool
     @State var name: String
     @State var secondName: String
     @State var image: Image
-    @State var notificationsIsEnabled: Bool
+    
     @State private var showingImagePicker = false
     @State private var inputImage: UIImage?
     @State private var isLoding = false
     @State private var setNewImage = false
     
     private var notificationText: String {
-        return notificationsIsEnabled ? "Enabled" : "Disabled"
+        return notificationService.notificationStatus ? "Enabled" : "Disabled"
     }
     private var bgColor: Color {
         return colorScheme == .dark ? GlobalConstants.ColorDarkTheme.darkGray : GlobalConstants.ColorLightTheme.white
@@ -33,7 +35,6 @@ struct UserSettingsView: View {
     var body: some View {
         NavigationView {
             Form {
-                
                 Section(header: Text("User").padding(.leading)) {
                     HStack {
                         VStack {
@@ -65,9 +66,11 @@ struct UserSettingsView: View {
                 }
                 
                 Section(header: Text("Notifications").padding(.leading)) {
-                    Toggle(isOn: $notificationsIsEnabled, label: {
+                    Toggle(isOn: $notificationService.notificationStatus, label: {
                         Text(notificationText)
-                    })
+                    }).onTapGesture {
+                        notificationService.changeNotificationStatus()
+                    }
                 }
                 
                 Section {
@@ -91,12 +94,16 @@ struct UserSettingsView: View {
             .navigationTitle("Settings")
             .onAppear {
                 UITableView.appearance().backgroundColor = .clear
+                notificationService.getNotificationStatusAtOSLevel()
             }
             .onDisappear {
                 UITableView.appearance().backgroundColor = .none
             }
             .sheet(isPresented: $showingImagePicker, onDismiss: loadImage) {
                 ImagePicker(image: self.$inputImage)
+            }
+            .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+                notificationService.getNotificationStatusAtOSLevel()
             }
         }
     }
@@ -106,7 +113,6 @@ struct UserSettingsView: View {
         
         user.name = name
         user.secondName = secondName
-        user.notificationsIsEnabled = notificationsIsEnabled
         
         if setNewImage {
             user.avatar = image.asUIImage().jpegData(compressionQuality: 0.5)

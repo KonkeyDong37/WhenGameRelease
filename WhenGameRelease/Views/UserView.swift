@@ -54,14 +54,7 @@ struct UserView: View {
             }
             .frame(width: proxy.size.width, height: proxy.size.height)
         }
-        .onAppear {
-            //            print(user)
-            //            for item in user {
-            //                moc.delete(item)
-            //            }
-            //
-            //            try? moc.save()
-        }
+
         .background(bgColor.edgesIgnoringSafeArea(.all))
     }
 }
@@ -115,10 +108,6 @@ private struct UserViewUserInfo: View {
         guard let user = user.first else { return "Skyrim" }
         return user.secondName ?? ""
     }
-    private var notifications: Bool {
-        guard let user = user.first else { return true }
-        return user.notificationsIsEnabled
-    }
     
     var body: some View {
         HStack {
@@ -141,7 +130,7 @@ private struct UserViewUserInfo: View {
         .padding(.top, 15)
         .padding(.bottom, 5)
         .sheet(isPresented: $showUserSettings) {
-            UserSettingsView(isPresented: $showUserSettings, name: name, secondName: secondName, image: avatar, notificationsIsEnabled: notifications)
+            UserSettingsView(isPresented: $showUserSettings, name: name, secondName: secondName, image: avatar)
                 .environment(\.managedObjectContext, self.moc)
         }
     }
@@ -247,15 +236,15 @@ private struct GameCell: View, Equatable {
     }
 }
 
-struct UserView_Previews: PreviewProvider {
-    
-    static var user: UserViewModel {
-        let viewModel = UserViewModel()
-        viewModel.releasedGames = [GameListModel(), GameListModel()]
-        return viewModel
-    }
-    
-    static var previews: some View {
-        UserView(viewModel: user)
-    }
-}
+//struct UserView_Previews: PreviewProvider {
+//
+//    static var user: UserViewModel {
+//        let viewModel = UserViewModel()
+//        viewModel.releasedGames = [GameListModel(), GameListModel()]
+//        return viewModel
+//    }
+//
+//    static var previews: some View {
+//        UserView(viewModel: user)
+//    }
+//}

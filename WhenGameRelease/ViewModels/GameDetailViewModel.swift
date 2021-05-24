@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 import IGDB_SWIFT_API
 
 class GameDetailViewModel: ObservableObject {
@@ -19,6 +20,7 @@ class GameDetailViewModel: ObservableObject {
     @Published var image: UIImage? = UIImage()
     @Published var videos: [GameVideo] = []
     @Published var screenshots: [UIImage] = []
+    @Published var mediaContetntCount: Int = 0
     
     func dismissGameDetailView() {
         bottomSheetShown = false
@@ -26,6 +28,7 @@ class GameDetailViewModel: ObservableObject {
         image = UIImage()
         videos = []
         screenshots = []
+        mediaContetntCount = 0
     }
     
     func showGameDetailView(showGameDetail: Bool, game: GameListModel, image: UIImage?) {
@@ -46,7 +49,6 @@ class GameDetailViewModel: ObservableObject {
                         self?.getScreenshots(screenshots: screenshots)
                     }
                 }
-            
         }
     
     }
@@ -56,6 +58,11 @@ class GameDetailViewModel: ObservableObject {
             switch response {
             case .success(let response):
                 self?.game = response[0]
+                
+                if let videos = response[0].videos {
+                    self?.videos = videos
+                }
+
                 completion(response[0])
             case .failure(let error):
                 print(error)
@@ -74,9 +81,9 @@ class GameDetailViewModel: ObservableObject {
                 guard let data = data, let image = UIImage(data: data) else { return }
                 DispatchQueue.main.async { [weak self] in
                     self?.screenshots.append(image)
+                    self?.mediaContetntCount += 1
                 }
             }.resume()
         }
     }
-
 }
