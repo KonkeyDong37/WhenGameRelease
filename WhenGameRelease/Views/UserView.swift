@@ -142,9 +142,15 @@ private struct UserViewFavoriteGames: View {
     
     var viewModel: UserViewModel
     var proxy: GeometryProxy
-    
-    private let listTypes = ["Upcoming", "Released"]
     @State private var selected = 0
+    
+    private var listTypes: [String] {
+        var array: [String] = []
+        FavoriteGamesReleasedStatus.allCases.forEach { item in
+            array.append(item.description)
+        }
+        return array
+    }
     
     var body: some View {
         Section {
@@ -160,26 +166,27 @@ private struct UserViewFavoriteGames: View {
                 }
                 .pickerStyle(SegmentedPickerStyle())
                 
-                if viewModel.releasedStatus == .upcoming {
-                    GridView(columns: 2, width: proxy.size.width - 22, list: viewModel.upcomingGames) { (game) in
-                        GameCell(game: game)
-                            .padding(6)
-                    }
-                    .padding(.leading, -6)
-                    .padding(.trailing, -6)
-                }
+                UserViewFavoriteGamesGrid(
+                    viewModel: viewModel,
+                    gameList: viewModel.upcomingGames,
+                    releaseStatus: .upcoming,
+                    proxy: proxy)
                 
-                if viewModel.releasedStatus == .released {
-                    GridView(columns: 2, width: proxy.size.width - 22, list: viewModel.releasedGames) { (game) in
-                        GameCell(game: game)
-                            .padding(6)
-                    }
-                    .padding(.leading, -6)
-                    .padding(.trailing, -6)
-                }
+                UserViewFavoriteGamesGrid(
+                    viewModel: viewModel,
+                    gameList: viewModel.wantToPlayGames,
+                    releaseStatus: .wantToPlay,
+                    proxy: proxy)
+                
+                UserViewFavoriteGamesGrid(
+                    viewModel: viewModel,
+                    gameList: viewModel.playedGames,
+                    releaseStatus: .played,
+                    proxy: proxy)
             }
         }
         .onAppear {
+            viewModel.releasedStatus = FavoriteGamesReleasedStatus(rawValue: selected) ?? .upcoming
             viewModel.sortGames(games: favoriteGames)
         }
         .onChange(of: favoriteGames.count, perform: { value in
@@ -189,14 +196,29 @@ private struct UserViewFavoriteGames: View {
     
     private func getGames(_ tag: Int) {
         
-        if selected == 0 {
-            viewModel.releasedStatus = .upcoming
-        }
-        if selected == 1 {
-            viewModel.releasedStatus = .released
-        }
-        
+        let status = FavoriteGamesReleasedStatus(rawValue: selected) ?? .upcoming
+        viewModel.releasedStatus = status
         viewModel.getGames()
+        
+    }
+}
+
+private struct UserViewFavoriteGamesGrid: View {
+    
+    let viewModel: UserViewModel
+    let gameList: [GameListModel]
+    let releaseStatus: FavoriteGamesReleasedStatus
+    let proxy: GeometryProxy
+    
+    var body: some View {
+        if viewModel.releasedStatus == releaseStatus {
+            GridView(columns: 2, width: proxy.size.width - 22, list: gameList) { (game) in
+                GameCell(game: game)
+                    .padding(6)
+            }
+            .padding(.leading, -6)
+            .padding(.trailing, -6)
+        }
     }
 }
 
