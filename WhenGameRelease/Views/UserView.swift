@@ -12,7 +12,7 @@ struct UserView: View {
     @FetchRequest(entity: User.entity(), sortDescriptors: []) var user: FetchedResults<User>
     
     @Environment(\.colorScheme) var colorScheme
-    @ObservedObject var viewModel = UserViewModel()
+    @ObservedObject var viewModel = UserViewModel.shared
     
     @State private var showUserSettings = false
     @State private var scrollHeight: CGFloat = .zero
@@ -189,7 +189,7 @@ private struct UserViewFavoriteGames: View {
             viewModel.releasedStatus = FavoriteGamesReleasedStatus(rawValue: selected) ?? .upcoming
             viewModel.sortGames(games: favoriteGames)
         }
-        .onChange(of: favoriteGames.count, perform: { value in
+        .onChange(of: favoriteGames.count, perform: { _ in
             viewModel.sortGames(games: favoriteGames)
         })
     }

@@ -22,6 +22,8 @@ enum FavoriteGamesReleasedStatus: Int, CustomStringConvertible, CaseIterable {
 }
 class UserViewModel: ObservableObject {
     
+    static let shared = UserViewModel()
+    
     private let gameService = GameService()
     
     @Published var showSettings = false
@@ -134,9 +136,9 @@ class UserViewModel: ObservableObject {
     
     func sortGames(games: FetchedResults<FavoriteGames>) {
         let timestamp: Int = Int(NSDate().timeIntervalSince1970)
-        let wantToPlayGames = games.filter { $0.releaseDate < timestamp }
+        let wantToPlayGames = games.filter { $0.releaseDate < timestamp && !$0.isPlayed }
         let upcomingGames = games.filter { $0.releaseDate >= timestamp }
-        let playedGames = wantToPlayGames.filter { $0.isPlayed }
+        let playedGames = games.filter { $0.isPlayed }
         
         wantToPlayGamesIds = wantToPlayGames.map { $0.id }
         upcomingGamesIds = upcomingGames.map { $0.id }

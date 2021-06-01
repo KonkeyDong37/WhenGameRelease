@@ -291,47 +291,88 @@ private struct AddToFavoriteButton: View {
     @Environment(\.managedObjectContext) var moc
     @FetchRequest(entity: FavoriteGames.entity(), sortDescriptors: []) var favoriteGames: FetchedResults<FavoriteGames>
         
-    var game: GameModel
+    let game: GameModel
+    private var gameReleased: Bool {
+        guard let releaseDate = game.firstReleaseDate else { return true }
+        let timeNow = Int64(NSDate().timeIntervalSince1970)
+        return releaseDate < timeNow
+    }
     
     private var alreadyInFavorite: Bool {
         guard let id = game.id else { return false }
         guard let _ = favoriteGames.first(where: { $0.id == id }) else { return false }
         return true
     }
-    private var buttonText: String {
-        if alreadyInFavorite {
-            return "Don't want to play"
+    private var gameAlreadyPlayed: Bool {
+        guard let id = game.id else { return false }
+        guard let game = favoriteGames.first(where: { $0.id == id }) else { return false }
+        if game.isPlayed {
+            return true
         } else {
-            return "Want to play!"
+            return false
         }
     }
-    private var buttonBgColor: Color {
+    private var addToFavoriteButtonText: String {
         if alreadyInFavorite {
-            return colorScheme == .dark ?
+            return "Forget the game"
+        } else {
+            return "Want to play"
+        }
+    }
+    private var playedButtonText: String {
+        if gameAlreadyPlayed {
+            return "Did not play"
+        } else {
+            return "Played"
+        }
+    }
+    private var buttonBgColorNotActive: Color {
+        return colorScheme == .dark ?
                 GlobalConstants.ColorDarkTheme.lightGray :
                 GlobalConstants.ColorLightTheme.grayLight
-        } else {
-            return GlobalConstants.colorBlue
-        }
+    }
+    private var buttonBgColorActive: Color {
+        return GlobalConstants.colorBlue
     }
     
     var body: some View {
-        GeometryReader { geometry in
-            Button(action: {
-                addToFavorite()
-            }, label: {
-                Text(buttonText)
-                    .frame(width: geometry.size.width, height: 50, alignment: .center)
-                    .foregroundColor(.white)
-                    .background(buttonBgColor)
-            })
-            .frame(width: geometry.size.width, height: 50)
-            .cornerRadius(30)
+        GeometryReader { proxy in
+            HStack {
+                Button(action: {
+                    addToFavorite()
+                }, label: {
+                    buttonText(
+                        text: addToFavoriteButtonText,
+                        width: buttonWidth(fullWidth: proxy.size.width),
+                        background: alreadyInFavorite ?
+                            buttonBgColorNotActive : buttonBgColorActive)
+                })
+                .frame(
+                    width: buttonWidth(fullWidth: proxy.size.width),
+                    height: 50)
+                .cornerRadius(30)
+                if gameReleased {
+                    Spacer()
+                    Button(action: {
+                        changeGamePlayedStatus()
+                    }, label: {
+                        buttonText(
+                            text: playedButtonText,
+                            width: buttonWidth(fullWidth: proxy.size.width),
+                            background: gameAlreadyPlayed ?
+                            buttonBgColorNotActive : buttonBgColorActive)
+                    })
+                    .frame(
+                        width: buttonWidth(fullWidth: proxy.size.width),
+                        height: 50)
+                    .cornerRadius(30)
+                }
+            }
         }
         .frame(height: 50)
     }
     
-    private func addToFavorite() {
+    private func addToFavorite(alreadyPlayed: Bool = false) {
         
         guard let gameId = game.id else { return }
         let notificationService = NotificationService()
@@ -350,6 +391,7 @@ private struct AddToFavoriteButton: View {
             game.id = idInt64
             game.releaseDate = releaseDate
             game.title = gameName
+            game.isPlayed = alreadyPlayed
 
             if releaseDate != 0 && releaseDate > timeNow {
                 notificationService.setRequestToAllowNotifications()
@@ -358,6 +400,37 @@ private struct AddToFavoriteButton: View {
         }
         
         saveContext()
+    }
+    
+    private func changeGamePlayedStatus() {
+        
+        let userViewModel = UserViewModel.shared
+        
+        if alreadyInFavorite {
+            guard let gameId = game.id else { return }
+            guard let game = favoriteGames.first(where: { $0.id == gameId }) else { return }
+            game.isPlayed = !game.isPlayed
+            userViewModel.sortGames(games: favoriteGames)
+        } else {
+            addToFavorite(alreadyPlayed: true)
+        }
+        
+        saveContext()
+    }
+    
+    private func buttonText(text: String, width: CGFloat, background: Color) -> some View {
+        return Text(text)
+            .frame(width: width, height: 50, alignment: .center)
+            .foregroundColor(.white)
+            .background(background)
+    }
+    
+    private func buttonWidth(fullWidth: CGFloat) -> CGFloat {
+        if gameReleased {
+            return fullWidth / 2 - 6
+        } else {
+            return fullWidth
+        }
     }
     
     private func saveContext() {
@@ -668,6 +741,6 @@ struct VisualEffectView: UIViewRepresentable {
 //struct GameDetailView_Previews: PreviewProvider {
 //
 //    static var previews: some View {
-//        GameDetailView()
+//        AddToFavoriteButton(game: GameModel())
 //    }
 //}

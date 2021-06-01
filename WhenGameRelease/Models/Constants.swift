@@ -12,6 +12,7 @@ struct GlobalConstants {
     static let gamesOffset = 15
     
     static let colorBlue = Color(#colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1))
+    static let colorGreen = Color(#colorLiteral(red: 0.3806468248, green: 1, blue: 0.530115962, alpha: 1))
     
     struct ColorLightTheme {
         static let white = Color(#colorLiteral(red: 0.968627451, green: 0.968627451, blue: 0.968627451, alpha: 1))
