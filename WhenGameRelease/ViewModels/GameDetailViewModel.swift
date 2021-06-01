@@ -21,6 +21,7 @@ class GameDetailViewModel: ObservableObject {
     @Published var videos: [GameVideo] = []
     @Published var screenshots: [UIImage] = []
     @Published var mediaContetntCount: Int = 0
+    @Published var carouselIndex: Int = 0
     
     func dismissGameDetailView() {
         bottomSheetShown = false
@@ -29,6 +30,7 @@ class GameDetailViewModel: ObservableObject {
         videos = []
         screenshots = []
         mediaContetntCount = 0
+        carouselIndex = 0
     }
     
     func showGameDetailView(showGameDetail: Bool, game: GameListModel, image: UIImage?) {

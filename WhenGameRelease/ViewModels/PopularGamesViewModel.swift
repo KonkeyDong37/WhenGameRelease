@@ -57,6 +57,11 @@ class PopularGamesViewModle: ObservableObject {
             case .mod: return 0
             case .episode: return episodeCount
             case .season: return seasonsCount
+            case .remake: return 0
+            case .remaster: return 0
+            case .expandedGame: return 0
+            case .port: return 0
+            case .fork: return 0
             }
         }
         
@@ -122,6 +127,11 @@ class PopularGamesViewModle: ObservableObject {
         case .season:
             seasonsCount += gamesOffset
             getGames(from: category, refresh: false)
+        case .remake: return
+        case .remaster: return
+        case .expandedGame: return
+        case .port: return
+        case .fork: return
         }
     }
     

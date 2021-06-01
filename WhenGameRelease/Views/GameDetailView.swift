@@ -106,18 +106,17 @@ fileprivate struct PosterImageCarousel: View {
     @ObservedObject private var viewModel: GameDetailViewModel = .shared
     @State private var openTrailerView: Bool = false
     
-    @State var imagesIndex: Int = 0
     @State var videoIndex: Int = 0
     
     private var heightRatio: CGFloat {
-        if imagesIndex == 0 {
+        if viewModel.carouselIndex == 0 {
             return 0.9
         } else {
             return 1
         }
     }
     private var paddingRatio: CGFloat {
-        if imagesIndex == 0 {
+        if viewModel.carouselIndex == 0 {
             return 0.05
         } else {
             return 0
@@ -127,7 +126,7 @@ fileprivate struct PosterImageCarousel: View {
     var body: some View {
         GeometryReader { geometry in
             HStack(alignment: .bottom) {
-                ImageCarouselView(index: $imagesIndex.animation(), maxIndex: viewModel.mediaContetntCount) {
+                ImageCarouselView(index: $viewModel.carouselIndex.animation(), maxIndex: viewModel.mediaContetntCount) {
                     PosterImageView(image: viewModel.image ?? UIImage(), category: viewModel.game?.category, gameHasTrailer: false, openTrailerView: $openTrailerView)
                     ForEach(viewModel.screenshots, id: \.self) { screenShot in
                         GeometryReader { proxy in
@@ -147,24 +146,24 @@ fileprivate struct PosterImageCarousel: View {
                 .aspectRatio(setAspectRatio(geometry: geometry), contentMode: .fit)
                 .padding(EdgeInsets(top: 0, leading: 0, bottom: Constants.bottomSheetHeight + geometry.size.height * paddingRatio, trailing: 0))
                 .frame(height: geometry.size.height * heightRatio)
-                .sheet(isPresented: $openTrailerView, content: {
-                    GeometryReader { proxy in
-                        ImageCarouselView(index: $videoIndex.animation(), maxIndex: viewModel.videos.count) {
-                            ForEach(viewModel.videos, id: \.self) { id in
-                                VideoPlayerUIKit(videoId: id.videoId)
-                            }
-                        }
-                        .cornerRadius(6)
-                        .frame(width: proxy.size.width * 0.9, height: proxy.size.height * 0.9)
-                    }
-                })
+//                .sheet(isPresented: $openTrailerView, content: {
+//                    GeometryReader { proxy in
+//                        ImageCarouselView(index: $videoIndex.animation(), maxIndex: viewModel.videos.count) {
+//                            ForEach(viewModel.videos, id: \.self) { id in
+//                                VideoPlayerUIKit(videoId: id.videoId)
+//                            }
+//                        }
+//                        .cornerRadius(6)
+//                        .frame(width: proxy.size.width * 0.9, height: proxy.size.height * 0.9)
+//                    }
+//                })
             }
             .frame(width: geometry.size.width, height: geometry.size.height, alignment: .bottom)
         }
     }
     
     private func setAspectRatio(geometry: GeometryProxy) -> CGFloat {
-        if imagesIndex == 0 {
+        if viewModel.carouselIndex == 0 {
             return 2/3
         } else {
             return CGFloat(geometry.size.width / (geometry.size.height - Constants.bottomSheetHeight))

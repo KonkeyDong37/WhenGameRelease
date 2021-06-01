@@ -125,6 +125,11 @@ enum GameCategory: Int, CustomStringConvertible, CaseIterable {
     case mod = 5
     case episode = 6
     case season = 7
+    case remake = 8
+    case remaster = 9
+    case expandedGame = 10
+    case port = 11
+    case fork = 12
     
     var description: String {
         switch self {
@@ -136,6 +141,11 @@ enum GameCategory: Int, CustomStringConvertible, CaseIterable {
         case .mod: return "Mod"
         case .episode: return "Episode"
         case .season: return "Season"
+        case .remake: return "Remake"
+        case .remaster: return "Remaster"
+        case .expandedGame: return "Expanded Game"
+        case .port: return "Port"
+        case .fork: return "Fork"
         }
     }
 }
